@@ -1,0 +1,177 @@
+local my_webui = WebUI('Notify', 'file://html/index.html')
+QBCore.Functions = {}
+
+-- Callback Functions --
+
+-- Create Client Callback
+function QBCore.Functions.CreateClientCallback(name, cb)
+    QBCore.ClientCallbacks[name] = cb
+end
+
+-- Trigger Client Callback
+function QBCore.Functions.TriggerClientCallback(name, cb, ...)
+    if not QBCore.ClientCallbacks[name] then return end
+    QBCore.ClientCallbacks[name](cb, ...)
+end
+
+-- Trigger Server Callback
+function QBCore.Functions.TriggerCallback(name, cb, ...)
+    QBCore.ServerCallbacks[name] = cb
+    Events.CallRemote('QBCore:Server:TriggerCallback', name, ...)
+end
+
+-- Getter Functions
+
+function QBCore.Functions.GetPlayerData(cb)
+    if not cb then return QBCore.PlayerData end
+    cb(QBCore.PlayerData)
+end
+
+-- Functions
+
+function QBCore.Functions.Debug(tbl)
+    print(HELIXTable.Dump(tbl))
+end
+
+function QBCore.Functions.Notify(text, texttype, length, icon)
+    local message = {
+        type = texttype or 'primary',
+        length = length or 5000,
+    }
+    if type(text) == 'table' then
+        message.text = text.text or 'Placeholder'
+        message.caption = text.caption or 'Placeholder'
+    else
+        message.text = text
+    end
+    if icon then message.icon = icon end
+    my_webui:CallEvent('NOTIFY', message)
+end
+
+-- World Getters
+
+function QBCore.Functions.GetClosestPlayer(coords)
+    local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local players = HCharacter.GetAll()
+    local closest_player, closest_distance = nil, -1
+    for i = 1, #players do
+        local ped = players[i]
+        local ped_coords = ped:GetLocation()
+        local distance = player_coords:Distance(ped_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_player = ped
+            closest_distance = distance
+        end
+    end
+    return closest_player, closest_distance
+end
+
+function QBCore.Functions.GetClosestVehicle(coords)
+    local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local vehicles = Vehicle.GetAll()
+    local closest_vehicle, closest_distance = nil, -1
+    for i = 1, #vehicles do
+        local vehicle = vehicles[i]
+        local vehicle_coords = vehicle:GetLocation()
+        local distance = player_coords:Distance(vehicle_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_vehicle = vehicle
+            closest_distance = distance
+        end
+    end
+    return closest_vehicle, closest_distance
+end
+
+function QBCore.Functions.GetClosestHVehicle(source, coords)
+    local player_ped = source:GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local vehicles = HSimpleVehicle.GetAll()
+    local closest_vehicle, closest_distance = nil, -1
+    for i = 1, #vehicles do
+        local vehicle = vehicles[i]
+        local vehicle_coords = vehicle:GetLocation()
+        local distance = player_coords:Distance(vehicle_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_vehicle = vehicle
+            closest_distance = distance
+        end
+    end
+    return closest_vehicle, closest_distance
+end
+
+function QBCore.Functions.GetClosestWeapon(coords)
+    local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local weapons = Weapon.GetAll()
+    local closest_weapon, closest_distance = nil, -1
+    for i = 1, #weapons do
+        local weapon = weapons[i]
+        local weapon_coords = weapon:GetLocation()
+        local distance = player_coords:Distance(weapon_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_weapon = weapon
+            closest_distance = distance
+        end
+    end
+    return closest_weapon, closest_distance
+end
+
+function QBCore.Functions.GetClosestCharacter(source, coords)
+    local player_ped = source:GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local characters = Character.GetAll()
+    local closest_ped, closest_distance = nil, -1
+    for i = 1, #characters do
+        local ped = characters[i]
+        local ped_coords = ped:GetLocation()
+        local distance = player_coords:Distance(ped_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_ped = ped
+            closest_distance = distance
+        end
+    end
+    return closest_ped, closest_distance
+end
+
+function QBCore.Functions.GetClosestSCharacter(source, coords)
+    local player_ped = source:GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local characters = CharacterSimple.GetAll()
+    local closest_ped, closest_distance = nil, -1
+    for i = 1, #characters do
+        local ped = characters[i]
+        local ped_coords = ped:GetLocation()
+        local distance = player_coords:Distance(ped_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_ped = ped
+            closest_distance = distance
+        end
+    end
+    return closest_ped, closest_distance
+end
+
+function QBCore.Functions.GetClosestProp(coords)
+    local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local props = Prop.GetAll()
+    local closest_prop, closest_distance = nil, -1
+    for i = 1, #props do
+        local prop = props[i]
+        local prop_ooords = prop:GetLocation()
+        local distance = player_coords:Distance(prop_ooords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_prop = prop
+            closest_distance = distance
+        end
+    end
+    return closest_prop, closest_distance
+end

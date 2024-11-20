@@ -1,0 +1,144 @@
+local my_webui = WebUI('HUD', 'file://html/index.html')
+local player_data = QBCore.Functions.GetPlayerData()
+local in_vehicle, current_vehicle = false, nil
+local has_weapon, current_weapon = false, nil
+local voice_level = 2
+local voiceLevels = {
+    { level = 'whisper', radius = 1.0 },
+    { level = 'normal',  radius = 2.5 },
+    { level = 'shout',   radius = 5.0 }
+}
+
+-- Function
+
+local function updateVoiceLevel()
+    local player = Client.GetLocalPlayer()
+    player:SetVOIPSetting(VOIPSetting.Local)
+    local voiceSetting = voiceLevels[voice_level]
+    player:SetVOIPVolume(voiceSetting.radius)
+    my_webui:CallEvent('UpdateVoiceVolume', voiceSetting.radius)
+end
+
+local function GetWeaponAmmo(weapon)
+    local ammo_clip = weapon:GetAmmoClip()
+    local ammo_bag = weapon:GetAmmoBag()
+    return ammo_clip, ammo_bag
+end
+
+-- Event Handlers
+
+Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+    player_data = QBCore.Functions.GetPlayerData()
+    updateVoiceLevel()
+end)
+
+Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
+    player_data = {}
+end)
+
+Events.SubscribeRemote('QBCore:Player:SetPlayerData', function(val)
+    player_data = val
+end)
+
+-- Money HUD
+
+local Round = math.floor
+
+Events.SubscribeRemote('hud:client:ShowAccounts', function(type, amount)
+    if type == 'cash' then
+        my_webui:CallEvent('ShowCashAmount', Round(amount))
+    else
+        my_webui:CallEvent('ShowBankAmount', Round(amount))
+    end
+end)
+
+Events.SubscribeRemote('hud:client:OnMoneyChange', function(type, amount, isMinus)
+    local cashAmount = player_data.money['cash']
+    local bankAmount = player_data.money['bank']
+    my_webui:CallEvent('UpdateMoney', Round(cashAmount), Round(bankAmount), Round(amount), isMinus, type)
+end)
+
+-- Voice
+
+Player.Subscribe('VOIP', function(_, is_talking)
+    my_webui:CallEvent('IsTalking', is_talking)
+end)
+
+Input.Register('VoiceLevel', 'Q', 'Change Voice Level')
+Input.Bind('VoiceLevel', InputEvent.Pressed, function() -- whisper, normal, shout
+    voice_level = voice_level % #voiceLevels + 1
+    updateVoiceLevel()
+end)
+
+-- HUD Thread
+
+Timer.SetInterval(function()
+    if Client.GetValue('isLoggedIn', false) then
+        local player = Client.GetLocalPlayer()
+        local ped = player:GetControlledCharacter()
+        if not ped then return end
+        local health     = ped:GetHealth()
+        local armor      = player_data.metadata['armor']
+        local hunger     = player_data.metadata['hunger']
+        local thirst     = player_data.metadata['thirst']
+        local stress     = player_data.metadata['stress']
+        local playerDead = player_data.metadata['inlaststand'] or player_data.metadata['isdead'] or false
+        if in_vehicle and current_vehicle then
+            local vehicle_speed = current_vehicle:GetVehicleSpeed()
+            if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
+            local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
+            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel)
+        end
+        if has_weapon and current_weapon then
+            local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)
+            my_webui:CallEvent('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+        end
+        my_webui:CallEvent('UpdateHUD', health, armor, hunger, thirst, stress, playerDead)
+    end
+end, 100)
+
+-- Weapons
+
+HCharacter.Subscribe('Reload', function(_, weapon)
+    local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
+    my_webui:CallEvent('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+end)
+
+HCharacter.Subscribe('PickUp', function(_, object)
+    if object:IsA(Weapon) then
+        has_weapon = true
+        current_weapon = object
+        my_webui:CallEvent('ShowWeapon', true)
+        local ammo_clip, ammo_bag = GetWeaponAmmo(object)
+        my_webui:CallEvent('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+    end
+end)
+
+HCharacter.Subscribe('Drop', function(_, object)
+    if object:IsA(Weapon) then
+        has_weapon = false
+        current_weapon = nil
+        my_webui:CallEvent('ShowWeapon', false)
+    end
+end)
+
+HCharacter.Subscribe('Fire', function(_, weapon)
+    local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
+    my_webui:CallEvent('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+end)
+
+-- Vehicles
+
+HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
+    print('EnterVehicle')
+    in_vehicle = true
+    current_vehicle = vehicle
+    my_webui:CallEvent('ShowSpeedometer', true)
+end)
+
+HCharacter.Subscribe('LeaveVehicle', function(self, vehicle)
+    print('LeaveVehicle')
+    in_vehicle = false
+    current_vehicle = nil
+    my_webui:CallEvent('ShowSpeedometer', false)
+end)

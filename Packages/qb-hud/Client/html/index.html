@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="responsive.css" />
+        <link href="https://cdn.jsdelivr.net/npm/quasar@2.15.4/dist/quasar.prod.css" rel="stylesheet" type="text/css" />
+        <script src="https://kit.fontawesome.com/d37231be1f.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@2.15.4/dist/quasar.umd.prod.js" defer></script>
+        <script src="script.js" defer></script>
+        <title>qb-hud</title>
+    </head>
+    <body>
+        <div id="main-container">
+            <div id="money-container">
+                <div id="money-cash">
+                    <transition name="slide-fade">
+                        <p v-if="showCash" v-html="cash"></p>
+                    </transition>
+                </div>
+                <div id="money-bank">
+                    <transition name="slide-fade">
+                        <p v-if="showBank" v-html="bank"></p>
+                    </transition>
+                </div>
+                <div id="money-change" v-if="showUpdate">
+                    <p v-if="plus" id="money"><span id="plus">+&nbsp;</span>{{ amount }}</p>
+                    <p v-else-if="minus" id="minus"><span id="minus">-&nbsp;</span>{{ amount }}</p>
+                </div>
+            </div>
+            <div id="ui-container">
+                <div id="playerHud" v-if="showAll">
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" :style="{color: talkingColor}" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="voice" :thickness="0.24" :style="{color: talkingColor}" :min="0" :max="5" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fas fa-microphone" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" :style="{color: healthColor}" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="health" :thickness="0.24" :style="{color: healthColor}" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-heart" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" :style="{color: armorColor}" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="armor" :thickness="0.24" :style="{color: armorColor}" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-shield-alt" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" :style="{color: hungerColor}" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="hunger" :thickness="0.24" :style="{color: hungerColor}" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-hamburger" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" :style="{color: thirstColor}" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="thirst" :thickness="0.24" :style="{color: thirstColor}" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-tint" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" color="stress" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" show-value :value="stress" :thickness="0.24" color="stress" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-brain" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition>
+                    <!-- <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" color="stress" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" :value="stress" :thickness="0.24" color="stress" :min="0" :max="100" center-color="grey-10" track-color="grey-8">
+                                <q-icon name="fa-solid fa-brain" size="large" color="white" />
+                            </q-circular-progress>
+                        </div>
+                    </transition> -->
+                    <!-- <transition name="fade">
+                        <div>
+                            <q-circular-progress class="q-ml-xl" style="opacity: 40%" :value="static" :thickness="0.24" color="oxygen" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress class="q-ml-xl" style="left: -50%" :value="oxygen" :thickness="0.24" color="oxygen" :min="0" :max="100" center-color="grey-10"></q-circular-progress>
+                            <q-icon style="top: -2px; left: -0.1px" name="fa-solid fa-lungs" color="white"/>
+                        </div>
+                    </transition> -->
+                </div>
+            </div>
+            <div id="veh-container">
+                <div v-if="showSpeedometer">
+                    <div class="responsive" id="speedometer">
+                        <q-circular-progress id="Speedo" class="q-ml-xl" style="transform: rotate(-150deg); opacity: 60%" :value="speedometer" :thickness="0.21" color="gauge" :min="0" :max="100"></q-circular-progress>
+                        <q-circular-progress id="Speedo" class="q-ml-xl" style="transform: rotate(-150deg); left: -50%" show-value :value="speed" :thickness="0.21" color="white" :min="0" :max="600">
+                            <speed id="Speed">{{(speed)}}</speed>
+                        </q-circular-progress>
+                    </div>
+                    <div class="responsive" id="fuelgauge">
+                        <q-circular-progress id="FuelGaugeBackground" class="q-ml-xl" style="transform: rotate(-125deg); opacity: 60%" :value="fuelgauge" :thickness="0.21" color="gauge" :min="0" :max="100"></q-circular-progress>
+                        <q-circular-progress id="FuelGaugeValue" class="q-ml-xl" style="transform: rotate(-125deg); left: -50%" show-value :value="fuel" :thickness="0.21" :style="{color: fuelColor}">
+                            <q-icon id="FuelGaugeIcon" name="fas fa-gas-pump" style="transform: rotate(125deg)" color="white" />
+                        </q-circular-progress>
+                    </div>
+                    <!-- <div class="responsive" id="altitudegauge" v-if="showAltitude">
+                        <q-circular-progress id="Altimeter" class="q-ml-xl" style="transform: rotate(-135deg); opacity: 60%;" :value="altitudegauge" size="70px" :thickness="0.21" color="gauge" :min="0" :max="100"></q-circular-progress>
+                        <q-circular-progress id="AltimeterValue" class="q-ml-xl" style="transform: rotate(-135deg); left: -50%;" show-value :value="altitude" size="70px" :thickness="0.21" color="gauge" :min="0" :max="750">
+                        <altitude id="Alt">{{(altitude)}}</altitude>
+                    </div> -->
+                    <!-- <transition name="fade">
+                        <div class="responsive" id="seatbelt" v-if="showSeatbelt">
+                            <q-circular-progress id="SeatbeltLocation" class="q-ml-xl" style="transform: rotate(-125deg); opacity: 60%" size="70px" :thickness="0.21" color="gauge" :min="0" :max="100"></q-circular-progress>
+                            <q-circular-progress id="SeatbeltLocation" class="q-ml-xl" style="transform: rotate(-125deg); left: -40%" show-value size="70px" :thickness="0.21" color="gauge" :min="0" :max="750">
+                                <q-icon id="SeatbeltIcon" name="fas fa-user-slash" style="transform: rotate(125deg)" :value="seatbelt" size="21px" :style="{color: seatbeltColor}" />
+                            </q-circular-progress>
+                        </div>
+                    </transition> -->
+                </div>
+            </div>
+            <div id="ammo-hud">
+                <div v-if="showWeapon"><span class="current-ammo">{{ ammoClip }}</span> <span class="total-ammo">{{ ammoBag }}</span></div>
+            </div>
+        </div>
+    </body>
+</html>

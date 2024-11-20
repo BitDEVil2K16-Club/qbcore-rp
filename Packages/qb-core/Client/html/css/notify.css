@@ -1,0 +1,99 @@
+html::-webkit-scrollbar {
+    display: none;
+}
+
+.notification {
+    position: fixed;
+    top: 50%;
+    right: 10%;
+    padding: 10px 20px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, top 0.3s ease-in-out;
+}
+
+.notification i {
+    font-size: 20px;
+}
+
+.notification strong {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.notification p {
+    flex: 1;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification.success {
+    background-color: #20bb44;
+    border-radius: 5px;
+    border: 1px solid #6ae587;
+}
+
+.notification.primary {
+    background-color: #1c75d2;
+    border-radius: 5px;
+    border: 1px solid #6facec;
+}
+
+.notification.warning {
+    background-color: #ff9800;
+    border-radius: 5px;
+    border: 1px solid #ffc107;
+}
+
+.notification.error {
+    background-color: #c10114;
+    border-radius: 5px;
+    border: 1px solid #fe4255;
+}
+
+.notification.police {
+    background-color: #2197f2;
+    border-radius: 5px;
+    border: 1px solid #7ac1f7;
+}
+
+.notification.ambulance {
+    background-color: #f44236;
+    border-radius: 5px;
+    border: 1px solid #f88e86;
+}
+
+@keyframes slideIn {
+    from {
+        top: 10px;
+        opacity: 0;
+    }
+    to {
+        top: 20px;
+        opacity: 1;
+    }
+}
+
+.notification.show {
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        top: 20px;
+    }
+    to {
+        opacity: 0;
+        top: 30px;
+    }
+}
+
+.notification.hide {
+    animation: fadeOut 0.5s forwards;
+}

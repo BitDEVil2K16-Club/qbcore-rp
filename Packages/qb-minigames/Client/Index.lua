@@ -1,0 +1,8 @@
+Package.Require("hacking.lua")
+Package.Require("keyminigame.lua")
+Package.Require("lockpick.lua")
+Package.Require("pinpad.lua")
+Package.Require("quiz.lua")
+Package.Require("skillbar.lua")
+Package.Require("wordguess.lua")
+Package.Require("wordscramble.lua")
