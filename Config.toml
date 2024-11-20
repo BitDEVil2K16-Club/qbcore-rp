@@ -39,11 +39,15 @@
     ]
     # asset packs list (this will additionally load the asset packs you define here)
     assets = [
-
+        "ecdbd-fh-downtown-tits",
+        "abcca-qbcore",
+        "abcca-shells",
+        "ecdbd-h",
+        "qbcore-vehicles",
     ]
     # default startup map
-    map =               "rp-downtown-tits::Level"
+    map =               "ecdbd-fh-downtown-tits::RP_Downtown_Tits_v2"
     # banned HELIX account IDs
     banned_ids = [
-
+        
     ]

@@ -12,6 +12,7 @@ Package.Require('Shared/main.lua')
 Package.Require('Shared/vehicles.lua')
 Package.Require('Shared/weapons.lua')
 
+Package.Require('database.lua')
 Package.Require('functions.lua')
 Package.Require('player.lua')
 Package.Require('commands.lua')
