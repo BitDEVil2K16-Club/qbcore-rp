@@ -393,11 +393,11 @@ function QBCore.Functions.CreateWeapon(source, weapon_name, coords, rotation, it
 	if not new_weapon then return false end
 	-- General
 	new_weapon:SetAmmoSettings(ammo, 0)
-	new_weapon:SetDamage(weapon_info.damage)
-	new_weapon:SetSpread(weapon_info.spread)
-	new_weapon:SetRecoil(weapon_info.recoil)
-	new_weapon:SetCadence(weapon_info.cadence)
-	new_weapon:SetAutoReload(weapon_info.auto_reload)
+	if weapon_info.damage then new_weapon:SetDamage(weapon_info.damage) end
+	if weapon_info.spread then new_weapon:SetSpread(weapon_info.spread) end
+	if weapon_info.recoil then new_weapon:SetRecoil(weapon_info.recoil) end
+	if weapon_info.cadence then new_weapon:SetCadence(weapon_info.cadence) end
+	if weapon_info.auto_reload then new_weapon:SetAutoReload(weapon_info.auto_reload) end
 	new_weapon:SetBulletSettings(
 		weapon_info.bullet_settings.bullet_count,
 		weapon_info.bullet_settings.bullet_max_distance,
@@ -408,35 +408,34 @@ function QBCore.Functions.CreateWeapon(source, weapon_name, coords, rotation, it
 		weapon_info.wallbang_settings.max_distance,
 		weapon_info.wallbang_settings.damage_multiplier
 	)
-	-- new_weapon:SetClipCapacity(weapon_info.ammo_settings.clip_capacity)
-	-- new_weapon:SetAmmoClip(ammo)
-
 	-- Handling
-	new_weapon:SetHandlingMode(weapon_info.handlingMode)
-	new_weapon:SetRightHandOffset(weapon_info.right_hand_offset)
-	if weapon_info.left_hand_bone then new_weapon:SetLeftHandBone(weapon_info.left_hand_bone) end -- single hand defaults to right hand, no need
+	if weapon_info.handlingMode then new_weapon:SetHandlingMode(weapon_info.handlingMode) end
+	if weapon_info.right_hand_offset then new_weapon:SetRightHandOffset(weapon_info.right_hand_offset) end
+	if weapon_info.left_hand_bone then new_weapon:SetLeftHandBone(weapon_info.left_hand_bone) end
 	-- Particles
-	new_weapon:SetParticlesBulletTrail(weapon_info.particles.bullet_trail)
-	new_weapon:SetParticlesBarrel(weapon_info.particles.barrel)
-	new_weapon:SetParticlesShells(weapon_info.particles.shells)
+	if weapon_info.particles.bullet_trail then new_weapon:SetParticlesBulletTrail(weapon_info.particles.bullet_trail) end
+	if weapon_info.particles.barrel then new_weapon:SetParticlesBarrel(weapon_info.particles.barrel) end
+	if weapon_info.particles.shells then new_weapon:SetParticlesShells(weapon_info.particles.shells) end
 	-- Sounds
-	new_weapon:SetSoundDry(weapon_info.sounds.dry)
-	new_weapon:SetSoundLoad(weapon_info.sounds.load)
-	new_weapon:SetSoundUnload(weapon_info.sounds.unload)
-	new_weapon:SetSoundZooming(weapon_info.sounds.zooming)
-	new_weapon:SetSoundAim(weapon_info.sounds.aim)
-	new_weapon:SetSoundFire(weapon_info.sounds.fire)
-	new_weapon:SetSoundFireLastBullets(weapon_info.sounds.last_bullets.asset_path, weapon_info.sounds.last_bullets.bullet_count)
+	if weapon_info.sounds.dry then new_weapon:SetSoundDry(weapon_info.sounds.dry) end
+	if weapon_info.sounds.load then new_weapon:SetSoundLoad(weapon_info.sounds.load) end
+	if weapon_info.sounds.unload then new_weapon:SetSoundUnload(weapon_info.sounds.unload) end
+	if weapon_info.sounds.zooming then new_weapon:SetSoundZooming(weapon_info.sounds.zooming) end
+	if weapon_info.sounds.aim then new_weapon:SetSoundAim(weapon_info.sounds.aim) end
+	if weapon_info.sounds.fire then new_weapon:SetSoundFire(weapon_info.sounds.fire) end
+	if weapon_info.sounds.last_bullets.asset_path and weapon_info.sounds.last_bullets.bullet_count then
+		new_weapon:SetSoundFireLastBullets(weapon_info.sounds.last_bullets.asset_path, weapon_info.sounds.last_bullets.bullet_count)
+	end
 	-- Animations
-	new_weapon:SetAnimationFire(weapon_info.animations.fire)
-	new_weapon:SetAnimationReload(weapon_info.animations.reload)
-	new_weapon:SetAnimationCharacterFire(weapon_info.animations.character_fire)
-	new_weapon:SetAnimationCharacterHolster(weapon_info.animations.character_holster)
-	new_weapon:SetAnimationCharacterEquip(weapon_info.animations.character_equip)
-	new_weapon:SetAnimationCharacterReload(weapon_info.animations.character_reload)
+	if weapon_info.animations.fire then new_weapon:SetAnimationFire(weapon_info.animations.fire) end
+	if weapon_info.animations.reload then new_weapon:SetAnimationReload(weapon_info.animations.reload) end
+	if weapon_info.animations.character_fire then new_weapon:SetAnimationCharacterFire(weapon_info.animations.character_fire) end
+	if weapon_info.animations.character_holster then new_weapon:SetAnimationCharacterHolster(weapon_info.animations.character_holster) end
+	if weapon_info.animations.character_equip then new_weapon:SetAnimationCharacterEquip(weapon_info.animations.character_equip) end
+	if weapon_info.animations.character_reload then new_weapon:SetAnimationCharacterReload(weapon_info.animations.character_reload) end
 	-- Meshes
-	new_weapon:SetMagazineMesh(weapon_info.magazine_mesh)
-	new_weapon:SetCrosshairMaterial(weapon_info.crosshair_material)
+	if weapon_info.magazine_mesh then new_weapon:SetMagazineMesh(weapon_info.magazine_mesh) end
+	if weapon_info.crosshair_material then new_weapon:SetCrosshairMaterial(weapon_info.crosshair_material) end
 	-- Values
 	new_weapon:SetValue('name', weapon_name, true)
 	new_weapon:SetValue('quality', quality, true)

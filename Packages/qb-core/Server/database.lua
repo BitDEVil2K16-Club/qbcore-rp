@@ -278,7 +278,7 @@ end
 Package.Export('MySQL', MySQL)
 Package.Export('PSQL', PSQL)
 
-PSQL:Execute([[
+local rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS apartments (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) DEFAULT NULL,
@@ -288,8 +288,10 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_apartments_citizenid ON apartments (citizenid)')
-PSQL:Execute('CREATE INDEX idx_apartments_name ON apartments (name)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_apartments_citizenid ON apartments (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_apartments_name ON apartments (name)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS bank_accounts (
@@ -302,7 +304,7 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS bank_statements (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -314,26 +316,28 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_bank_statements_citizenid ON bank_statements (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_bank_statements_citizenid ON bank_statements (citizenid)')
 
-PSQL:Execute([[
-    CREATE OR REPLACE FUNCTION update_date_column()
-    RETURNS TRIGGER AS $$
-    BEGIN
-    NEW.date = NOW();
-    RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-]])
+    PSQL:Execute([[
+        CREATE OR REPLACE FUNCTION update_date_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+        NEW.date = NOW();
+        RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    ]])
 
-PSQL:Execute([[
-    CREATE TRIGGER bank_statements_update_date_trigger
-    BEFORE UPDATE ON bank_statements
-    FOR EACH ROW
-    EXECUTE FUNCTION update_date_column();
-]])
+    PSQL:Execute([[
+        CREATE TRIGGER bank_statements_update_date_trigger
+        BEFORE UPDATE ON bank_statements
+        FOR EACH ROW
+        EXECUTE FUNCTION update_date_column();
+    ]])
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS bans (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) DEFAULT NULL,
@@ -346,9 +350,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_bans_license ON bans (license)')
-PSQL:Execute('CREATE INDEX idx_bans_discord ON bans (discord)')
-PSQL:Execute('CREATE INDEX idx_bans_ip ON bans (ip)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_bans_license ON bans (license)')
+    PSQL:Execute('CREATE INDEX idx_bans_discord ON bans (discord)')
+    PSQL:Execute('CREATE INDEX idx_bans_ip ON bans (ip)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS crypto (
@@ -358,7 +364,7 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS crypto_transactions (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -368,7 +374,9 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_crypto_transactions_citizenid ON crypto_transactions (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_crypto_transactions_citizenid ON crypto_transactions (citizenid)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS dealers (
@@ -380,7 +388,7 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS houselocations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) DEFAULT NULL,
@@ -393,7 +401,9 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_houselocations_name ON houselocations (name)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_houselocations_name ON houselocations (name)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS inventories (
@@ -403,7 +413,7 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_houses (
     id SERIAL PRIMARY KEY,
     house VARCHAR(50) NOT NULL,
@@ -417,11 +427,13 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_player_houses_house ON player_houses (house)')
-PSQL:Execute('CREATE INDEX idx_player_houses_citizenid ON player_houses (citizenid)')
-PSQL:Execute('CREATE INDEX idx_player_houses_identifier ON player_houses (identifier)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_player_houses_house ON player_houses (house)')
+    PSQL:Execute('CREATE INDEX idx_player_houses_citizenid ON player_houses (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_player_houses_identifier ON player_houses (identifier)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS house_plants (
     id SERIAL PRIMARY KEY,
     building VARCHAR(50) DEFAULT NULL,
@@ -436,10 +448,12 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_house_plants_building ON house_plants (building)')
-PSQL:Execute('CREATE INDEX idx_house_plants_plantid ON house_plants (plantid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_house_plants_building ON house_plants (building)')
+    PSQL:Execute('CREATE INDEX idx_house_plants_plantid ON house_plants (plantid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS lapraces (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) DEFAULT NULL,
@@ -451,9 +465,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_lapraces_raceid ON lapraces (raceid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_lapraces_raceid ON lapraces (raceid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS occasion_vehicles (
     id SERIAL PRIMARY KEY,
     seller VARCHAR(50) DEFAULT NULL,
@@ -466,9 +482,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_occasion_vehicles_occasionid ON occasion_vehicles (occasionid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_occasion_vehicles_occasionid ON occasion_vehicles (occasionid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS phone_invoices (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -479,7 +497,9 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_phone_invoices_citizenid ON phone_invoices (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_phone_invoices_citizenid ON phone_invoices (citizenid)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS phone_gallery (
@@ -489,7 +509,7 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_mails (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -503,9 +523,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_player_mails_citizenid ON player_mails (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_player_mails_citizenid ON player_mails (citizenid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS phone_messages (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -514,10 +536,12 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_phone_messages_citizenid ON phone_messages (citizenid)')
-PSQL:Execute('CREATE INDEX idx_phone_messages_number ON phone_messages (number)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_phone_messages_citizenid ON phone_messages (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_phone_messages_number ON phone_messages (number)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS phone_tweets (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -531,9 +555,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_phone_tweets_citizenid ON phone_tweets (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_phone_tweets_citizenid ON phone_tweets (citizenid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_contacts (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -543,9 +569,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_player_contacts_citizenid ON player_contacts (citizenid)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_player_contacts_citizenid ON player_contacts (citizenid)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS players (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) NOT NULL UNIQUE,
@@ -563,25 +591,30 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_players_last_updated ON players (last_updated)')
-PSQL:Execute('CREATE INDEX idx_players_license ON players (license)')
-PSQL:Execute([[
-    CREATE OR REPLACE FUNCTION update_last_updated_column()
-    RETURNS TRIGGER AS $$
-    BEGIN
-    NEW.last_updated = NOW();
-    RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-]])
-PSQL:Execute([[
-    CREATE TRIGGER players_update_last_updated_trigger
-    BEFORE UPDATE ON players
-    FOR EACH ROW
-    EXECUTE FUNCTION update_last_updated_column();
-]])
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_players_last_updated ON players (last_updated)')
+    PSQL:Execute('CREATE INDEX idx_players_license ON players (license)')
 
-PSQL:Execute([[
+
+    PSQL:Execute([[
+        CREATE OR REPLACE FUNCTION update_last_updated_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+        NEW.last_updated = NOW();
+        RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+    ]])
+
+    PSQL:Execute([[
+        CREATE TRIGGER players_update_last_updated_trigger
+        BEFORE UPDATE ON players
+        FOR EACH ROW
+        EXECUTE FUNCTION update_last_updated_column();
+    ]])
+end
+
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS playerskins (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) NOT NULL,
@@ -591,10 +624,12 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_playerskins_citizenid ON playerskins (citizenid)')
-PSQL:Execute('CREATE INDEX idx_playerskins_active ON playerskins (active)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_playerskins_citizenid ON playerskins (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_playerskins_active ON playerskins (active)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_outfits (
     id SERIAL PRIMARY KEY,
     citizenid VARCHAR(11) DEFAULT NULL,
@@ -605,10 +640,12 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_player_outfits_citizenid ON player_outfits (citizenid)')
-PSQL:Execute('CREATE INDEX idx_player_outfits_outfitId ON player_outfits (outfitId)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_player_outfits_citizenid ON player_outfits (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_player_outfits_outfitId ON player_outfits (outfitId)')
+end
 
-PSQL:Execute([[
+rows, error = PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_vehicles (
     id SERIAL PRIMARY KEY,
     license VARCHAR(50) DEFAULT NULL,
@@ -633,9 +670,11 @@ PSQL:Execute([[
     );
 ]])
 
-PSQL:Execute('CREATE INDEX idx_player_vehicles_plate ON player_vehicles (plate)')
-PSQL:Execute('CREATE INDEX idx_player_vehicles_citizenid ON player_vehicles (citizenid)')
-PSQL:Execute('CREATE INDEX idx_player_vehicles_license ON player_vehicles (license)')
+if not error and rows > 0 then
+    PSQL:Execute('CREATE INDEX idx_player_vehicles_plate ON player_vehicles (plate)')
+    PSQL:Execute('CREATE INDEX idx_player_vehicles_citizenid ON player_vehicles (citizenid)')
+    PSQL:Execute('CREATE INDEX idx_player_vehicles_license ON player_vehicles (license)')
+end
 
 PSQL:Execute([[
     CREATE TABLE IF NOT EXISTS player_warns (
