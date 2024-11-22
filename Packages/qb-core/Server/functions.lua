@@ -21,7 +21,7 @@ end
 -- Trigger Client Callback
 function QBCore.Functions.TriggerClientCallback(name, source, cb, ...)
 	QBCore.ClientCallbacks[name] = cb
-	Events.CallRemote("QBCore:Client:TriggerClientCallback", source, name, ...)
+	Events.CallRemote('QBCore:Client:TriggerClientCallback', source, name, ...)
 end
 
 -- Getter Functions
@@ -42,19 +42,19 @@ end
 function QBCore.Functions.HasPermission(source, permissionLevel)
 	local accountId = source:GetAccountID()
 	local allPermissions = QBConfig.Server.Permissions
-	if permissionLevel == "user" then
+	if permissionLevel == 'user' then
 		return true
 	end
 	if not allPermissions[permissionLevel] then
 		return false
 	end
 
-	if allPermissions["god"][accountId] then
+	if allPermissions['god'][accountId] then
 		return true
-	elseif permissionLevel ~= "god" and allPermissions["admin"][accountId] then
+	elseif permissionLevel ~= 'god' and allPermissions['admin'][accountId] then
 		return true
-	elseif permissionLevel == "mod" or permissionLevel == "user" then
-		if allPermissions["mod"][accountId] then
+	elseif permissionLevel == 'mod' or permissionLevel == 'user' then
+		if allPermissions['mod'][accountId] then
 			return true
 		end
 	end
@@ -66,7 +66,7 @@ function QBCore.Functions.GetPlayer(source)
 	if not source then
 		return
 	end
-	if type(source) == "number" then
+	if type(source) == 'number' then
 		return QBCore.Players[source]
 	else
 		local playerId = source:GetID()
@@ -174,7 +174,7 @@ function QBCore.Functions.Debug(tbl)
 end
 
 function QBCore.Functions.Notify(source, message, type, length, icon)
-	Events.CallRemote("QBCore:Notify", source, message, type, length, icon)
+	Events.CallRemote('QBCore:Notify', source, message, type, length, icon)
 end
 
 function QBCore.Functions.CreateCitizenId()
@@ -182,9 +182,9 @@ function QBCore.Functions.CreateCitizenId()
 end
 
 function QBCore.Functions.CreateAccountNumber()
-	return "US0"
+	return 'US0'
 		.. math.random(1, 9)
-		.. "QBCore"
+		.. 'QBCore'
 		.. math.random(1111, 9999)
 		.. math.random(1111, 9999)
 		.. math.random(11, 99)
@@ -197,16 +197,16 @@ end
 function QBCore.Functions.CreateFingerId()
 	return tostring(
 		QBShared.RandomStr(2)
-			.. QBShared.RandomInt(3)
-			.. QBShared.RandomStr(1)
-			.. QBShared.RandomInt(2)
-			.. QBShared.RandomStr(3)
-			.. QBShared.RandomInt(4)
+		.. QBShared.RandomInt(3)
+		.. QBShared.RandomStr(1)
+		.. QBShared.RandomInt(2)
+		.. QBShared.RandomStr(3)
+		.. QBShared.RandomInt(4)
 	)
 end
 
 function QBCore.Functions.CreateWalletId()
-	return "QB-" .. math.random(11111111, 99999999)
+	return 'QB-' .. math.random(11111111, 99999999)
 end
 
 function QBCore.Functions.CreateSerialNumber()
@@ -361,9 +361,9 @@ function QBCore.Functions.GeneratePlate(vehicle)
 	if not vehicle then
 		return
 	end
-	local letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	local numbers = "0123456789"
-	local plate = ""
+	local letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	local numbers = '0123456789'
+	local plate = ''
 
 	for i = 1, 3 do
 		local randIndex = math.random(1, #letters)
@@ -380,65 +380,68 @@ end
 
 function QBCore.Functions.CreateWeapon(source, weapon_name, coords, rotation, itemInfo)
 	local weapon_info = QBShared.Weapons[weapon_name]
-	if not weapon_info then
-		return false
-	end
+	if not weapon_info then return false end
 	local ped = source:GetControlledCharacter()
-	if not ped then
-		return false
-	end
+	if not ped then return false end
 	local location = ped:GetLocation()
 	local player_rotation = ped:GetRotation()
-	if not coords then
-		coords = location
-	end
-	if not rotation then
-		rotation = player_rotation
-	end
+	if not coords then coords = location end
+	if not rotation then rotation = player_rotation end
 	local ammo = itemInfo and itemInfo.info and itemInfo.info.ammo or 0
 	local quality = itemInfo and itemInfo.info and itemInfo.info.quality or 100
 	local new_weapon = Weapon(coords, rotation, weapon_info.asset_name)
-	if not new_weapon then
-		return false
-	end
-	new_weapon:SetClipCapacity(weapon_info.ammo_settings.clip_capacity)
-	new_weapon:SetAmmoClip(ammo)
+	if not new_weapon then return false end
+	-- General
+	new_weapon:SetAmmoSettings(ammo, 0)
 	new_weapon:SetDamage(weapon_info.damage)
 	new_weapon:SetSpread(weapon_info.spread)
 	new_weapon:SetRecoil(weapon_info.recoil)
+	new_weapon:SetCadence(weapon_info.cadence)
+	new_weapon:SetAutoReload(weapon_info.auto_reload)
 	new_weapon:SetBulletSettings(
 		weapon_info.bullet_settings.bullet_count,
 		weapon_info.bullet_settings.bullet_max_distance,
 		weapon_info.bullet_settings.bullet_velocity,
 		weapon_info.bullet_settings.bullet_color
 	)
-	new_weapon:SetCadence(weapon_info.cadence)
 	new_weapon:SetWallbangSettings(
 		weapon_info.wallbang_settings.max_distance,
 		weapon_info.wallbang_settings.damage_multiplier
 	)
-	new_weapon:SetAutoReload(weapon_info.auto_reload)
+	-- new_weapon:SetClipCapacity(weapon_info.ammo_settings.clip_capacity)
+	-- new_weapon:SetAmmoClip(ammo)
+
+	-- Handling
 	new_weapon:SetHandlingMode(weapon_info.handlingMode)
-	new_weapon:SetSightTransform(weapon_info.sight_transform.location, weapon_info.sight_transform.rotation)
-	new_weapon:SetLeftHandTransform(weapon_info.left_hand_transform.location, weapon_info.left_hand_transform.rotation)
 	new_weapon:SetRightHandOffset(weapon_info.right_hand_offset)
+	if weapon_info.left_hand_bone then new_weapon:SetLeftHandBone(weapon_info.left_hand_bone) end -- single hand defaults to right hand, no need
+	-- Particles
 	new_weapon:SetParticlesBulletTrail(weapon_info.particles.bullet_trail)
 	new_weapon:SetParticlesBarrel(weapon_info.particles.barrel)
 	new_weapon:SetParticlesShells(weapon_info.particles.shells)
+	-- Sounds
 	new_weapon:SetSoundDry(weapon_info.sounds.dry)
 	new_weapon:SetSoundLoad(weapon_info.sounds.load)
 	new_weapon:SetSoundUnload(weapon_info.sounds.unload)
 	new_weapon:SetSoundZooming(weapon_info.sounds.zooming)
 	new_weapon:SetSoundAim(weapon_info.sounds.aim)
 	new_weapon:SetSoundFire(weapon_info.sounds.fire)
+	new_weapon:SetSoundFireLastBullets(weapon_info.sounds.last_bullets.asset_path, weapon_info.sounds.last_bullets.bullet_count)
+	-- Animations
 	new_weapon:SetAnimationFire(weapon_info.animations.fire)
-	new_weapon:SetAnimationCharacterFire(weapon_info.animations.character_fire)
 	new_weapon:SetAnimationReload(weapon_info.animations.reload)
+	new_weapon:SetAnimationCharacterFire(weapon_info.animations.character_fire)
+	new_weapon:SetAnimationCharacterHolster(weapon_info.animations.character_holster)
+	new_weapon:SetAnimationCharacterEquip(weapon_info.animations.character_equip)
+	new_weapon:SetAnimationCharacterReload(weapon_info.animations.character_reload)
+	-- Meshes
 	new_weapon:SetMagazineMesh(weapon_info.magazine_mesh)
 	new_weapon:SetCrosshairMaterial(weapon_info.crosshair_material)
-	new_weapon:SetValue("name", weapon_name, true)
-	new_weapon:SetValue("quality", quality, true)
-	new_weapon:SetValue("ammo_type", weapon_info.ammo_type, true)
+	-- Values
+	new_weapon:SetValue('name', weapon_name, true)
+	new_weapon:SetValue('quality', quality, true)
+	new_weapon:SetValue('ammo_type', weapon_info.ammo_type, true)
+	-- Attachments
 	local weapon_attachments = weapon_info.default_attachments
 	if weapon_attachments then
 		for attachment_name, attachment_data in pairs(weapon_attachments) do
@@ -485,9 +488,9 @@ function QBCore.Functions.CreateVehicle(source, vehicle_name, coords, rotation, 
 	end
 	if vehicle then
 		local plate_number = plate or QBCore.Functions.GeneratePlate(vehicle)
-		vehicle:SetValue("plate", plate_number, true)
+		vehicle:SetValue('plate', plate_number, true)
 		local fuel_value = fuel or 100
-		vehicle:SetValue("fuel", fuel_value, true)
+		vehicle:SetValue('fuel', fuel_value, true)
 		return vehicle
 	end
 end
@@ -495,49 +498,49 @@ end
 -- Shared Update Functions
 
 function QBCore.Functions.SetMethod(methodName, handler)
-	if type(methodName) ~= "string" then
-		return false, "invalid_method_name"
+	if type(methodName) ~= 'string' then
+		return false, 'invalid_method_name'
 	end
 	QBCore.Functions[methodName] = handler
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.SetField(fieldName, data)
-	if type(fieldName) ~= "string" then
-		return false, "invalid_field_name"
+	if type(fieldName) ~= 'string' then
+		return false, 'invalid_field_name'
 	end
 	QBCore[fieldName] = data
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddJob(jobName, job)
-	if type(jobName) ~= "string" then
-		return false, "invalid_job_name"
+	if type(jobName) ~= 'string' then
+		return false, 'invalid_job_name'
 	end
 	if QBShared.Jobs[jobName] then
-		return false, "job_exists"
+		return false, 'job_exists'
 	end
 	QBShared.Jobs[jobName] = job
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Jobs", jobName, job)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, job)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddJobs(jobs)
 	local shouldContinue = true
-	local message = "success"
+	local message = 'success'
 	local errorItem = nil
 	for key, value in pairs(jobs) do
-		if type(key) ~= "string" then
-			message = "invalid_job_name"
+		if type(key) ~= 'string' then
+			message = 'invalid_job_name'
 			shouldContinue = false
 			errorItem = jobs[key]
 			break
 		end
 		if QBShared.Jobs[key] then
-			message = "job_exists"
+			message = 'job_exists'
 			shouldContinue = false
 			errorItem = jobs[key]
 			break
@@ -547,76 +550,76 @@ function QBCore.Functions.AddJobs(jobs)
 	if not shouldContinue then
 		return false, message, errorItem
 	end
-	Events.CallRemote("QBCore:Client:OnSharedUpdateMultiple", -1, "Jobs", jobs)
-	Events.Call("QBCore:Server:UpdateObject")
+	Events.CallRemote('QBCore:Client:OnSharedUpdateMultiple', -1, 'Jobs', jobs)
+	Events.Call('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
 function QBCore.Functions.RemoveJob(jobName)
-	if type(jobName) ~= "string" then
-		return false, "invalid_job_name"
+	if type(jobName) ~= 'string' then
+		return false, 'invalid_job_name'
 	end
 	if not QBShared.Jobs[jobName] then
-		return false, "job_not_exists"
+		return false, 'job_not_exists'
 	end
 	QBShared.Jobs[jobName] = nil
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Jobs", jobName, nil)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, nil)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.UpdateJob(jobName, job)
-	if type(jobName) ~= "string" then
-		return false, "invalid_job_name"
+	if type(jobName) ~= 'string' then
+		return false, 'invalid_job_name'
 	end
 	if not QBShared.Jobs[jobName] then
-		return false, "job_not_exists"
+		return false, 'job_not_exists'
 	end
 	QBShared.Jobs[jobName] = job
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Jobs", jobName, job)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, job)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddItem(itemName, item)
-	if type(itemName) ~= "string" then
-		return false, "invalid_item_name"
+	if type(itemName) ~= 'string' then
+		return false, 'invalid_item_name'
 	end
 	if QBShared.Items[itemName] then
-		return false, "item_exists"
+		return false, 'item_exists'
 	end
 	QBShared.Items[itemName] = item
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Items", itemName, item)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, item)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.UpdateItem(itemName, item)
-	if type(itemName) ~= "string" then
-		return false, "invalid_item_name"
+	if type(itemName) ~= 'string' then
+		return false, 'invalid_item_name'
 	end
 	if not QBShared.Items[itemName] then
-		return false, "item_not_exists"
+		return false, 'item_not_exists'
 	end
 	QBShared.Items[itemName] = item
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Items", itemName, item)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, item)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddItems(items)
 	local shouldContinue = true
-	local message = "success"
+	local message = 'success'
 	local errorItem = nil
 	for key, value in pairs(items) do
-		if type(key) ~= "string" then
-			message = "invalid_item_name"
+		if type(key) ~= 'string' then
+			message = 'invalid_item_name'
 			shouldContinue = false
 			errorItem = items[key]
 			break
 		end
 		if QBShared.Items[key] then
-			message = "item_exists"
+			message = 'item_exists'
 			shouldContinue = false
 			errorItem = items[key]
 			break
@@ -626,50 +629,50 @@ function QBCore.Functions.AddItems(items)
 	if not shouldContinue then
 		return false, message, errorItem
 	end
-	Events.CallRemote("QBCore:Client:OnSharedUpdateMultiple", -1, "Items", items)
-	Events.Call("QBCore:Server:UpdateObject")
+	Events.CallRemote('QBCore:Client:OnSharedUpdateMultiple', -1, 'Items', items)
+	Events.Call('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
 function QBCore.Functions.RemoveItem(itemName)
-	if type(itemName) ~= "string" then
-		return false, "invalid_item_name"
+	if type(itemName) ~= 'string' then
+		return false, 'invalid_item_name'
 	end
 	if not QBShared.Items[itemName] then
-		return false, "item_not_exists"
+		return false, 'item_not_exists'
 	end
 	QBShared.Items[itemName] = nil
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Items", itemName, nil)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, nil)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddGang(gangName, gang)
-	if type(gangName) ~= "string" then
-		return false, "invalid_gang_name"
+	if type(gangName) ~= 'string' then
+		return false, 'invalid_gang_name'
 	end
 	if QBShared.Gangs[gangName] then
-		return false, "gang_exists"
+		return false, 'gang_exists'
 	end
 	QBShared.Gangs[gangName] = gang
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Gangs", gangName, gang)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, gang)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.AddGangs(gangs)
 	local shouldContinue = true
-	local message = "success"
+	local message = 'success'
 	local errorItem = nil
 	for key, value in pairs(gangs) do
-		if type(key) ~= "string" then
-			message = "invalid_gang_name"
+		if type(key) ~= 'string' then
+			message = 'invalid_gang_name'
 			shouldContinue = false
 			errorItem = gangs[key]
 			break
 		end
 		if QBShared.Gangs[key] then
-			message = "gang_exists"
+			message = 'gang_exists'
 			shouldContinue = false
 			errorItem = gangs[key]
 			break
@@ -679,35 +682,35 @@ function QBCore.Functions.AddGangs(gangs)
 	if not shouldContinue then
 		return false, message, errorItem
 	end
-	Events.CallRemote("QBCore:Client:OnSharedUpdateMultiple", -1, "Gangs", gangs)
-	Events.Call("QBCore:Server:UpdateObject")
+	Events.CallRemote('QBCore:Client:OnSharedUpdateMultiple', -1, 'Gangs', gangs)
+	Events.Call('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
 function QBCore.Functions.RemoveGang(gangName)
-	if type(gangName) ~= "string" then
-		return false, "invalid_gang_name"
+	if type(gangName) ~= 'string' then
+		return false, 'invalid_gang_name'
 	end
 	if not QBShared.Gangs[gangName] then
-		return false, "gang_not_exists"
+		return false, 'gang_not_exists'
 	end
 	QBShared.Gangs[gangName] = nil
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Gangs", gangName, nil)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, nil)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 function QBCore.Functions.UpdateGang(gangName, gang)
-	if type(gangName) ~= "string" then
-		return false, "invalid_gang_name"
+	if type(gangName) ~= 'string' then
+		return false, 'invalid_gang_name'
 	end
 	if not QBShared.Gangs[gangName] then
-		return false, "gang_not_exists"
+		return false, 'gang_not_exists'
 	end
 	QBShared.Gangs[gangName] = gang
-	Events.CallRemote("QBCore:Client:OnSharedUpdate", -1, "Gangs", gangName, gang)
-	Events.Call("QBCore:Server:UpdateObject")
-	return true, "success"
+	Events.CallRemote('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, gang)
+	Events.Call('QBCore:Server:UpdateObject')
+	return true, 'success'
 end
 
 -- Player Functions
@@ -715,7 +718,7 @@ end
 function QBCore.Functions.SetPlayerBucket(source, bucket)
 	if source and bucket then
 		local plicense = QBCore.Functions.GetIdentifier(source)
-		source:SetValue("instance", bucket, true)
+		source:SetValue('instance', bucket, true)
 		source:SetDimension(bucket)
 		QBCore.Player_Buckets[plicense] = { id = source, bucket = bucket }
 		return true
@@ -726,7 +729,7 @@ end
 
 function QBCore.Functions.AddPlayerMethod(ids, methodName, handler)
 	local idType = type(ids)
-	if idType == "number" then
+	if idType == 'number' then
 		if ids == -1 then
 			for _, v in pairs(QBCore.Players) do
 				v.Functions.AddMethod(methodName, handler)
@@ -738,7 +741,7 @@ function QBCore.Functions.AddPlayerMethod(ids, methodName, handler)
 
 			QBCore.Players[ids].Functions.AddMethod(methodName, handler)
 		end
-	elseif idType == "table" and table.type(ids) == "array" then
+	elseif idType == 'table' and table.type(ids) == 'array' then
 		for i = 1, #ids do
 			QBCore.Functions.AddPlayerMethod(ids[i], methodName, handler)
 		end
@@ -747,7 +750,7 @@ end
 
 function QBCore.Functions.AddPlayerField(ids, fieldName, data)
 	local idType = type(ids)
-	if idType == "number" then
+	if idType == 'number' then
 		if ids == -1 then
 			for _, v in pairs(QBCore.Players) do
 				v.Functions.AddField(fieldName, data)
@@ -759,7 +762,7 @@ function QBCore.Functions.AddPlayerField(ids, fieldName, data)
 
 			QBCore.Players[ids].Functions.AddField(fieldName, data)
 		end
-	elseif idType == "table" and table.type(ids) == "array" then
+	elseif idType == 'table' and table.type(ids) == 'array' then
 		for i = 1, #ids do
 			QBCore.Functions.AddPlayerField(ids[i], fieldName, data)
 		end

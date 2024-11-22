@@ -12,13 +12,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        right_hand_offset = Vector(1, 1, 1),
+        left_hand_bone = 'b_gun_lefthand',
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_ACM_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_ACM_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_ACM_Fire_RecoilRifleA',
+            reload = 'helix::A_ACM_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -37,13 +54,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.75, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Austro_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Austro_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_Austro_Fire_RecoilRifleB',
+            reload = 'helix::A_Austro_ReloadRifleB',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleB',
+            character_reload = 'helix::AM_Player_ReloadRifleB',
+            character_holster = 'helix::AM_Player_HolsteringRifleB',
+            character_equip = 'helix::AM_Player_EquipRifleB'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -51,7 +85,7 @@ QBShared.Weapons = {
         }
     },
     weapon_banshee = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'pistol_ammo',
         asset_name = 'helix::SK_Banshee',
         damage = 45,
         spread = 70,
@@ -62,14 +96,30 @@ QBShared.Weapons = {
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 400, damage_multiplier = 0.8 },
         handlingMode = HandlingMode.SingleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1.4), rotation = Rotator(-1, 0, 0) },
-        left_hand_transform = { location = Vector(0, 0, -4), rotation = Rotator(0, 60, 100) },
-        right_hand_offset = Vector(-25, 0, 0),
+        right_hand_offset = Vector(2, 1, 0.25),
         sight_fov_multiplier = 0.6,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_45ap' },
-        sounds = { dry = 'helix::A_Pistol_Dry', load = 'helix::A_Pistol_Load', unload = 'helix::A_Pistol_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Banshee_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_DesertEagle_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Pistol' },
+        sounds = {
+            dry = 'helix::A_Pistol_Dry',
+            load = 'helix::A_Pistol_Load',
+            unload = 'helix::A_Pistol_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Banshee_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Banshee_Fire_RecoilPistol',
+            reload = 'helix::A_Banshee_ReloadPistol',
+            character_fire = 'helix::AM_Player_Fire_RecoilPistol',
+            character_reload = 'helix::AM_Player_ReloadPistol',
+            character_holster = 'helix::AM_Player_HolsteringPistol',
+            character_equip = 'helix::AM_Player_EquipPistol'
+        },
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee',
         default_attachments = {
@@ -77,7 +127,7 @@ QBShared.Weapons = {
         }
     },
     weapon_bison = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Bison',
         damage = 15,
         spread = 75,
@@ -87,13 +137,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Bison_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Bison_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -113,13 +180,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1.5, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Condor_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Condor_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_Condor_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -129,7 +213,7 @@ QBShared.Weapons = {
         }
     },
     weapon_convert = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Convert',
         damage = 15,
         spread = 75,
@@ -139,13 +223,29 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 1000, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.SingleHandedWeapon,
+        right_hand_offset = Vector(1.25, 1, 0.25),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Convert_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Convert_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -153,7 +253,7 @@ QBShared.Weapons = {
         },
     },
     weapon_cs446 = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'snp_ammo',
         asset_name = 'helix::SK_CS-446',
         damage = 90,
         spread = 10,
@@ -163,15 +263,32 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -4.5), rotation = Rotator(0, 0, 0) },
-        left_hand_transform = { location = Vector(25, 0, 6), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 2),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(2.25, 1, 0),
         sight_fov_multiplier = 0.1,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_CS-446_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_AWP_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_CS-446_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::446_Fire_RecoilSniperA',
+            reload = 'helix::446_ReloadSniperA',
+            character_fire = 'helix::AM_Player_Fire_RecoilSniperA',
+            character_reload = 'helix::AM_Player_ReloadSniperA',
+            character_holster = 'helix::AM_Player_HolsteringSniperA',
+            character_equip = 'helix::AM_Player_EquipSniperA'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -179,8 +296,8 @@ QBShared.Weapons = {
         }
     },
     weapon_db12 = {
-        ammo_type = 'rifle_ammo',
-        asset_name = 'helix::SK_DB12',
+        ammo_type = 'shotgun_ammo',
+        asset_name = 'helix::SK_DB-12',
         damage = 30,
         spread = 70,
         recoil = 3,
@@ -189,19 +306,36 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 6, bullet_max_distance = 10000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 100, damage_multiplier = 0.25 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, 3.6), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(36.8, 0, 3.8), rotation = Rotator(-5, 10, 190) },
-        right_hand_offset = Vector(0, 0, 3),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(3.5, 1, 5.75),
         sight_fov_multiplier = 0.75,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_12Gauge' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_DB-12_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 1 } },
-        animations = { fire = 'helix::A_Moss500_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire_Heavy', reload = 'helix::AM_Mannequin_Reload_Shotgun' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_DB-12_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 1
+            }
+        },
+        animations = {
+            fire = 'helix::A_Moss500_Fire',
+            reload = 'helix::A_DB-12_ReloadShotgunB_DB-12',
+            character_fire = 'helix::AM_Player_Fire_RecoilShotgunB',
+            character_reload = 'helix::AM_Player_ReloadShotgunB_DB-12',
+            character_holster = 'helix::AM_Player_HolsteringShotgunB',
+            character_equip = 'helix::AM_Player_EquipShotgunB'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Shotgun'
     },
     weapon_dmc68 = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'snp_ammo',
         asset_name = 'helix::SK_DMC-68',
         damage = 90,
         spread = 10,
@@ -211,14 +345,31 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -4.5), rotation = Rotator(0, 0, 0) },
-        left_hand_transform = { location = Vector(25, 0, 6), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 2),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0),
         sight_fov_multiplier = 0.1,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_DMC-68_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_AWP_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_DMC-68_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_DMC-68_Fire_RecoilSniperB',
+            reload = 'helix::A_DMC-68_ReloadSniperB',
+            character_fire = 'helix::AM_Player_Fire_RecoilSniperB',
+            character_reload = 'helix::AM_Player_ReloadSniperB',
+            character_holster = 'helix::AM_Player_HolsteringSniperB',
+            character_equip = 'helix::AM_Player_EquipSniperB'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -226,7 +377,7 @@ QBShared.Weapons = {
         }
     },
     weapon_fang = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Fang',
         damage = 15,
         spread = 75,
@@ -236,13 +387,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 0, 0.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Fang_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Fang_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -252,7 +420,7 @@ QBShared.Weapons = {
         }
     },
     weapon_fierro = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'pistol_ammo',
         asset_name = 'helix::SK_Fierro',
         damage = 45,
         spread = 70,
@@ -263,19 +431,35 @@ QBShared.Weapons = {
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 400, damage_multiplier = 0.8 },
         handlingMode = HandlingMode.SingleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1.4), rotation = Rotator(-1, 0, 0) },
-        left_hand_transform = { location = Vector(0, 0, -4), rotation = Rotator(0, 60, 100) },
-        right_hand_offset = Vector(-25, 0, 0),
+        right_hand_offset = Vector(2.75, 1, 0),
         sight_fov_multiplier = 0.6,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_45ap' },
-        sounds = { dry = 'helix::A_Pistol_Dry', load = 'helix::A_Pistol_Load', unload = 'helix::A_Pistol_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Fierro_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_DesertEagle_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Pistol' },
+        sounds = {
+            dry = 'helix::A_Pistol_Dry',
+            load = 'helix::A_Pistol_Load',
+            unload = 'helix::A_Pistol_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Fierro_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Fierro_Fire_Recoil_Fierro',
+            reload = 'helix::A_Fierro_ReloadPistol',
+            character_fire = 'helix::AM_Player_Fire_Recoil_Fierro',
+            character_reload = 'helix::AM_Player_ReloadPistol_Fierro',
+            character_holster = 'helix::AM_Player_HolsteringPistol',
+            character_equip = 'helix::AM_Player_EquipPistol'
+        },
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee'
     },
     weapon_finisher = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'shotgun_ammo',
         asset_name = 'helix::SK_Finisher',
         damage = 30,
         spread = 70,
@@ -285,19 +469,36 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 6, bullet_max_distance = 10000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 100, damage_multiplier = 0.25 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, 3.6), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(36.8, 0, 3.8), rotation = Rotator(-5, 10, 190) },
-        right_hand_offset = Vector(0, 0, 3),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(0, 1, 0),
         sight_fov_multiplier = 0.75,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_12Gauge' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Finisher_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 1 } },
-        animations = { fire = 'helix::A_Moss500_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire_Heavy', reload = 'helix::AM_Mannequin_Reload_Shotgun' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Finisher_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 1
+            }
+        },
+        animations = {
+            fire = 'helix::A_Finisher_Fire_RecoilShotgunA',
+            reload = 'helix::A_Finisher_ReloadShotgunA',
+            character_fire = 'helix::AM_Player_Fire_RecoilShotgunA',
+            character_reload = 'helix::AM_Player_ReloadShotgunA',
+            character_holster = 'helix::AM_Player_HolsteringShotgunA',
+            character_equip = 'helix::AM_Player_EquipShotgunA'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Shotgun'
     },
     weapon_freq = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Freq',
         damage = 15,
         spread = 75,
@@ -307,13 +508,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0.25),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Freq_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Freq_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -322,7 +540,7 @@ QBShared.Weapons = {
         }
     },
     weapon_gaston = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'pistol_ammo',
         asset_name = 'helix::SK_Gaston',
         damage = 45,
         spread = 70,
@@ -333,14 +551,30 @@ QBShared.Weapons = {
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 400, damage_multiplier = 0.8 },
         handlingMode = HandlingMode.SingleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1.4), rotation = Rotator(-1, 0, 0) },
-        left_hand_transform = { location = Vector(0, 0, -4), rotation = Rotator(0, 60, 100) },
-        right_hand_offset = Vector(-25, 0, 0),
+        right_hand_offset = Vector(2, 1, 0.75),
         sight_fov_multiplier = 0.6,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_45ap' },
-        sounds = { dry = 'helix::A_Pistol_Dry', load = 'helix::A_Pistol_Load', unload = 'helix::A_Pistol_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Gaston_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_DesertEagle_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Pistol' },
+        sounds = {
+            dry = 'helix::A_Pistol_Dry',
+            load = 'helix::A_Pistol_Load',
+            unload = 'helix::A_Pistol_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Gaston_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Gaston_Fire_RecoilPistol',
+            reload = 'helix::A_Gaston_ReloadPistol',
+            character_fire = 'helix::AM_Player_Fire_RecoilPistol',
+            character_reload = 'helix::AM_Player_ReloadPistol',
+            character_holster = 'helix::AM_Player_HolsteringPistol',
+            character_equip = 'helix::AM_Player_EquipPistol'
+        },
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee',
         default_attachments = {
@@ -358,13 +592,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(0.5, 1, 1.25),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_KAL_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_KAL_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_KAL_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -384,13 +635,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.6 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -8), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(27, 0, 6), rotation = Rotator(0, 60, 80) },
-        right_hand_offset = Vector(-5, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1.5, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_556x45' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_Semi_Load', unload = 'helix::A_MMG_Reload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_KFS_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 8 } },
-        animations = { fire = 'helix::A_Lewis_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_Semi_Load',
+            unload = 'helix::A_MMG_Reload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_KFS_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 8
+            }
+        },
+        animations = {
+            fire = 'helix::A_KFS_Fire_RecoilLMG',
+            reload = 'helix::A_KFS_ReloadLMG',
+            character_fire = 'helix::AM_Player_Fire_RecoilLMG',
+            character_reload = 'helix::AM_Player_ReloadLMG',
+            character_holster = 'helix::AM_Player_HolsteringLMG',
+            character_equip = 'helix::AM_Player_EquipLMG'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
@@ -412,14 +680,31 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 6, bullet_max_distance = 10000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 100, damage_multiplier = 0.25 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, 3.6), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(36.8, 0, 3.8), rotation = Rotator(-5, 10, 190) },
-        right_hand_offset = Vector(0, 0, 3),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(0, 1, 0),
         sight_fov_multiplier = 0.75,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_12Gauge' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_KTK_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 1 } },
-        animations = { fire = 'helix::A_Moss500_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire_Heavy', reload = 'helix::AM_Mannequin_Reload_Shotgun' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_KTK_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 1
+            }
+        },
+        animations = {
+            fire = 'helix::A_Moss500_Fire',
+            reload = 'helix::A_KTK_ReloadShotgunA_KTK',
+            character_fire = 'helix::AM_Player_Fire_RecoilShotgunA',
+            character_reload = 'helix::AM_Player_ReloadShotgunA_KTK',
+            character_holster = 'helix::AM_Player_HolsteringShotgunA',
+            character_equip = 'helix::AM_Player_EquipShotgunA'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Shotgun'
     },
@@ -434,13 +719,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Krink_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Krink_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_Krink_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -461,13 +763,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.6 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -8), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(27, 0, 6), rotation = Rotator(0, 60, 80) },
-        right_hand_offset = Vector(-5, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1, -0.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_556x45' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_Semi_Load', unload = 'helix::A_MMG_Reload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_LWS-32_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 8 } },
-        animations = { fire = 'helix::A_Lewis_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_Semi_Load',
+            unload = 'helix::A_MMG_Reload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_LWS-32_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 8
+            }
+        },
+        animations = {
+            fire = 'helix::A_Lewis_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Player_Fire_RecoilLMG',
+            character_reload = 'helix::AM_Player_ReloadLMG',
+            character_holster = 'helix::AM_Player_HolsteringLMG',
+            character_equip = 'helix::AM_Player_EquipLMG'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
@@ -477,7 +796,7 @@ QBShared.Weapons = {
         }
     },
     weapon_m77 = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_M77',
         damage = 15,
         spread = 75,
@@ -487,13 +806,29 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.SingleHandedWeapon,
+        right_hand_offset = Vector(2.5, 0.5, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_M77_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_M77_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -504,7 +839,7 @@ QBShared.Weapons = {
         }
     },
     weapon_mirage = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'pistol_ammo',
         asset_name = 'helix::SK_Mirage',
         damage = 45,
         spread = 70,
@@ -515,14 +850,30 @@ QBShared.Weapons = {
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 400, damage_multiplier = 0.8 },
         handlingMode = HandlingMode.SingleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1.4), rotation = Rotator(-1, 0, 0) },
-        left_hand_transform = { location = Vector(0, 0, -4), rotation = Rotator(0, 60, 100) },
-        right_hand_offset = Vector(-25, 0, 0),
+        right_hand_offset = Vector(3, 1, 0),
         sight_fov_multiplier = 0.6,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_45ap' },
-        sounds = { dry = 'helix::A_Pistol_Dry', load = 'helix::A_Pistol_Load', unload = 'helix::A_Pistol_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Mirage_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_DesertEagle_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Pistol' },
+        sounds = {
+            dry = 'helix::A_Pistol_Dry',
+            load = 'helix::A_Pistol_Load',
+            unload = 'helix::A_Pistol_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Mirage_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Mirage_Fire_RecoilPistol',
+            reload = 'helix::A_Mirage_ReloadPistol',
+            character_fire = 'helix::AM_Player_Fire_RecoilPistol',
+            character_reload = 'helix::AM_Player_ReloadPistol',
+            character_holster = 'helix::AM_Player_HolsteringPistol',
+            character_equip = 'helix::AM_Player_EquipPistol'
+        },
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee',
         default_attachments = {
@@ -540,13 +891,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(2, 1.5, 0.25),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_ACM_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_ACM_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_MK4_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -556,7 +924,7 @@ QBShared.Weapons = {
         }
     },
     weapon_mouflan = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Mouflan',
         damage = 15,
         spread = 75,
@@ -566,13 +934,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Mouflan_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Mouflan_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -582,7 +967,7 @@ QBShared.Weapons = {
         }
     },
     weapon_orion = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Orion',
         damage = 15,
         spread = 75,
@@ -592,13 +977,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_LightMachine_Shot', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_LightMachine_Shot',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -620,13 +1022,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, -0.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_003', unload = 'helix::A_Rifle_RemoveMag_003', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Patriot_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_003',
+            unload = 'helix::A_Rifle_RemoveMag_003',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Patriot_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_Patriot_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -646,13 +1065,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1, 1),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_PitViper_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_PitViper_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_Pit_Viper_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -663,8 +1099,8 @@ QBShared.Weapons = {
         }
     },
     weapon_pm99 = {
-        ammo_type = 'rifle_ammo',
-        asset_name = 'helix::SK_PM99',
+        ammo_type = 'smg_ammo',
+        asset_name = 'helix::SK_PM-99',
         damage = 15,
         spread = 75,
         recoil = 0.25,
@@ -673,13 +1109,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1.5, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_PM-99_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_PM-99_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -689,7 +1142,7 @@ QBShared.Weapons = {
         }
     },
     weapon_ppy = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_PP-Y',
         damage = 15,
         spread = 75,
@@ -699,13 +1152,29 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.SingleHandedWeapon,
+        right_hand_offset = Vector(1.5, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_PP-Y_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_PP-Y_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
@@ -726,13 +1195,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(6, 1.25, -1.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_003', unload = 'helix::A_Rifle_RemoveMag_003', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Queen-80_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_003',
+            unload = 'helix::A_Rifle_RemoveMag_003',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Queen-80_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_Queen-80_ReloadRifleB',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleB',
+            character_reload = 'helix::AM_Player_ReloadRifleB',
+            character_holster = 'helix::AM_Player_HolsteringRifleB',
+            character_equip = 'helix::AM_Player_EquipRifleB'
+        },
         magazine_mesh = 'helix::SM_Queen-80_MagEmpty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -741,7 +1227,7 @@ QBShared.Weapons = {
         }
     },
     weapon_remi = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'shotgun_ammo',
         asset_name = 'helix::SK_Remi',
         damage = 30,
         spread = 70,
@@ -751,19 +1237,36 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 6, bullet_max_distance = 10000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 100, damage_multiplier = 0.25 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, 3.6), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(36.8, 0, 3.8), rotation = Rotator(-5, 10, 190) },
-        right_hand_offset = Vector(0, 0, 3),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(0, 1, 0),
         sight_fov_multiplier = 0.75,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_12Gauge' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Remi_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 1 } },
-        animations = { fire = 'helix::A_Moss500_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire_Heavy', reload = 'helix::AM_Mannequin_Reload_Shotgun' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Remi_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 1
+            }
+        },
+        animations = {
+            fire = 'helix::A_Remi_Fire_RecoilShotgunB',
+            reload = 'helix::A_Remi_ReloadShotgunB',
+            character_fire = 'helix::AM_Player_Fire_RecoilShotgunB',
+            character_reload = 'helix::AM_Player_ReloadShotgunB',
+            character_holster = 'helix::AM_Player_HolsteringShotgunB',
+            character_equip = 'helix::AM_Player_EquipShotgunB'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Shotgun'
     },
     weapon_roger = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'pistol_ammo',
         asset_name = 'helix::SK_Roger',
         damage = 45,
         spread = 70,
@@ -774,14 +1277,30 @@ QBShared.Weapons = {
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 400, damage_multiplier = 0.8 },
         handlingMode = HandlingMode.SingleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1.4), rotation = Rotator(-1, 0, 0) },
-        left_hand_transform = { location = Vector(0, 0, -4), rotation = Rotator(0, 60, 100) },
-        right_hand_offset = Vector(-25, 0, 0),
+        right_hand_offset = Vector(1.5, 1, 0.5),
         sight_fov_multiplier = 0.6,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_45ap' },
-        sounds = { dry = 'helix::A_Pistol_Dry', load = 'helix::A_Pistol_Load', unload = 'helix::A_Pistol_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Roger_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_DesertEagle_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Pistol' },
+        sounds = {
+            dry = 'helix::A_Pistol_Dry',
+            load = 'helix::A_Pistol_Load',
+            unload = 'helix::A_Pistol_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Roger_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Roger_Fire_RecoilPistol',
+            reload = 'helix::A_Roger_ReloadPistol',
+            character_fire = 'helix::AM_Player_Fire_RecoilPistol',
+            character_reload = 'helix::AM_Player_ReloadPistol',
+            character_holster = 'helix::AM_Player_HolsteringPistol',
+            character_equip = 'helix::AM_Player_EquipPistol'
+        },
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee',
         default_attachments = {
@@ -789,7 +1308,7 @@ QBShared.Weapons = {
         }
     },
     weapon_ronin777 = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'snp_ammo',
         asset_name = 'helix::SK_Ronin-777',
         damage = 90,
         spread = 10,
@@ -799,15 +1318,32 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -4.5), rotation = Rotator(0, 0, 0) },
-        left_hand_transform = { location = Vector(25, 0, 6), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 2),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(-0.5, 2.5, 0),
         sight_fov_multiplier = 0.1,
         usage_settings = { useable = false, unique = false },
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Ronin-777_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 2 } },
-        animations = { fire = 'helix::A_AWP_Fire', character_fire = 'helix::A_Mannequin_Sight_Fire_Pistol', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Ronin-777_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 2
+            }
+        },
+        animations = {
+            fire = 'helix::A_Ronin-777_Fire_RecoilSniperA',
+            reload = 'helix::A_Ronin-777_ReloadSniperA',
+            character_fire = 'helix::AM_Player_Fire_RecoilSniperA',
+            character_reload = 'helix::AM_Player_ReloadSniperA',
+            character_holster = 'helix::AM_Player_HolsteringSniperA',
+            character_equip = 'helix::AM_Player_EquipSniperA'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -815,7 +1351,7 @@ QBShared.Weapons = {
         }
     },
     weapon_roma12 = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'shotgun_ammo',
         asset_name = 'helix::SK_Roma-12',
         damage = 30,
         spread = 70,
@@ -825,14 +1361,31 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 6, bullet_max_distance = 10000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 100, damage_multiplier = 0.25 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, 3.6), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(36.8, 0, 3.8), rotation = Rotator(-5, 10, 190) },
-        right_hand_offset = Vector(0, 0, 3),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(0.5, 1, -1.5),
         sight_fov_multiplier = 0.75,
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_12Gauge' },
-        sounds = { dry = 'helix::A_Shotgun_Dry', load = 'helix::A_Shotgun_Load_Bullet', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Roma-12_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 1 } },
-        animations = { fire = 'helix::A_Moss500_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire_Heavy', reload = 'helix::AM_Mannequin_Reload_Shotgun' },
+        sounds = {
+            dry = 'helix::A_Shotgun_Dry',
+            load = 'helix::A_Shotgun_Load_Bullet',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Roma-12_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 1
+            }
+        },
+        animations = {
+            fire = 'helix::A_Moss500_Fire',
+            reload = 'helix::A_Roma-12_ReloadShotgunA_Roma-12',
+            character_fire = 'helix::AM_Player_Fire_RecoilShotgunA',
+            character_reload = 'helix::AM_Player_ReloadShotgunA_Roma-12',
+            character_holster = 'helix::AM_Player_HolsteringShotgunA',
+            character_equip = 'helix::AM_Player_EquipShotgunA'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Shotgun',
         default_attachments = {
@@ -850,13 +1403,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.6 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(-15, 0, -8), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(27, 0, 6), rotation = Rotator(0, 60, 80) },
-        right_hand_offset = Vector(-5, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1.5, 1, 0),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_556x45' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_Semi_Load', unload = 'helix::A_MMG_Reload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Sabra_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 8 } },
-        animations = { fire = 'helix::A_Lewis_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_Semi_Load',
+            unload = 'helix::A_MMG_Reload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Sabra_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 8
+            }
+        },
+        animations = {
+            fire = 'helix::A_Lewis_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Player_Fire_RecoilLMG',
+            character_reload = 'helix::AM_Player_ReloadLMG',
+            character_holster = 'helix::AM_Player_HolsteringLMG',
+            character_equip = 'helix::AM_Player_EquipLMG'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
@@ -876,13 +1446,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.75 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -1), rotation = Rotator(-1.5, 0, 0) },
-        left_hand_transform = { location = Vector(22, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1, -0.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_762x39' },
-        sounds = { dry = 'helix::A_Rifle_Dry', load = 'helix::A_Rifle_InsertMag_002', unload = 'helix::A_Rifle_RemoveMag_002', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Suppressor_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AK47_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_Rifle_Dry',
+            load = 'helix::A_Rifle_InsertMag_002',
+            unload = 'helix::A_Rifle_RemoveMag_002',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Suppressor_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AK47_Fire',
+            reload = 'helix::A_SovWhisper_ReloadRifleA',
+            character_fire = 'helix::AM_Player_Fire_RecoilRifleA',
+            character_reload = 'helix::AM_Player_ReloadRifleA',
+            character_holster = 'helix::AM_Player_HolsteringRifleA',
+            character_equip = 'helix::AM_Player_EquipRifleA'
+        },
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
@@ -893,7 +1480,7 @@ QBShared.Weapons = {
         }
     },
     weapon_vulcan = {
-        ammo_type = 'rifle_ammo',
+        ammo_type = 'smg_ammo',
         asset_name = 'helix::SK_Vulcan',
         damage = 15,
         spread = 75,
@@ -903,13 +1490,30 @@ QBShared.Weapons = {
         ammo_settings = { ammo_clip = 30, ammo_bag = 100, ammo_to_reload = 0, clip_capacity = 30 },
         bullet_settings = { bullet_count = 1, bullet_max_distance = 30000, bullet_velocity = 30000, bullet_color = Color(100, 58, 0) },
         wallbang_settings = { max_distance = 200, damage_multiplier = 0.5 },
-        handlingMode = HandlingMode.DoubleHandedWeapon,
-        sight_transform = { location = Vector(0, 0, -2.2), rotation = Rotator(-2, 0, 0) },
-        left_hand_transform = { location = Vector(21, 0, 9), rotation = Rotator(0, 60, 90) },
-        right_hand_offset = Vector(-10, 0, 0),
+        handlingMode = HandlingMode.LongWeapon,
+        left_hand_bone = 'b_gun_lefthand',
+        right_hand_offset = Vector(1, 1, 0.5),
         particles = { bullet_trail = 'helix::P_Bullet_Trail', barrel = 'helix::P_Weapon_BarrelSmoke', shells = 'helix::P_Weapon_Shells_9x18' },
-        sounds = { dry = 'helix::A_SMG_Dry', load = 'helix::A_SMG_Load', unload = 'helix::A_SMG_Unload', zooming = 'helix::A_AimZoom', aim = 'helix::A_Rattle', fire = 'helix::A_Vulcan_Shot_001', last_bullets = { asset_path = 'helix::A_SMG_Dry', bullet_count = 6 } },
-        animations = { fire = 'helix::A_AP5_Fire', character_fire = 'helix::AM_Mannequin_Sight_Fire', reload = 'helix::AM_Mannequin_Reload_Rifle' },
+        sounds = {
+            dry = 'helix::A_SMG_Dry',
+            load = 'helix::A_SMG_Load',
+            unload = 'helix::A_SMG_Unload',
+            zooming = 'helix::A_AimZoom',
+            aim = 'helix::A_Rattle',
+            fire = 'helix::A_Vulcan_Shot_001',
+            last_bullets = {
+                asset_path = 'helix::A_SMG_Dry',
+                bullet_count = 6
+            }
+        },
+        animations = {
+            fire = 'helix::A_AP5_Fire',
+            reload = 'helix::',
+            character_fire = 'helix::AM_Mannequin_Sight_Fire',
+            character_reload = 'helix::AM_Mannequin_Reload_Rifle',
+            character_holster = 'helix::',
+            character_equip = 'helix::'
+        },
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
