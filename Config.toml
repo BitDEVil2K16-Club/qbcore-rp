@@ -37,7 +37,8 @@
         "qb-radialmenu",
         "qb-minigames",
         "qb-shops",
-        "qb-banking"
+        "qb-banking",
+        "qb-ambulancejob",
     ]
     # asset packs list (this will additionally load the asset packs you define here)
     assets = [
