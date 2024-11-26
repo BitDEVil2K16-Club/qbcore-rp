@@ -61,6 +61,7 @@ end)
 -- Voice
 
 Player.Subscribe('VOIP', function(_, is_talking)
+    print('VOIP', is_talking)
     my_webui:CallEvent('IsTalking', is_talking)
 end)
 
@@ -84,10 +85,13 @@ Timer.SetInterval(function()
         local stress     = player_data.metadata['stress']
         local playerDead = player_data.metadata['inlaststand'] or player_data.metadata['isdead'] or false
         if in_vehicle and current_vehicle then
+            local vehicle_health = current_vehicle:GetHealth()
+            local vehicle_max_health = current_vehicle:GetMaxHealth()
             local vehicle_speed = current_vehicle:GetVehicleSpeed()
             if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
+            if vehicle_speed < 0 then vehicle_speed = 0 end
             local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
-            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel)
+            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health)
         end
         if has_weapon and current_weapon then
             local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)
@@ -128,6 +132,12 @@ HCharacter.Subscribe('Fire', function(_, weapon)
 end)
 
 -- Vehicles
+
+Events.SubscribeRemote('hud:client:fixVehicle', function()
+    if in_vehicle and current_vehicle then
+        Events.CallRemote('hud:server:fixVehicle', current_vehicle)
+    end
+end)
 
 HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
     print('EnterVehicle')

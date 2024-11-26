@@ -12,7 +12,34 @@ QBCore.Commands.Add('bank', 'Check Bank Balance', {}, false, function(source)
     Events.CallRemote('hud:client:ShowAccounts', source, 'bank', bankamount)
 end, 'user')
 
+QBCore.Commands.Add('fix', 'Fix Vehicle', {}, false, function(source)
+    Events.CallRemote('hud:client:fixVehicle', source)
+end, 'admin')
+
+-- Voice
+
+Player.Subscribe('VOIP', function(self, is_talking)
+    print('VOIP', is_talking)
+end)
+
+Player.Subscribe('Ready', function(self)
+    self:AddVOIPChannel(1)
+end)
+
 -- Events
+
+Events.SubscribeRemote('hud:server:fixVehicle', function(_, vehicle)
+    vehicle:SetHealth(vehicle:GetMaxHealth())
+    vehicle:SetVehicleHealthState(0)
+    vehicle:SetTrunkState(0)
+    vehicle:SetHoodState(0)
+    for i = 0, vehicle:NumOfAllowedPassanger() do
+        vehicle:SetDoorState(i, 0)
+    end
+    for i = 1, 4 do
+        vehicle:SetWheelState(i, 0)
+    end
+end)
 
 Events.Subscribe('hud:server:GainStress', function(source, amount)
     if Config.DisableStress then return end
