@@ -279,41 +279,27 @@ QBCore.Commands.Add(
 
 -- Vehicle
 
-QBCore.Commands.Add(
-	'car',
-	Lang:t('command.car.help'),
-	{ { name = Lang:t('command.car.params.model.name'), help = Lang:t('command.car.params.model.help') } },
-	true,
-	function(source, args)
-		local vehicle_name = args[1] and args[1]:lower()
-		local vehicle = QBCore.Functions.CreateVehicle(source, vehicle_name)
-		if vehicle then
-			local ped = source:GetControlledCharacter()
-			if ped then
-				ped:EnterVehicle(vehicle)
-			end
+QBCore.Commands.Add('car', Lang:t('command.car.help'), { { name = Lang:t('command.car.params.model.name'), help = Lang:t('command.car.params.model.help') } }, true, function(source, args)
+	local vehicle_name = args[1] and args[1]:lower()
+	local vehicle = QBCore.Functions.CreateVehicle(source, vehicle_name)
+	if vehicle then
+		local ped = source:GetControlledCharacter()
+		if ped then
+			ped:EnterVehicle(vehicle)
 		end
-	end,
-	'admin'
-)
+	end
+end, 'admin')
 
-QBCore.Commands.Add(
-	'weapon',
-	Lang:t('command.weapon.help'),
-	{ { name = Lang:t('command.weapon.params.model.name'), help = Lang:t('command.weapon.params.model.help') } },
-	true,
-	function(source, args)
-		local weapon_name = args[1] and args[1]:lower()
-		local weapon = QBCore.Functions.CreateWeapon(source, weapon_name)
-		if weapon then
-			local ped = source:GetControlledCharacter()
-			if ped then
-				ped:PickUp(weapon)
-			end
+QBCore.Commands.Add('weapon', Lang:t('command.weapon.help'), { { name = Lang:t('command.weapon.params.model.name'), help = Lang:t('command.weapon.params.model.help') } }, true, function(source, args)
+	local weapon_name = args[1] and args[1]:lower()
+	local weapon = QBCore.Functions.CreateWeapon(source, weapon_name)
+	if weapon then
+		local ped = source:GetControlledCharacter()
+		if ped then
+			ped:PickUp(weapon)
 		end
-	end,
-	'admin'
-)
+	end
+end, 'admin')
 
 QBCore.Commands.Add('maxammo', 'Max Ammo', {}, false, function(source)
 	local ped = source:GetControlledCharacter()

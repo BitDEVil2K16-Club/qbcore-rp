@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+
+body {
+    font-family: "Outfit";
+    overflow: hidden;
+    /* opacity: 0; */
+}
+
+#blip-container {
+    position: absolute;
+    bottom: 75px;
+    left: 30px;
+    width: 260px;
+    height: 260px;
+    pointer-events: none;
+    z-index: 2;
+    transform-origin: bottom left;
+    transform: scale(var(--scale));
+}
+
+#blip-container-relative {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.minimap-section {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    transform-origin: bottom left;
+    transform: scale(var(--scale));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.minimap-section[data-position="top-left"] {
+    top: 30px;
+    bottom: auto;
+    left: 30px;
+    right: auto;
+    transform-origin: top left;
+}
+
+.minimap-section[data-position="top-right"] {
+    top: 30px;
+    bottom: auto;
+    left: auto;
+    right: 30px;
+    transform-origin: top right;
+}
+
+.minimap-section[data-position="bottom-left"] {
+    top: auto;
+    bottom: 75px;
+    left: 30px;
+    right: auto;
+    transform-origin: bottom left;
+}
+
+.minimap-section[data-position="bottom-right"] {
+    top: auto;
+    bottom: 30px;
+    left: auto;
+    right: 30px;
+    transform-origin: bottom right;
+}
+
+.minimap-section.hidden {
+    transform: scale(var(--scale)) translateX(-200%);
+}
+
+.minimap-section .minimap .player-indicator {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    z-index: 2;
+    height: 50px;
+}
+
+.minimap-section .minimap {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
+
+    box-shadow: 0px 0px 45px -15px #000000;
+    border-radius: 10px;
+}
+
+.minimap-section .minimap .rotator-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform-origin: center;
+}
+
+.minimap-section .minimap .rotator-container > div {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    transform-origin: center;
+}
+
+.minimap-section .minimap .map {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.map-blip {
+    position: absolute;
+    /* left: 0; */
+    /* bottom: 0; */
+    transform-origin: center;
+    transform: translate(-50%, -50%) /* rotate(-29deg) */;
+    transition: opacity 0.2s ease-in-out;
+    height: 20px;
+    width: 20px;
+    /* transition: all 0.2s ease-in-out; */
+    z-index: 2;
+}
+
+.map-blip.blink {
+    opacity: 0.5;
+}
+
+.minimap-section .minimap .map-blip.active {
+    transform: translate(-50%, -50%) scale(1.5) /* rotate(-29deg) */;
+}
+
+.minimap-section .minimap .user-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background-color: white;
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+    box-shadow: 0px 0px 10px 0px #000000;
+}
+
+.minimap-section .minimap .user-indicator.enemy {
+    background-color: rgb(255, 0, 0);
+}
+
+.waypoint-marker {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center bottom;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 3;
+    /* background-color: yellow; */
+    /* border: 1px solid white; */
+    border-radius: 50%;
+
+    background-image: url(./media/map-icons/Marker.svg);
+    background-size: cover;
+    height: 25px;
+    width: 25px;
+}
+
+
+@media screen and (max-width: 4000px) {
+    body {
+        --scale: 1.5;
+    }
+}
+
+@media screen and (max-width: 3000px) {
+    body {
+        --scale: 1.4;
+    }
+}
+
+@media screen and (max-width: 2560px) {
+    body {
+        --scale: 1.3;
+    }
+}
+
+@media screen and (max-width: 2100px) {
+    body {
+        --scale: 1.2;
+    }
+}
+
+@media screen and (max-width: 2020px) {
+    body {
+        --scale: 1;
+    }
+}
+
+@media screen and (max-width: 1520px) {
+    body {
+        --scale: 0.9;
+    }
+}
+
+@media screen and (max-width: 1324px) {
+    body {
+        --scale: 0.87;
+    }
+}
+
+@media screen and (max-width: 1124px) {
+    body {
+        --scale: 0.8;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    body {
+        --scale: 0.7;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    body {
+        --scale: 0.6;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    body {
+        --scale: 0.5;
+    }
+}
