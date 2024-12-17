@@ -40,6 +40,7 @@ QBConfig.Server.Permissions = {                -- string for player account id f
 		['d95e4660-8cc6-4610-bf6d-ac679f9a088d'] = true, -- QA Generic Staging
 		['eec65f3f-e5b0-4fb8-922d-75e1ea1575d2'] = true, -- Kakarot
 		['d4997d1b-b3ca-499d-9f0b-ffb361a51c4f'] = true,
+		['ebc0e470-7c49-477a-85cb-7684f3a40ed4'] = true -- Maggie
 	},
 	admin = {},
 	mod = {},

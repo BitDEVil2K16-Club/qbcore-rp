@@ -95,18 +95,6 @@ Events.SubscribeRemote('QBCore:Console:CallCommand', function(source, name, args
 	command.callback(source, args)
 end)
 
-local function routeQbCommandsToCmdr(name, help, callback)
-	local allPackages = Server.GetPackages(true)
-
-	for _, package in ipairs(allPackages) do
-		if package.name == 'helix-cmdr' or package.name == 'cmdr' then
-			local newComand = Command:New(name, help, callback)
-			command_registry:RegisterCommand(newComand)
-			break
-		end
-	end
-end
-
 function QBCore.Commands.Add(name, help, arguments, argsrequired, callback, permission)
 	local lowerName = name:lower()
 
@@ -145,22 +133,10 @@ end
 
 -- Commands
 
-QBCore.Commands.Add(
-	'movechat',
-	'Move Chat',
-	{
-		{
-			name = 'layout',
-			help = 'bottom_left | center_left | top_left | bottom_center | center | top_center | bottom_right | center_right | top_right',
-		},
-	},
-	true,
-	function(source, args)
-		local layout = args[1]
-		Events.CallRemote('QBCore:Client:SetChatLayout', source, layout)
-	end,
-	'user'
-)
+QBCore.Commands.Add('movechat', 'Move Chat', { { name = 'layout', help = 'bottom_left | center_left | top_left | bottom_center | center | top_center | bottom_right | center_right | top_right', }, }, true, function(source, args)
+	local layout = args[1]
+	Events.CallRemote('QBCore:Client:SetChatLayout', source, layout)
+end, 'user')
 
 QBCore.Commands.Add('clear', 'Clear chat', {}, false, function(source)
 	Events.CallRemote('QBCore:Client:ClearChat', source)
@@ -170,17 +146,10 @@ QBCore.Commands.Add('clearall', 'Clear global chat', {}, false, function()
 	Events.BroadcastRemote('QBCore:Client:ClearChat')
 end, 'admin')
 
-QBCore.Commands.Add(
-	'announce',
-	'Make an announcement',
-	{ { name = 'message', help = 'Message to send' } },
-	true,
-	function(_, args)
-		local message = table.concat(args, ' ')
-		Chat.BroadcastMessage('Announcement: ' .. message)
-	end,
-	'admin'
-)
+QBCore.Commands.Add('announce', 'Make an announcement', { { name = 'message', help = 'Message to send' } }, true, function(_, args)
+	local message = table.concat(args, ' ')
+	Chat.BroadcastMessage('Announcement: ' .. message)
+end, 'admin')
 
 QBCore.Commands.Add('clearprops', '', {}, false, function(source)
 	local ped = source:GetControlledCharacter()
@@ -194,29 +163,22 @@ QBCore.Commands.Add('clearprops', '', {}, false, function(source)
 	end
 end, 'user')
 
-QBCore.Commands.Add(
-	'dm',
-	'DM Player',
-	{ { name = 'id', help = 'Player ID' }, { name = 'message', help = 'Message to send' } },
-	true,
-	function(source, args)
-		local targetId = tonumber(args[1])
-		local message = table.concat(args, ' ', 2)
-		local target = QBCore.Functions.GetPlayer(targetId)
-		if not target then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		local sourcePlayer = QBCore.Functions.GetPlayer(source)
-		if not sourcePlayer then
-			return
-		end
-		local targetPlayer = target.PlayerData.source
-		local prefix = sourcePlayer.PlayerData.charinfo.firstname .. ' ' .. sourcePlayer.PlayerData.charinfo.lastname
-		Chat.SendMessage(targetPlayer, '(' .. source:GetID() .. ') ' .. prefix .. ': ' .. message)
-	end,
-	'user'
-)
+QBCore.Commands.Add('dm', 'DM Player', { { name = 'id', help = 'Player ID' }, { name = 'message', help = 'Message to send' } }, true, function(source, args)
+	local targetId = tonumber(args[1])
+	local message = table.concat(args, ' ', 2)
+	local target = QBCore.Functions.GetPlayer(targetId)
+	if not target then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	local sourcePlayer = QBCore.Functions.GetPlayer(source)
+	if not sourcePlayer then
+		return
+	end
+	local targetPlayer = target.PlayerData.source
+	local prefix = sourcePlayer.PlayerData.charinfo.firstname .. ' ' .. sourcePlayer.PlayerData.charinfo.lastname
+	Chat.SendMessage(targetPlayer, '(' .. source:GetID() .. ') ' .. prefix .. ': ' .. message)
+end, 'user')
 
 QBCore.Commands.Add('id', 'Check ID', {}, false, function(source)
 	local player_id = source:GetID()
@@ -225,57 +187,25 @@ end, 'user')
 
 -- Permissions
 
-QBCore.Commands.Add(
-	'addpermission',
-	Lang:t('command.addpermission.help'),
-	{
-		{
-			name = Lang:t('command.addpermission.params.id.name'),
-			help = Lang:t('command.addpermission.params.id.help'),
-		},
-		{
-			name = Lang:t('command.addpermission.params.permission.name'),
-			help = Lang:t('command.addpermission.params.permission.help'),
-		},
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		local permission = tostring(args[2]):lower()
-		QBCore.Functions.AddPermission(Player.PlayerData.source, permission)
-	end,
-	'god'
-)
+QBCore.Commands.Add('addpermission', Lang:t('command.addpermission.help'), { { name = Lang:t('command.addpermission.params.id.name'), help = Lang:t('command.addpermission.params.id.help'), }, { name = Lang:t('command.addpermission.params.permission.name'), help = Lang:t('command.addpermission.params.permission.help'), }, }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	local permission = tostring(args[2]):lower()
+	QBCore.Functions.AddPermission(Player.PlayerData.source, permission)
+end, 'god')
 
-QBCore.Commands.Add(
-	'removepermission',
-	Lang:t('command.removepermission.help'),
-	{
-		{
-			name = Lang:t('command.removepermission.params.id.name'),
-			help = Lang:t('command.removepermission.params.id.help'),
-		},
-		{
-			name = Lang:t('command.removepermission.params.permission.name'),
-			help = Lang:t('command.removepermission.params.permission.help'),
-		},
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		local permission = tostring(args[2]):lower()
-		QBCore.Functions.RemovePermission(Player.PlayerData.source, permission)
-	end,
-	'god'
-)
+QBCore.Commands.Add('removepermission', Lang:t('command.removepermission.help'), { { name = Lang:t('command.removepermission.params.id.name'), help = Lang:t('command.removepermission.params.id.help'), }, { name = Lang:t('command.removepermission.params.permission.name'), help = Lang:t('command.removepermission.params.permission.help'), }, }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	local permission = tostring(args[2]):lower()
+	QBCore.Functions.RemovePermission(Player.PlayerData.source, permission)
+end, 'god')
 
 -- Vehicle
 
@@ -358,54 +288,23 @@ end, 'admin')
 
 -- Money
 
-QBCore.Commands.Add(
-	'givemoney',
-	Lang:t('command.givemoney.help'),
-	{
-		{ name = Lang:t('command.givemoney.params.id.name'), help = Lang:t('command.givemoney.params.id.help') },
-		{
-			name = Lang:t('command.givemoney.params.moneytype.name'),
-			help = Lang:t('command.givemoney.params.moneytype.help'),
-		},
-		{
-			name = Lang:t('command.givemoney.params.amount.name'),
-			help = Lang:t('command.givemoney.params.amount.help'),
-		},
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(source)
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		Player.Functions.AddMoney(tostring(args[2]), tonumber(args[3]), 'Admin give money')
-	end,
-	'admin'
-)
+QBCore.Commands.Add('givemoney', Lang:t('command.givemoney.help'), { { name = Lang:t('command.givemoney.params.id.name'), help = Lang:t('command.givemoney.params.id.help') }, { name = Lang:t('command.givemoney.params.moneytype.name'), help = Lang:t('command.givemoney.params.moneytype.help'), }, { name = Lang:t('command.givemoney.params.amount.name'), help = Lang:t('command.givemoney.params.amount.help') } }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(source)
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	Player.Functions.AddMoney(tostring(args[2]), tonumber(args[3]), 'Admin give money')
+end, 'admin')
 
-QBCore.Commands.Add(
-	'setmoney',
-	Lang:t('command.setmoney.help'),
-	{
-		{ name = Lang:t('command.setmoney.params.id.name'),     help = Lang:t('command.setmoney.params.id.help') },
-		{
-			name = Lang:t('command.setmoney.params.moneytype.name'),
-			help = Lang:t('command.setmoney.params.moneytype.help'),
-		},
-		{ name = Lang:t('command.setmoney.params.amount.name'), help = Lang:t('command.setmoney.params.amount.help') },
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(source)
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		Player.Functions.SetMoney(tostring(args[2]), tonumber(args[3]))
-	end,
-	'admin'
-)
+QBCore.Commands.Add('setmoney', Lang:t('command.setmoney.help'), { { name = Lang:t('command.setmoney.params.id.name'), help = Lang:t('command.setmoney.params.id.help') }, { name = Lang:t('command.setmoney.params.moneytype.name'), help = Lang:t('command.setmoney.params.moneytype.help'), }, { name = Lang:t('command.setmoney.params.amount.name'), help = Lang:t('command.setmoney.params.amount.help') }, }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(source)
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	Player.Functions.SetMoney(tostring(args[2]), tonumber(args[3]))
+end, 'admin')
 
 -- Job
 
@@ -422,25 +321,14 @@ QBCore.Commands.Add('job', Lang:t('command.job.help'), {}, false, function(sourc
 	)
 end, 'user')
 
-QBCore.Commands.Add(
-	'setjob',
-	Lang:t('command.setjob.help'),
-	{
-		{ name = Lang:t('command.setjob.params.id.name'),    help = Lang:t('command.setjob.params.id.help') },
-		{ name = Lang:t('command.setjob.params.job.name'),   help = Lang:t('command.setjob.params.job.help') },
-		{ name = Lang:t('command.setjob.params.grade.name'), help = Lang:t('command.setjob.params.grade.help') },
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		Player.Functions.SetJob(tostring(args[2]), tonumber(args[3]))
-	end,
-	'admin'
-)
+QBCore.Commands.Add('setjob', Lang:t('command.setjob.help'), { { name = Lang:t('command.setjob.params.id.name'), help = Lang:t('command.setjob.params.id.help') }, { name = Lang:t('command.setjob.params.job.name'), help = Lang:t('command.setjob.params.job.help') }, { name = Lang:t('command.setjob.params.grade.name'), help = Lang:t('command.setjob.params.grade.help') }, }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	Player.Functions.SetJob(tostring(args[2]), tonumber(args[3]))
+end, 'admin')
 
 -- Gang
 
@@ -457,22 +345,11 @@ QBCore.Commands.Add('gang', Lang:t('command.gang.help'), {}, false, function(sou
 	)
 end, 'user')
 
-QBCore.Commands.Add(
-	'setgang',
-	Lang:t('command.setgang.help'),
-	{
-		{ name = Lang:t('command.setgang.params.id.name'),    help = Lang:t('command.setgang.params.id.help') },
-		{ name = Lang:t('command.setgang.params.gang.name'),  help = Lang:t('command.setgang.params.gang.help') },
-		{ name = Lang:t('command.setgang.params.grade.name'), help = Lang:t('command.setgang.params.grade.help') },
-	},
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
-		if not Player then
-			Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
-			return
-		end
-		Player.Functions.SetGang(tostring(args[2]), tonumber(args[3]))
-	end,
-	'admin'
-)
+QBCore.Commands.Add('setgang', Lang:t('command.setgang.help'), { { name = Lang:t('command.setgang.params.id.name'), help = Lang:t('command.setgang.params.id.help') }, { name = Lang:t('command.setgang.params.gang.name'), help = Lang:t('command.setgang.params.gang.help') }, { name = Lang:t('command.setgang.params.grade.name'), help = Lang:t('command.setgang.params.grade.help') }, }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	if not Player then
+		Events.CallRemote('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+		return
+	end
+	Player.Functions.SetGang(tostring(args[2]), tonumber(args[3]))
+end, 'admin')

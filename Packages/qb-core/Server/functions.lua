@@ -39,6 +39,37 @@ function QBCore.Functions.GetSource(identifier)
 	return 0
 end
 
+function QBCore.Functions.AddPermission(source, permission)
+	local accountId = source:GetAccountID()
+	local allPermissions = QBConfig.Server.Permissions
+	local level_check = allPermissions[permission]
+	if not level_check then return end
+	if not QBCore.Functions.HasPermission(source, permission) then
+		allPermissions[permission][accountId] = true
+		QBCore.Commands.Refresh(source)
+	end
+end
+
+function QBCore.Functions.RemovePermission(source, permission)
+	local accountId = source:GetAccountID()
+	local allPermissions = QBConfig.Server.Permissions
+	local level_check = allPermissions[permission]
+	if not level_check then return end
+	if permission then
+		if QBCore.Functions.HasPermission(source, permission) then
+			allPermissions[permission][accountId] = nil
+			QBCore.Commands.Refresh(source)
+		end
+	else
+		for _, accounts in pairs(allPermissions) do
+			if accounts[accountId] then
+				accounts[accountId] = nil
+				QBCore.Commands.Refresh(source)
+			end
+		end
+	end
+end
+
 function QBCore.Functions.HasPermission(source, permissionLevel)
 	local accountId = source:GetAccountID()
 	local allPermissions = QBConfig.Server.Permissions
