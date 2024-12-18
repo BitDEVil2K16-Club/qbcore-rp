@@ -8,6 +8,7 @@ QBCore.Commands.Add('giveitem', 'Give An Item (Admin Only)', { { name = 'id', he
         return
     end
     local amount = tonumber(args[3])
+    if not amount then amount = 1 end
     local itemData = QBShared.Items[tostring(args[2]):lower()]
     if not itemData then
         QBCore.Functions.Notify(source, Lang:t('notify.idne'), 'error')
