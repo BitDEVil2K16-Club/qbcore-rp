@@ -18,3 +18,4 @@ jobs:
           access_token: ${{ secrets.ACCESS_TOKEN }}
           packages: '{}'
           world_name : 's3f05a0'
+          master_endpoint: "https://dev.helixgame.com/v1"
