@@ -549,7 +549,7 @@ QBCore.Functions.CreateCallback('qb-banking:server:openAccount', function(source
 		return cb({ success = false, message = Lang:t('error.money') })
 	end
 	Player.Functions.RemoveMoney('bank', initialAmount, 'Opened account ' .. accountName)
-	if not CreatePlayerAccount(source, accountName, initialAmount, json.encode({})) then
+	if not CreatePlayerAccount(source, accountName, initialAmount, JSON.stringify({})) then
 		return cb({ success = false, message = Lang:t('error.error') })
 	end
 	if not CreateBankStatement(source, accountName, initialAmount, 'Initial deposit', 'deposit', 'shared') then
@@ -770,46 +770,40 @@ end
 
 -- Commands
 
-QBCore.Commands.Add(
-	'givecash',
-	'Give Cash',
-	{ { name = 'id', help = 'Player ID' }, { name = 'amount', help = 'Amount' } },
-	true,
-	function(source, args)
-		local Player = QBCore.Functions.GetPlayer(source)
-		if not Player then
-			return
-		end
-		local playerPed = source:GetControlledCharacter()
-		local playerCoords = playerPed:GetLocation()
-		local target = QBCore.Functions.GetPlayer(tonumber(args[1]))
-		if not target then
-			return Events.CallRemote('QBCore:Notify', source, Lang:t('error.noUser'), 'error')
-		end
-		local targetId = target.PlayerData.source
-		local targetPed = targetId:GetControlledCharacter()
-		local targetCoords = targetPed:GetLocation()
-		local amount = tonumber(args[2])
-		if not amount then
-			return Events.CallRemote('QBCore:Notify', source, Lang:t('error.amount'), 'error')
-		end
-		if amount <= 0 then
-			return Events.CallRemote('QBCore:Notify', source, Lang:t('error.amount'), 'error')
-		end
-		if #(playerCoords - targetCoords) > 1000 then
-			return Events.CallRemote('QBCore:Notify', source, Lang:t('error.toofar'), 'error')
-		end
-		if Player.PlayerData.money.cash < amount then
-			return Events.CallRemote('QBCore:Notify', source, Lang:t('error.money'), 'error')
-		end
-		Player.Functions.RemoveMoney('cash', amount, 'cash transfer')
-		target.Functions.AddMoney('cash', amount, 'cash transfer')
-		Events.CallRemote('QBCore:Notify', source, string.format(Lang:t('success.give'), amount), 'success')
-		Events.CallRemote(
-			'QBCore:Notify',
-			target.PlayerData.source,
-			string.format(Lang:t('success.receive'), amount),
-			'success'
-		)
+QBCore.Commands.Add('givecash', 'Give Cash', { { name = 'id', help = 'Player ID' }, { name = 'amount', help = 'Amount' } }, true, function(source, args)
+	local Player = QBCore.Functions.GetPlayer(source)
+	if not Player then
+		return
 	end
-)
+	local playerPed = source:GetControlledCharacter()
+	local playerCoords = playerPed:GetLocation()
+	local target = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	if not target then
+		return Events.CallRemote('QBCore:Notify', source, Lang:t('error.noUser'), 'error')
+	end
+	local targetId = target.PlayerData.source
+	local targetPed = targetId:GetControlledCharacter()
+	local targetCoords = targetPed:GetLocation()
+	local amount = tonumber(args[2])
+	if not amount then
+		return Events.CallRemote('QBCore:Notify', source, Lang:t('error.amount'), 'error')
+	end
+	if amount <= 0 then
+		return Events.CallRemote('QBCore:Notify', source, Lang:t('error.amount'), 'error')
+	end
+	if #(playerCoords - targetCoords) > 1000 then
+		return Events.CallRemote('QBCore:Notify', source, Lang:t('error.toofar'), 'error')
+	end
+	if Player.PlayerData.money.cash < amount then
+		return Events.CallRemote('QBCore:Notify', source, Lang:t('error.money'), 'error')
+	end
+	Player.Functions.RemoveMoney('cash', amount, 'cash transfer')
+	target.Functions.AddMoney('cash', amount, 'cash transfer')
+	Events.CallRemote('QBCore:Notify', source, string.format(Lang:t('success.give'), amount), 'success')
+	Events.CallRemote(
+		'QBCore:Notify',
+		target.PlayerData.source,
+		string.format(Lang:t('success.receive'), amount),
+		'success'
+	)
+end)
