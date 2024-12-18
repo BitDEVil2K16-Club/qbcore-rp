@@ -31,17 +31,25 @@ local function DeathTimer(bool)
     end
 end
 
-HCharacter.Subscribe('Death', function()
-    isDead = true
-    DeathTimer(true)
-    Events.CallRemote('hospital:server:SetDeathStatus', true)
-    Events.CallRemote('hospital:server:ambulanceAlert', Lang:t('info.civ_died'))
+HCharacter.Subscribe('Death', function(self)
+    local client = Client.GetLocalPlayer()
+    if not client then return end
+    if client:GetControlledCharacter() == self then
+        isDead = true
+        DeathTimer(true)
+        Events.CallRemote('hospital:server:SetDeathStatus', true)
+        Events.CallRemote('hospital:server:ambulanceAlert', Lang:t('info.civ_died'))
+    end
 end)
 
 HCharacter.Subscribe('Respawn', function(self)
-    isDead = false
-    DeathTimer(false)
-    Events.CallRemote('hospital:server:SetDeathStatus', false)
+    local client = Client.GetLocalPlayer()
+    if not client then return end
+    if client:GetControlledCharacter() == self then
+        isDead = false
+        DeathTimer(false)
+        Events.CallRemote('hospital:server:SetDeathStatus', false)
+    end
 end)
 
 Input.Subscribe('KeyDown', function(key_name)

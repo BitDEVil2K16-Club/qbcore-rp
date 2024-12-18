@@ -233,17 +233,11 @@ end, 'admin')
 
 QBCore.Commands.Add('maxammo', 'Max Ammo', {}, false, function(source)
 	local ped = source:GetControlledCharacter()
-	if not ped then
-		return
-	end
+	if not ped then return end
 	local holding_item = ped:GetPicked()
-	if not holding_item then
-		return
-	end
+	if not holding_item then return end
 	local is_weapon = holding_item:IsA(Weapon)
-	if not is_weapon then
-		return
-	end
+	if not is_weapon then return end
 	local clip_capacity = holding_item:GetClipCapacity()
 	holding_item:SetAmmoClip(clip_capacity)
 end, 'admin')
