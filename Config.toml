@@ -1,7 +1,7 @@
 # server configurations
 [server]
     # server name
-    name =              "qbcore-rp"
+    name =              "s3f05a0"
     # server description (max 127 characters)
     description =       "Official roleplay server using only QBCore packages!"
     # max players
@@ -56,5 +56,5 @@
     map =               "ecdbd-fh-downtown-tits::RP_Downtown_Tits_v2"
     # banned HELIX account IDs
     banned_ids = [
-        
+
     ]
