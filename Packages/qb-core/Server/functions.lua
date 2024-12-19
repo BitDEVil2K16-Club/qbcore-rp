@@ -424,6 +424,7 @@ function QBCore.Functions.CreateWeapon(source, weapon_name, coords, rotation, it
 	if not new_weapon then return false end
 	-- General
 	new_weapon:SetAmmoSettings(ammo, 0)
+	new_weapon:SetClipCapacity(weapon_info.ammo_settings.clip_capacity)
 	if weapon_info.damage then new_weapon:SetDamage(weapon_info.damage) end
 	if weapon_info.spread then new_weapon:SetSpread(weapon_info.spread) end
 	if weapon_info.recoil then new_weapon:SetRecoil(weapon_info.recoil) end

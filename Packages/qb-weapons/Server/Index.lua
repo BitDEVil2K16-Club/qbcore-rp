@@ -82,18 +82,14 @@ for ammo_item, amount in pairs(ammo_types) do
     QBCore.Functions.CreateUseableItem(ammo_item, function(source, item)
         local ped = source:GetControlledCharacter()
         if not ped then return end
-
         local holding_item = ped:GetPicked()
         if not holding_item then return end
-
         local is_weapon = ped:GetPicked():IsA(Weapon)
         if not is_weapon then return end
-
         local weapon_info = QBShared.Weapons[holding_item:GetValue('name')]
         if not weapon_info then return end
         local weapon_ammo_type = weapon_info.ammo_type
         if weapon_ammo_type ~= item.name then return end
-
         local current_ammo = holding_item:GetAmmoClip()
         local bag_capacity = holding_item:GetAmmoBag()
         local max_clip = holding_item:GetClipCapacity()
