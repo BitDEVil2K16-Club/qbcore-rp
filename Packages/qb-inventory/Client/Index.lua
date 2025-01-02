@@ -119,11 +119,11 @@ my_webui:Subscribe('SetInventoryData', function(data)
 	)
 end)
 
-my_webui:Subscribe('CloseInventory', function(data)
+my_webui:Subscribe('CloseInventory', function(name)
 	Input.SetMouseEnabled(false)
 	Input.SetInputEnabled(true)
-	if data.name then
-		Events.CallRemote('qb-inventory:server:closeInventory', data.name)
+	if name then
+		Events.CallRemote('qb-inventory:server:closeInventory', name)
 	elseif CurrentDrop then
 		Events.CallRemote('qb-inventory:server:closeInventory', CurrentDrop)
 		CurrentDrop = nil
