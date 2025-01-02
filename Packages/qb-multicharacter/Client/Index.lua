@@ -40,9 +40,9 @@ Events.SubscribeRemote('qb-multicharacter:client:closeNUIdefault', function()
 end)
 
 Events.SubscribeRemote('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
-    QBCore.Functions.TriggerCallback('apartments:GetOwnedApartment', function(result)
+    QBCore.Functions.TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
         if result then
-            --Events.Call('apartments:client:SetHomeBlip', result.type)
+            --Events.Call('qb-apartments:client:SetHomeBlip', result.type)
             local PlayerData = QBCore.Functions.GetPlayerData()
             local insideMeta = PlayerData.metadata['inside']
             if insideMeta.house then

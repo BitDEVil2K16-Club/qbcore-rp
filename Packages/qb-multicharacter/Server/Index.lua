@@ -79,7 +79,7 @@ Events.SubscribeRemote('qb-multicharacter:server:loadUserData', function(source,
 					Events.CallRemote('qb-multicharacter:client:spawnLastLocation', source, coords, cData)
 				else
 					if Apartments.Starting then
-						Events.CallRemote('apartments:client:setupSpawnUI', source, cData)
+						Events.CallRemote('qb-apartments:client:setupSpawnUI', source, cData)
 					else
 						Events.CallRemote('qb-spawn:client:setupSpawns', source, cData, false, nil)
 						Events.CallRemote('qb-spawn:client:openUI', source, true)
@@ -106,7 +106,7 @@ Events.SubscribeRemote('qb-multicharacter:server:createCharacter', function(sour
 					QBCore.Commands.Refresh(source)
 					--loadHouseData(source)
 					Events.CallRemote('qb-multicharacter:client:closeNUI', source)
-					Events.CallRemote('apartments:client:setupSpawnUI', source, newData)
+					Events.CallRemote('qb-apartments:client:setupSpawnUI', source, newData)
 					GiveStarterItems(source)
 					Timer.ClearInterval(CheckInterval)
 				else

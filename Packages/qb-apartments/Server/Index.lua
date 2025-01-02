@@ -1,4 +1,4 @@
-local Lang = Package.Require("../Shared/locales/" .. QBConfig.Language .. ".lua")
+local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 local ApartmentObjects = {}
 
 -- Functions
@@ -9,11 +9,8 @@ local function CreateApartmentId(type)
 
 	while not UniqueFound do
 		AparmentId = tostring(math.random(1, 9999))
-		local result = MySQL.query.await(
-			"SELECT COUNT(*) as count FROM apartments WHERE name = ?",
-			{ tostring(type .. AparmentId) }
-		)
-		if result[1].count == 0 then
+		local result = MySQL.query.await('SELECT COUNT(*) as count FROM apartments WHERE name = ?', { tostring(type .. AparmentId) })
+		if result and result[1].count == 0 then
 			UniqueFound = true
 		end
 	end
@@ -22,8 +19,8 @@ end
 
 local function GetApartmentInfo(apartmentId)
 	local retval = nil
-	local result = MySQL.query.await("SELECT * FROM apartments WHERE name = ?", { apartmentId })
-	if result[1] ~= nil then
+	local result = MySQL.query.await('SELECT * FROM apartments WHERE name = ?', { apartmentId })
+	if result and result[1] ~= nil then
 		retval = result[1]
 	end
 	return retval
@@ -31,19 +28,17 @@ end
 
 -- Events
 
-Events.SubscribeRemote("qb-apartments:server:SetInsideMeta", function(source, house, insideId, bool, isVisiting)
+Events.SubscribeRemote('qb-apartments:server:SetInsideMeta', function(source, house, insideId, bool, isVisiting)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
-	local insideMeta = Player.PlayerData.metadata["inside"]
+	if not Player then return end
+	local insideMeta = Player.PlayerData.metadata['inside']
 	if bool then
-		local routeId = insideId:gsub("[^%-%d]", "")
+		local routeId = insideId:gsub('[^%-%d]', '')
 		if not isVisiting then
 			insideMeta.apartment.apartmentType = house
 			insideMeta.apartment.apartmentId = insideId
 			insideMeta.house = nil
-			Player.Functions.SetMetaData("inside", insideMeta)
+			Player.Functions.SetMetaData('inside', insideMeta)
 		end
 		QBCore.Functions.SetPlayerBucket(source, tonumber(routeId))
 	else
@@ -51,43 +46,39 @@ Events.SubscribeRemote("qb-apartments:server:SetInsideMeta", function(source, ho
 		insideMeta.apartment.apartmentId = nil
 		insideMeta.house = nil
 
-		Player.Functions.SetMetaData("inside", insideMeta)
+		Player.Functions.SetMetaData('inside', insideMeta)
 		QBCore.Functions.SetPlayerBucket(source, 1)
 	end
 end)
 
-Events.SubscribeRemote("qb-apartments:returnBucket", function(source)
+Events.SubscribeRemote('qb-apartments:returnBucket', function(source)
 	QBCore.Functions.SetPlayerBucket(source, 1)
 end)
 
-Events.SubscribeRemote("qb-apartments:server:LogoutLocation", function(source)
+Events.SubscribeRemote('qb-apartments:server:LogoutLocation', function(source)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
+	if not Player then return end
 	QBCore.Player.Logout(source)
-	Events.CallRemote("qb-multicharacter:client:chooseChar", source)
+	Events.CallRemote('qb-multicharacter:client:chooseChar', source)
 end)
 
-Events.SubscribeRemote("apartments:server:openStash", function(source, CurrentApartment)
+Events.SubscribeRemote('qb-apartments:server:openStash', function(source, CurrentApartment)
 	OpenInventory(source, CurrentApartment)
 end)
 
-Events.SubscribeRemote("apartments:server:CreateApartment", function(source, type, label, firstSpawn)
+Events.SubscribeRemote('qb-apartments:server:CreateApartment', function(source, type, label, firstSpawn)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
+	if not Player then return end
 	local num = CreateApartmentId(type)
 	local apartmentId = tostring(type .. num)
-	label = tostring(label .. " " .. num)
-	MySQL.insert("INSERT INTO apartments (name, type, label, citizenid) VALUES (?, ?, ?, ?)", {
+	label = tostring(label .. ' ' .. num)
+	MySQL.insert('INSERT INTO apartments (name, type, label, citizenid) VALUES (?, ?, ?, ?)', {
 		apartmentId,
 		type,
 		label,
 		Player.PlayerData.citizenid,
 	})
-	Events.CallRemote("QBCore:Notify", source, Lang:t("success.receive_apart") .. " (" .. label .. ")")
+	Events.CallRemote('QBCore:Notify', source, Lang:t('success.receive_apart') .. ' (' .. label .. ')')
 	if firstSpawn then
 		local coords = Vector(
 			Apartments.Locations[type].coords[1],
@@ -98,48 +89,36 @@ Events.SubscribeRemote("apartments:server:CreateApartment", function(source, typ
 		local dimension = new_char:GetDimension()
 		source:SetDimension(dimension)
 		source:Possess(new_char)
-		Events.CallRemote("apartments:client:SpawnInApartment", source, apartmentId, type)
+		Events.CallRemote('qb-apartments:client:SpawnInApartment', source, apartmentId, type)
 	end
-	Events.CallRemote("apartments:client:SetHomeBlip", source, type)
+	Events.CallRemote('qb-apartments:client:SetHomeBlip', source, type)
 end)
 
-Events.SubscribeRemote("apartments:server:UpdateApartment", function(source, type, label)
+Events.SubscribeRemote('qb-apartments:server:UpdateApartment', function(source, type, label)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
-	MySQL.update(
-		"UPDATE apartments SET type = ?, label = ? WHERE citizenid = ?",
-		{ type, label, Player.PlayerData.citizenid }
-	)
-	Events.CallRemote("QBCore:Notify", source, Lang:t("success.changed_apart"))
-	Events.CallRemote("apartments:client:SetHomeBlip", source, type)
+	if not Player then return end
+	MySQL.update('UPDATE apartments SET type = ?, label = ? WHERE citizenid = ?', { type, label, Player.PlayerData.citizenid })
+	Events.CallRemote('QBCore:Notify', source, Lang:t('success.changed_apart'))
+	Events.CallRemote('qb-apartments:client:SetHomeBlip', source, type)
 end)
 
-Events.SubscribeRemote("apartments:server:RingDoor", function(source, apartmentId, apartment)
-	if
-		ApartmentObjects[apartment].apartments[apartmentId] ~= nil
-		and next(ApartmentObjects[apartment].apartments[apartmentId].players) ~= nil
-	then
+Events.SubscribeRemote('qb-apartments:server:RingDoor', function(source, apartmentId, apartment)
+	if ApartmentObjects[apartment].apartments[apartmentId] ~= nil and next(ApartmentObjects[apartment].apartments[apartmentId].players) ~= nil then
 		for k, _ in pairs(ApartmentObjects[apartment].apartments[apartmentId].players) do
-			Events.CallRemote("apartments:client:RingDoor", k, source)
+			Events.CallRemote('qb-apartments:client:RingDoor', k, source)
 		end
 	end
 end)
 
-Events.SubscribeRemote("apartments:server:OpenDoor", function(target, apartmentId, apartment)
+Events.SubscribeRemote('qb-apartments:server:OpenDoor', function(target, apartmentId, apartment)
 	local OtherPlayer = QBCore.Functions.GetPlayer(target)
-	if not OtherPlayer then
-		return
-	end
-	Events.CallRemote("apartments:client:SpawnInApartment", OtherPlayer.PlayerData.source, apartmentId, apartment)
+	if not OtherPlayer then return end
+	Events.CallRemote('qb-apartments:client:SpawnInApartment', OtherPlayer.PlayerData.source, apartmentId, apartment)
 end)
 
-Events.SubscribeRemote("apartments:server:AddObject", function(source, apartmentId, apartment, offset)
+Events.SubscribeRemote('qb-apartments:server:AddObject', function(source, apartmentId, apartment, offset)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
+	if not Player then return end
 	if
 		ApartmentObjects[apartment] ~= nil
 		and ApartmentObjects[apartment].apartments ~= nil
@@ -163,7 +142,8 @@ Events.SubscribeRemote("apartments:server:AddObject", function(source, apartment
 	end
 end)
 
-Events.SubscribeRemote("apartments:server:RemoveObject", function(source, apartmentId, apartment)
+Events.SubscribeRemote('qb-apartments:server:RemoveObject', function(source, apartmentId, apartment)
+	if not apartmentId or not apartment then return end
 	if ApartmentObjects[apartment].apartments[apartmentId].players ~= nil then
 		ApartmentObjects[apartment].apartments[apartmentId].players[source] = nil
 		if next(ApartmentObjects[apartment].apartments[apartmentId].players) == nil then
@@ -172,17 +152,15 @@ Events.SubscribeRemote("apartments:server:RemoveObject", function(source, apartm
 	end
 end)
 
-Events.SubscribeRemote("apartments:server:setCurrentApartment", function(ap)
+Events.SubscribeRemote('qb-apartments:server:setCurrentApartment', function(ap)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
-	Player.Functions.SetMetaData("currentapartment", ap)
+	if not Player then return end
+	Player.Functions.SetMetaData('currentapartment', ap)
 end)
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback("apartments:GetAvailableApartments", function(_, cb, apartment)
+QBCore.Functions.CreateCallback('qb-apartments:GetAvailableApartments', function(_, cb, apartment)
 	local apartments = {}
 	if
 		ApartmentObjects ~= nil
@@ -202,7 +180,7 @@ QBCore.Functions.CreateCallback("apartments:GetAvailableApartments", function(_,
 	cb(apartments)
 end)
 
-QBCore.Functions.CreateCallback("apartments:GetApartmentOffset", function(_, cb, apartmentId)
+QBCore.Functions.CreateCallback('qb-apartments:GetApartmentOffset', function(_, cb, apartmentId)
 	local retval = 0
 	if ApartmentObjects ~= nil then
 		for k, _ in pairs(ApartmentObjects) do
@@ -217,7 +195,7 @@ QBCore.Functions.CreateCallback("apartments:GetApartmentOffset", function(_, cb,
 	cb(retval)
 end)
 
-QBCore.Functions.CreateCallback("apartments:GetApartmentOffsetNewOffset", function(_, cb, apartment)
+QBCore.Functions.CreateCallback('qb-apartments:GetApartmentOffsetNewOffset', function(_, cb, apartment)
 	local retval = Apartments.SpawnOffset
 	if
 		ApartmentObjects ~= nil
@@ -233,20 +211,18 @@ QBCore.Functions.CreateCallback("apartments:GetApartmentOffsetNewOffset", functi
 	cb(retval)
 end)
 
-QBCore.Functions.CreateCallback("apartments:GetOwnedApartment", function(source, cb, cid)
+QBCore.Functions.CreateCallback('qb-apartments:GetOwnedApartment', function(source, cb, cid)
 	if cid then
-		local result = MySQL.query.await("SELECT * FROM apartments WHERE citizenid = ?", { cid })
-		if result[1] then
+		local result = MySQL.query.await('SELECT * FROM apartments WHERE citizenid = ?', { cid })
+		if result and result[1] then
 			return cb(result[1])
 		end
 		return cb(nil)
 	else
 		local Player = QBCore.Functions.GetPlayer(source)
-		if not Player then
-			return
-		end
+		if not Player then return end
 		local result =
-			MySQL.query.await("SELECT * FROM apartments WHERE citizenid = ?", { Player.PlayerData.citizenid })
+			MySQL.query.await('SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
 		if result[1] then
 			return cb(result[1])
 		end
@@ -254,14 +230,11 @@ QBCore.Functions.CreateCallback("apartments:GetOwnedApartment", function(source,
 	end
 end)
 
-QBCore.Functions.CreateCallback("apartments:IsOwner", function(source, cb, apartment)
+QBCore.Functions.CreateCallback('qb-apartments:IsOwner', function(source, cb, apartment)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
-	local result = MySQL.query.await("SELECT * FROM apartments WHERE citizenid = ?", { Player.PlayerData.citizenid })
-
-	if result[1] then
+	if not Player then return end
+	local result = MySQL.query.await('SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
+	if result and result[1] then
 		if result[1].type == apartment then
 			cb(true)
 		else
@@ -272,14 +245,11 @@ QBCore.Functions.CreateCallback("apartments:IsOwner", function(source, cb, apart
 	end
 end)
 
-QBCore.Functions.CreateCallback("apartments:GetOutfits", function(source, cb)
+QBCore.Functions.CreateCallback('qb-apartments:GetOutfits', function(source, cb)
 	local Player = QBCore.Functions.GetPlayer(source)
-	if not Player then
-		return
-	end
-	local result =
-		MySQL.query.await("SELECT * FROM player_outfits WHERE citizenid = ?", { Player.PlayerData.citizenid })
-	if result[1] ~= nil then
+	if not Player then return end
+	local result = MySQL.query.await('SELECT * FROM player_outfits WHERE citizenid = ?', { Player.PlayerData.citizenid })
+	if result and result[1] ~= nil then
 		cb(result)
 	else
 		cb(nil)
