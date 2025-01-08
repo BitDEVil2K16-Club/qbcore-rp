@@ -25,6 +25,7 @@
     packages = [
         "helix-map",
         "helix-minimap",
+        "core-ui",
         "qb-target",
         "qb-interior",
         "qb-apartments",

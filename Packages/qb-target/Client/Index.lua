@@ -275,17 +275,10 @@ end
 Package.Export('RemoveTargetEntity', RemoveTargetEntity)
 
 local function AddBoxZone(name, center, length, width, zoneOptions, targetoptions)
-	if not name or not center or not length or not width or not targetoptions then
-		return
-	end
-	if Zones[name] then
-		return
-	end
-	if not Zones[name] then
-		Zones[name] = {}
-	end
-	local box_entity =
-		StaticMesh(center, Rotator(0.0, zoneOptions.heading, 0.0), 'ecdbd-h::Invisible', CollisionType.NoCollision)
+	if not name or not center or not length or not width or not targetoptions then return end
+	if Zones[name] then return end
+	if not Zones[name] then Zones[name] = {} end
+	local box_entity = StaticMesh(center, Rotator(0.0, zoneOptions.heading, 0.0), 'ecdbd-h::Invisible', CollisionType.NoCollision)
 	box_entity:SetScale(Vector(length, width, 5.0))
 	Zones[name] = box_entity
 	AddTargetEntity(box_entity, targetoptions)

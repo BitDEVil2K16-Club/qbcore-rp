@@ -8,7 +8,7 @@ local housesLoaded = false
 
 local HouseGarages = {}
 local result = MySQL.query.await('SELECT * FROM houselocations', {})
-if result[1] then
+if result and result[1] then
 	for _, v in pairs(result) do
 		local owned = false
 		if tonumber(v.owned) == 1 then
@@ -433,7 +433,7 @@ Events.SubscribeRemote('qb-houses:server:SetHouseRammed', function(source, bool,
 end)
 
 Events.SubscribeRemote('qb-houses:server:SetInsideMeta', function(source, insideId, bool)
-	local Player = QBCore.Functions.GetPlayer(source)\
+	local Player = QBCore.Functions.GetPlayer(source)
 	if not Player then return end
 	local insideMeta = Player.PlayerData.metadata['inside']
 	if bool then
