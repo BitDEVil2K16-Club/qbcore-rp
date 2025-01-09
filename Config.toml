@@ -25,6 +25,7 @@
     packages = [
         "helix-map",
         "helix-minimap",
+        "core-ui",
         "qb-target",
         "qb-interior",
         "qb-apartments",
@@ -46,14 +47,14 @@
     ]
     # asset packs list (this will additionally load the asset packs you define here)
     assets = [
-        "ecdbd-fh-downtown-tits",
+        "abcca-nyc-wip",
         "abcca-qbcore",
         "abcca-shells",
         "ecdbd-h",
         "qbcore-vehicles-mm",
     ]
     # default startup map
-    map =               "ecdbd-fh-downtown-tits::RP_Downtown_Tits_v2"
+    map =               "abcca-nyc-wip::NYC_Small"
     # banned HELIX account IDs
     banned_ids = [
         

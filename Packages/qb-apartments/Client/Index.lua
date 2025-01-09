@@ -414,32 +414,23 @@ Events.Subscribe('qb-apartments:client:LastLocationHouse', function(apartmentTyp
 	EnterApartment(apartmentType, apartmentId, false)
 end)
 
--- Events.SubscribeRemote("apartments:client:SetHomeBlip", function(home)
--- 	SetClosestApartment()
--- 	for name, _ in pairs(Apartments.Locations) do
--- 		RemoveBlip(Apartments.Locations[name].blip)
-
--- 		Apartments.Locations[name].blip = AddBlipForCoord(
--- 			Apartments.Locations[name].coords[1],
--- 			Apartments.Locations[name].coords[2],
--- 			Apartments.Locations[name].coords[3]
--- 		)
--- 		if name == home then
--- 			SetBlipSprite(Apartments.Locations[name].blip, 475)
--- 			SetBlipCategory(Apartments.Locations[name].blip, 11)
--- 		else
--- 			SetBlipSprite(Apartments.Locations[name].blip, 476)
--- 			SetBlipCategory(Apartments.Locations[name].blip, 10)
--- 		end
--- 		SetBlipDisplay(Apartments.Locations[name].blip, 4)
--- 		SetBlipScale(Apartments.Locations[name].blip, 0.65)
--- 		SetBlipAsShortRange(Apartments.Locations[name].blip, true)
--- 		SetBlipColour(Apartments.Locations[name].blip, 3)
--- 		AddTextEntry(Apartments.Locations[name].label, Apartments.Locations[name].label)
--- 		BeginTextCommandSetBlipName(Apartments.Locations[name].label)
--- 		EndTextCommandSetBlipName(Apartments.Locations[name].blip)
--- 	end
--- end)
+Events.SubscribeRemote('qb-apartments:client:SetHomeBlip', function(home)
+	SetClosestApartment()
+	for name, _ in pairs(Apartments.Locations) do
+		local coords = {
+			x = Apartments.Locations[name].coords[1],
+			y = Apartments.Locations[name].coords[2],
+			z = Apartments.Locations[name].coords[3],
+		}
+		Map:RemoveBlip(Apartments.Locations[name].blip)
+		Apartments.Locations[name].blip = Map:AddBlip({
+			id = name,
+			name = Apartments.Locations[name].label,
+			imgUrl = './media/map-icons/Hotel-icon.svg',
+			coords = coords,
+		})
+	end
+end)
 
 Events.Subscribe('qb-apartments:client:RingMenu', function(data)
 	RangDoorbell = ClosestHouse

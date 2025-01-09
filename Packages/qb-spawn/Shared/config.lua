@@ -1,23 +1,23 @@
 Config = {
     Spawns = {
 
-        beach = {
-            coords = { 7832.3, 5051.3, -508.9 },
-            location = 'beach',
-            label = 'Beach',
+        police = {
+            coords = { 19838.9, 11656.1, 178.8 },
+            location = 'police',
+            label = 'Police Department',
         },
 
-        -- hospital = {
-        --     coords = { -33787.4, 134419.7, 195.8 },
-        --     location = 'hospital',
-        --     label = 'Hospital',
-        -- },
+        hospital = {
+            coords = { -33787.4, 134419.7, 195.8 },
+            location = 'hospital',
+            label = 'Hospital',
+        },
 
-        -- firedept = {
-        --     coords = { 18000.9, -80894.0, 176.8 },
-        --     location = 'firedept',
-        --     label = 'Fire Department',
-        -- },
+        firedept = {
+            coords = { 18000.9, -80894.0, 176.8 },
+            location = 'firedept',
+            label = 'Fire Department',
+        },
 
         -- chinatown = {
         --     coords = { -15056.6, 121118.8, 185.4 },

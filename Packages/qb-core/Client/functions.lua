@@ -34,18 +34,12 @@ function QBCore.Functions.Debug(tbl)
 end
 
 function QBCore.Functions.Notify(text, texttype, length, icon)
-    local message = {
-        type = texttype or 'primary',
-        length = length or 5000,
-    }
+    local noti_type = texttype or 'info'
     if type(text) == 'table' then
-        message.text = text.text or 'Placeholder'
-        message.caption = text.caption or 'Placeholder'
+        Notification.Send(noti_type, text.text, text.caption)
     else
-        message.text = text
+        Notification.Send(noti_type, text)
     end
-    if icon then message.icon = icon end
-    my_webui:CallEvent('NOTIFY', message)
 end
 
 -- World Getters

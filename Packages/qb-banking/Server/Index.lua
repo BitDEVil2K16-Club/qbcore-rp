@@ -5,8 +5,8 @@ local peds = {}
 
 -- Create Peds
 
-for _, loc in ipairs(Config.locations) do
-	local ped = HCharacter(loc, Rotator(0.0, -3.0463893413544, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+for i = 1, #Config.locations do
+	local ped = HCharacter(Config.locations[i][1], Config.locations[i][2], '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
 	ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
 	ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
 	ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')

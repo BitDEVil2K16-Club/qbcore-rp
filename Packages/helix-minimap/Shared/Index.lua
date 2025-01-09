@@ -4,18 +4,18 @@ MinimapSettings.ScreenPosition = 0 -- 0 = top left, 1 = top right, 2 = bottom le
 
 MinimapSettings.Scale = .5
 
-MinimapSettings.Shape = 'square'   -- "circle","square"
+MinimapSettings.Shape = 'square' -- "circle","square"
 
 MinimapSettings.KnownGameCoords = {
-    { 8938.98,  13622 },
-    { 139.37,   -15007 },
-    { -4867.03, 2088.61 }
+    { -116507, -81989 },
+    { 124069,  -178853 },
+    { -25227,  217105 }
 }
 
 MinimapSettings.KnownImageCoords = {
-    { 3805.38, 1472.66 },
-    { 3033.81, 3987 },
-    { 2588.95, 2484.13 }
+    { 3171.5, 2431.8 },
+    { 4590.8, 3003 },
+    { 3711,   663 }
 }
 
 -- If you are using the map package, this will be ignored

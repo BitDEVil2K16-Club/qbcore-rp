@@ -109,17 +109,18 @@ end)
 
 -- Create ATM
 
-local atm = StaticMesh(Vector(-6588.5, 2723.2, -400), Rotator(0.0, -90.194213867188, 0.0), Config.atmModel, CollisionType.Normal)
-
-AddTargetEntity(atm, {
-	options = {
-		{
-			label = 'Open ATM',
-			icon = 'fas fa-university',
-			action = function()
-				OpenATM()
-			end,
+for i = 1, #Config.atm_locations do
+	local atm = StaticMesh(Config.atm_locations[i][1], Config.atm_locations[i][2], Config.atmModel, CollisionType.Normal)
+	AddTargetEntity(atm, {
+		options = {
+			{
+				label = 'Open ATM',
+				icon = 'fas fa-university',
+				action = function()
+					OpenATM()
+				end,
+			},
 		},
-	},
-	distance = 400,
-})
+		distance = 400,
+	})
+end

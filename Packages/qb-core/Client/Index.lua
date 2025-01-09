@@ -13,8 +13,6 @@ Package.Require('Shared/main.lua')
 Package.Require('Shared/vehicles.lua')
 Package.Require('Shared/weapons.lua')
 
-Package.Require('menu.lua')
-Package.Require('input.lua')
 Package.Require('drawtext.lua')
 Package.Require('events.lua')
 Package.Require('functions.lua')
