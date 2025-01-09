@@ -1,9 +1,9 @@
 Config = {
-	OpenKey = 'LeftAlt',              -- enable target
+	OpenKey = 'LeftControl',          -- enable target
 	MenuControlKey = 'RightMouseButton', -- enable mouse control
 	MaxDistance = 400,                -- max distance for raycast
 	Debug = false,                    -- prints trace results
-	EnableOutline = false,            -- enable outline on target
+	EnableOutline = true,             -- enable outline on target
 	OutlineColor = 0,                 -- 0 = green, 1 = red, 2 = blue
 	DrawSprite = true,                -- draw sprite on target
 
