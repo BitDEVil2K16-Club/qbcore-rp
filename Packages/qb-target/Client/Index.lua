@@ -39,23 +39,17 @@ end)
 -- Functions
 
 local function JobCheck(job)
-	if not player_data.job then
-		return false
-	end
+	if not player_data.job then return false end
 	return player_data.job.name == job
 end
 
 local function JobTypeCheck(jobType)
-	if not player_data.job then
-		return false
-	end
+	if not player_data.job then return false end
 	return player_data.job.type == jobType
 end
 
 local function GangCheck(gang)
-	if not player_data.gang then
-		return false
-	end
+	if not player_data.gang then return false end
 	return player_data.gang.name == gang
 end
 
@@ -68,34 +62,17 @@ local function CitizenCheck(citizenid)
 end
 
 local function checkOptions(data, entity, distance)
-	if distance and data.distance and distance > data.distance then
-		return false
-	end
-	if data.job and not JobCheck(data.job) then
-		return false
-	end
-	if data.jobType and not JobTypeCheck(data.jobType) then
-		return false
-	end
-	if data.gang and not GangCheck(data.gang) then
-		return false
-	end
-	if data.item and not ItemCheck(data.item) then
-		return false
-	end
-	if data.citizenid and not CitizenCheck(data.citizenid) then
-		return false
-	end
-	if data.canInteract and not data.canInteract(entity, distance, data) then
-		return false
-	end
-	return true
+	return not (distance and data.distance and distance > data.distance)
+		and (not data.job or JobCheck(data.job))
+		and (not data.jobType or JobTypeCheck(data.jobType))
+		and (not data.gang or GangCheck(data.gang))
+		and (not data.item or ItemCheck(data.item))
+		and (not data.citizenid or CitizenCheck(data.citizenid))
+		and (not data.canInteract or data.canInteract(entity, distance, data))
 end
 
 local function setupOptions(datatable, entity, distance)
-	if not datatable then
-		return
-	end
+	if not datatable then return end
 	for _, data in pairs(datatable) do
 		if checkOptions(data, entity, distance) then
 			local new_option = {
@@ -111,96 +88,78 @@ local function setupOptions(datatable, entity, distance)
 end
 
 local function drawSprite(entity)
-	if not Config.DrawSprite then
-		return
-	end
-	if target_sprite then
-		return
-	end
+	if not Config.DrawSprite or target_sprite then return end
 	local coords = entity:GetLocation()
+	if not coords then return end
 	target_sprite = Billboard(coords, '', Vector2D(0.02, 0.02), true)
 	target_sprite:SetMaterialTextureParameter('Texture', 'package://qb-target/Client/html/circle.png')
 	target_sprite:SetMaterialColorParameter('Texture', Color(255, 255, 255, 255))
 end
 
 local function removeSprite()
-	if target_sprite then
-		target_sprite:Destroy()
-		target_sprite = nil
-	end
+	if not target_sprite then return end
+	target_sprite:Destroy()
+	target_sprite = nil
 end
 
 local function updateEntityHighlight(entity, enable)
+	if not entity or not entity:IsValid() then return end
 	if Config.EnableOutline then
 		entity:SetHighlightEnabled(enable, Config.OutlineColor)
 		entity:SetOutlineEnabled(enable, Config.OutlineColor)
 	end
 end
 
+local function clearTarget()
+	if not target_entity then return end
+	updateEntityHighlight(target_entity, false)
+	if Config.DrawSprite then removeSprite() end
+	target_entity = nil
+	nui_data = {}
+	my_webui:CallEvent('leftTarget')
+end
+
 local function handleEntity(trace_result, start_location)
-	if not trace_result or not trace_result.Entity then
-		if target_entity then
-			updateEntityHighlight(target_entity, false)
-			target_entity = nil
-			nui_data = {}
-			my_webui:CallEvent('leftTarget')
-		end
+	if not trace_result or not trace_result.Entity or not trace_result.Success then
+		clearTarget()
 		return
 	end
-	if trace_result.Success then
-		if target_entity ~= trace_result.Entity then
-			if target_entity then
-				updateEntityHighlight(target_entity, false)
-				if Config.DrawSprite then removeSprite() end
-				my_webui:CallEvent('leftTarget')
-			end
-			target_entity = trace_result.Entity
-			updateEntityHighlight(target_entity, true)
-			if Config.DrawSprite then drawSprite(target_entity) end
-
-			nui_data = {}
-			local distance = start_location:Distance(trace_result.Location)
-			if Entities[target_entity] then
-				setupOptions(Entities[target_entity], target_entity, distance)
-			end
-			if Types[tostring(trace_result.ActorName)] then
-				setupOptions(Types[tostring(trace_result.ActorName)], target_entity, distance)
-			end
-			my_webui:CallEvent('foundTarget', { data = nui_data[1] and nui_data[1].targeticon or '', options = nui_data })
+	local entityHasOptions = Entities[trace_result.Entity] or Types[tostring(trace_result.ActorName)]
+	if not entityHasOptions then
+		clearTarget()
+		return
+	end
+	if target_entity ~= trace_result.Entity then
+		clearTarget()
+		target_entity = trace_result.Entity
+		updateEntityHighlight(target_entity, true)
+		if Config.DrawSprite then drawSprite(target_entity) end
+		nui_data = {}
+		local distance = start_location:Distance(trace_result.Location)
+		local optionsSource = Entities[target_entity] or Types[tostring(trace_result.ActorName)]
+		if optionsSource then
+			setupOptions(optionsSource, target_entity, distance)
 		end
-	else
-		if target_entity then
-			updateEntityHighlight(target_entity, false)
-			target_entity = nil
-			nui_data = {}
-			my_webui:CallEvent('leftTarget')
-		end
+		local target_icon = nui_data[1] and nui_data[1].targeticon or ''
+		my_webui:CallEvent('foundTarget', { data = target_icon, options = nui_data })
 	end
 end
 
 local function handleRaycast()
-	if not target_active then
-		return
-	end
+	if not target_active then return end
 	local viewport_2d_center = Viewport.GetViewportSize() / 2
 	local viewport_3d = Viewport.DeprojectScreenToWorld(viewport_2d_center)
 	local trace_max_distance = Config.MaxDistance
 	local start_location = viewport_3d.Position
 	local end_location = viewport_3d.Position + viewport_3d.Direction * trace_max_distance
-	local collision_trace = CollisionChannel.WorldStatic | CollisionChannel.WorldDynamic | CollisionChannel.PhysicsBody | CollisionChannel.Vehicle | CollisionChannel.Pawn
-	local trace_mode = TraceMode.ReturnEntity | TraceMode.ReturnNames
-	local trace_result = Trace.LineSingle(start_location, end_location, collision_trace, trace_mode, { Client.GetLocalPlayer():GetControlledCharacter() })
+	local trace_result = Trace.LineSingle(start_location, end_location, Config.CollisionTrace, Config.TraceMode, { Client.GetLocalPlayer():GetControlledCharacter() })
 	if Config.Debug then print(HELIXTable.Dump(trace_result)) end
 	return trace_result, start_location
 end
 
 local function enableTarget()
-	if Input.IsMouseEnabled() then
-		return
-	end
-	if target_active then
-		return
-	end
+	if Input.IsMouseEnabled() then return end
+	if target_active then return end
 	target_active = true
 	my_webui:CallEvent('openTarget')
 	raycast_timer = Timer.SetInterval(function()
@@ -210,9 +169,7 @@ local function enableTarget()
 end
 
 local function disableTarget()
-	if not target_active then
-		return
-	end
+	if not target_active then return end
 	if target_entity and Config.EnableOutline then
 		target_entity:SetOutlineEnabled(false)
 	end
@@ -256,9 +213,7 @@ end
 
 local function AddTargetEntity(entities, parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-	if not Entities[entities] then
-		Entities[entities] = {}
-	end
+	if not Entities[entities] then Entities[entities] = {} end
 	SetOptions(Entities[entities], distance, options)
 end
 Package.Export('AddTargetEntity', AddTargetEntity)
@@ -280,13 +235,9 @@ end
 Package.Export('AddBoxZone', AddBoxZone)
 
 local function RemoveZone(name)
-	if not Zones[name] then
-		return
-	end
+	if not Zones[name] then return end
 	Zones[name]:Destroy()
-	if Entities[Zones[name]] then
-		Entities[Zones[name]] = nil
-	end
+	if Entities[Zones[name]] then Entities[Zones[name]] = nil end
 	Zones[name] = nil
 end
 Package.Export('RemoveZone', RemoveZone)
@@ -297,13 +248,9 @@ my_webui:Subscribe('selectTarget', function(option)
 	option = tonumber(option) or option
 	Input.SetMouseEnabled(false)
 	target_active = false
-	if not next(send_data) then
-		return
-	end
+	if not next(send_data) then return end
 	local data = send_data[option]
-	if not data then
-		return
-	end
+	if not data then return end
 	send_data = {}
 	if data.action then
 		data.action(data.entity)
@@ -344,39 +291,14 @@ end)
 
 -- Setup config options
 
-if not Types['WorldVehicleWheeled'] then
-	Types['WorldVehicleWheeled'] = {}
+local function configureType(typeKey, configOption)
+	if not configOption or not next(configOption) then return end
+	if not Types[typeKey] then Types[typeKey] = {} end
+	SetOptions(Types[typeKey], configOption.distance, configOption.options)
 end
-SetOptions(
-	Types['WorldVehicleWheeled'],
-	Config.GlobalWorldVehicleWheeledOptions.distance,
-	Config.GlobalWorldVehicleWheeledOptions.options
-)
 
-if not Types['WorldCharacterSimple'] then
-	Types['WorldCharacterSimple'] = {}
-end
-SetOptions(
-	Types['WorldCharacterSimple'],
-	Config.GlobalWorldCharacterSimpleOptions.distance,
-	Config.GlobalWorldCharacterSimpleOptions.options
-)
-
-if not Types['WorldProp'] then
-	Types['WorldProp'] = {}
-end
-SetOptions(Types['WorldProp'], Config.GlobalWorldPropOptions.distance, Config.GlobalWorldPropOptions.options)
-
-if not Types['WorldWeapon'] then
-	Types['WorldWeapon'] = {}
-end
-SetOptions(Types['WorldWeapon'], Config.GlobalWorldWeaponOptions.distance, Config.GlobalWorldWeaponOptions.options)
-
-if not Types['WorldStaticMesh'] then
-	Types['WorldStaticMesh'] = {}
-end
-SetOptions(
-	Types['WorldStaticMesh'],
-	Config.GlobalWorldStaticMeshOptions.distance,
-	Config.GlobalWorldStaticMeshOptions.options
-)
+configureType('WorldVehicleWheeled', Config.GlobalWorldVehicleWheeledOptions)
+configureType('WorldCharacterSimple', Config.GlobalWorldCharacterSimpleOptions)
+configureType('WorldProp', Config.GlobalWorldPropOptions)
+configureType('WorldWeapon', Config.GlobalWorldWeaponOptions)
+configureType('WorldStaticMesh', Config.GlobalWorldStaticMeshOptions)
