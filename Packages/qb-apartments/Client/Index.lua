@@ -174,23 +174,8 @@ end
 
 -- utility functions
 
-local function loadAnimDict(dict)
-	while not HasAnimDictLoaded(dict) do
-		RequestAnimDict(dict)
-		Wait(5)
-	end
-end
-
-local function openHouseAnim()
-	loadAnimDict('anim@heists@keycard@')
-	TaskPlayAnim(PlayerPedId(), 'anim@heists@keycard@', 'exit', 5.0, 1.0, -1, 16, 0, 0, 0, 0)
-	Wait(400)
-	ClearPedTasks(PlayerPedId())
-end
-
 local function EnterApartment(house, apartmentId, new)
-	--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_open", 0.1)
-	--openHouseAnim()
+	Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
 	QBCore.Functions.TriggerCallback('qb-apartments:GetApartmentOffset', function(offset)
 		if offset == nil or offset == 0 then
 			QBCore.Functions.TriggerCallback('qb-apartments:GetApartmentOffsetNewOffset', function(newoffset)
@@ -213,7 +198,7 @@ local function EnterApartment(house, apartmentId, new)
 				RangDoorbell = nil
 				Events.Call('qb-weathersync:client:DisableSync')
 				Events.CallRemote('qb-apartments:server:SetInsideMeta', house, apartmentId, true, false)
-				--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_close", 0.1)
+				Sound(Vector(), 'package://qb-apartments/Client/houses_door_close.ogg', true)
 				Events.CallRemote('qb-apartments:server:setCurrentApartment', CurrentApartment)
 				if Input.IsMouseEnabled() then Input.SetMouseEnabled(false) end
 			end, house)
@@ -222,7 +207,7 @@ local function EnterApartment(house, apartmentId, new)
 				offset = 710
 			end
 			CurrentOffset = offset
-			--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_open", 0.1)
+			Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
 			Events.CallRemote('qb-apartments:server:AddObject', apartmentId, house, CurrentOffset)
 			local coords = Vector(
 				Apartments.Locations[house].coords[1],
@@ -236,7 +221,7 @@ local function EnterApartment(house, apartmentId, new)
 			CurrentApartment = apartmentId
 			Events.Call('qb-weathersync:client:DisableSync')
 			Events.CallRemote('qb-apartments:server:SetInsideMeta', house, apartmentId, true, true)
-			--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_close", 0.1)
+			Sound(Vector(), 'package://qb-apartments/Client/houses_door_close.ogg', true)
 			Events.CallRemote('qb-apartments:server:setCurrentApartment', CurrentApartment)
 			if Input.IsMouseEnabled() then Input.SetMouseEnabled(false) end
 		end
@@ -254,8 +239,7 @@ local function EnterApartment(house, apartmentId, new)
 end
 
 local function LeaveApartment(house)
-	--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_open", 0.1)
-	--openHouseAnim()
+	Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
 	Events.CallRemote('qb-apartments:returnBucket')
 	Client.GetLocalPlayer():StartCameraFade(0, 1, 0.1, Color(0, 0, 0, 1), true, true)
 	DespawnInterior(HouseObj, function()
@@ -272,7 +256,7 @@ local function LeaveApartment(house)
 		CurrentApartment = nil
 		InApartment = false
 		CurrentOffset = 0
-		--Events.CallRemote("InteractSound_SV:PlayOnSource", "houses_door_close", 0.1)
+		Sound(Vector(), 'package://qb-apartments/Client/houses_door_close.ogg', true)
 		Events.CallRemote('qb-apartments:server:setCurrentApartment', nil)
 		DeleteInApartmentTargets()
 		DeleteApartmentsEntranceTargets()
@@ -313,37 +297,17 @@ end
 function MenuOwners()
 	QBCore.Functions.TriggerCallback('qb-apartments:GetAvailableApartments', function(apartments)
 		if next(apartments) == nil then
-			QBCore.Functions.Notify(Lang:t('error.nobody_home'), 'error', 3500)
-			CloseMenuFull()
+			QBCore.Functions.Notify(Lang:t('error.nobody_home'), 'error')
 		else
-			local apartmentMenu = {
-				{
-					header = Lang:t('text.tennants'),
-					isMenuHeader = true,
-				},
-			}
-
+			local apartment_menu = ContextMenu.new()
+			apartment_menu:addButton('header-id', Lang:t('text.tennants'), function() end)
 			for k, v in pairs(apartments) do
-				apartmentMenu[#apartmentMenu + 1] = {
-					header = v,
-					txt = '',
-					params = {
-						event = 'qb-apartments:client:RingMenu',
-						args = {
-							apartmentId = k,
-						},
-					},
-				}
+				apartment_menu:addButton('apartment-' .. k, v, function()
+					Events.Call('qb-apartments:client:RingMenu', { apartmentId = k })
+				end)
 			end
-
-			apartmentMenu[#apartmentMenu + 1] = {
-				header = Lang:t('text.close_menu'),
-				txt = '',
-				params = {
-					event = 'qb-menu:client:closeMenu',
-				},
-			}
-			openMenu(apartmentMenu)
+			apartmentMenu:addButton('close-menu', Lang:t('text.close_menu'), function() apartment_menu:Close() end)
+			apartment_menu:Open(false, true)
 		end
 	end, ClosestHouse)
 end
@@ -398,7 +362,6 @@ Events.SubscribeRemote('qb-apartments:client:SpawnInApartment', function(apartme
 				Apartments.Locations[RangDoorbell].coords[3]
 			)
 		)
-
 		if doorbelldist > 500 then
 			QBCore.Functions.Notify(Lang:t('error.to_far_from_door'))
 			return
@@ -473,7 +436,7 @@ end)
 
 Events.SubscribeRemote('qb-apartments:client:OpenDoor', function()
 	if CurrentDoorBell == 0 then
-		QBCore.Functions.Notify(Lang:t('error.nobody_at_door'))
+		QBCore.Functions.Notify(Lang:t('error.nobody_at_door'), 'error')
 		return
 	end
 	Events.CallRemote('qb-apartments:server:OpenDoor', CurrentDoorBell, CurrentApartment, ClosestHouse)
