@@ -1,5 +1,14 @@
 local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 
+-- Expermiental
+
+Player.Subscribe('DimensionChange', function(self, old_dimension, new_dimension)
+    local ped = self:GetControlledCharacter()
+    if not ped then return end
+    local ped_dimension = ped:GetDimension()
+    if ped_dimension ~= new_dimension then ped:SetDimension(new_dimension) end
+end)
+
 QBCore.Commands.Add('invisible', '', {}, false, function(source)
     local ped = source:GetControlledCharacter()
     if not ped then return end

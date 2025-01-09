@@ -85,9 +85,7 @@ local coords_canvas = nil
 
 Events.SubscribeRemote('qb-adminmenu:client:showCoords', function()
 	local ped = Client.GetLocalPlayer():GetControlledCharacter()
-	if not ped then
-		return
-	end
+	if not ped then return end
 	if not showing_coords then
 		showing_coords = true
 		coords_canvas = Canvas(true, Color.TRANSPARENT, 0, true)
