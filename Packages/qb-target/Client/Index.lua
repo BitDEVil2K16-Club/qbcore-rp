@@ -112,7 +112,6 @@ end
 local function clearTarget()
 	if not target_entity then return end
 	updateEntityHighlight(target_entity, false)
-	removeSprite(target_entity)
 	target_entity = nil
 	nui_data = {}
 	my_webui:CallEvent('leftTarget')

@@ -6,13 +6,10 @@ function Map:AddBlip(blipData)
     blipData.id = blipData.id or GenerateHashId()
     blipData.imgUrl = blipData.imgUrl or './media/map-icons/NonImgBlip.svg'
     table.insert(MapSettings.MapBlips, blipData)
-
-    mapUI:CallEvent("Map:SetBlips", MapSettings.MapBlips)
-    Events.Call("Minimap:AddBlip", blipData)
-
-    mapUI:CallEvent("Map:BlinkBlip", blipData.id)
-    Events.Call("Minimap:BlinkBlip", blipData.id)
-
+    mapUI:CallEvent('Map:SetBlips', MapSettings.MapBlips)
+    Events.Call('Minimap:AddBlip', blipData)
+    mapUI:CallEvent('Map:BlinkBlip', blipData.id)
+    Events.Call('Minimap:BlinkBlip', blipData.id)
     return blipData.id
 end
 
@@ -24,8 +21,8 @@ function Map:RemoveBlip(blipId)
             break
         end
     end
-    mapUI:CallEvent("Map:SetBlips", MapSettings.MapBlips)
-    Events.Call("Minimap:RemoveBlip", blipId)
+    mapUI:CallEvent('Map:SetBlips', MapSettings.MapBlips)
+    Events.Call('Minimap:RemoveBlip', blipId)
 end
 
 -- Toggle the map's visibility and adjust input/mouse settings accordingly
@@ -36,7 +33,7 @@ function Map:ToggleVisibility()
         mapUI:SetFocus()
         Input.SetInputEnabled(false)
         Input.SetMouseEnabled(true)
-        mapUI:CallEvent("Map:UpdateView")
+        mapUI:CallEvent('Map:UpdateView')
     else
         mapUI:SetVisibility(WidgetVisibility.Hidden)
         Input.SetInputEnabled(true)
@@ -52,8 +49,8 @@ function Map:ChangeBlipName(blipId, newName)
             break
         end
     end
-    mapUI:CallEvent("Map:SetBlips", MapSettings.MapBlips)
-    Events.Call("Minimap:SetBlips", MapSettings.MapBlips)
+    mapUI:CallEvent('Map:SetBlips', MapSettings.MapBlips)
+    Events.Call('Minimap:SetBlips', MapSettings.MapBlips)
 end
 
 -- Update a blip's icon on the map and minimap
@@ -64,13 +61,13 @@ function Map:ChangeBlipIcon(blipId, newImgUrl)
             break
         end
     end
-    mapUI:CallEvent("Map:SetBlips", MapSettings.MapBlips)
-    Events.Call("Minimap:SetBlips", MapSettings.MapBlips)
+    mapUI:CallEvent('Map:SetBlips', MapSettings.MapBlips)
+    Events.Call('Minimap:SetBlips', MapSettings.MapBlips)
 end
 
 -- Generate a unique hash ID for blips
 function GenerateHashId()
-    local charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    local charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     local hashLength = 8
     local hash = {}
 
@@ -88,64 +85,64 @@ function GenerateHashId()
 end
 
 -- Event subscriptions for remote interactions
-Events.SubscribeRemote("Map:AddBlip", function(blipData) Map:AddBlip(blipData) end)
-Events.SubscribeRemote("Map:RemoveBlip", function(blipId) Map:RemoveBlip(blipId) end)
-Events.SubscribeRemote("Map:ChangeBlipName", function(blipId, newName) Map:ChangeBlipName(blipId, newName) end)
-Events.SubscribeRemote("Map:ChangeBlipIcon", function(blipId, newImgUrl) Map:ChangeBlipIcon(blipId, newImgUrl) end)
+Events.SubscribeRemote('Map:AddBlip', function(blipData) Map:AddBlip(blipData) end)
+Events.SubscribeRemote('Map:RemoveBlip', function(blipId) Map:RemoveBlip(blipId) end)
+Events.SubscribeRemote('Map:ChangeBlipName', function(blipId, newName) Map:ChangeBlipName(blipId, newName) end)
+Events.SubscribeRemote('Map:ChangeBlipIcon', function(blipId, newImgUrl) Map:ChangeBlipIcon(blipId, newImgUrl) end)
 
 -- Subscribes to add/remove waypoint markers on the map and minimap
-mapUI:Subscribe("Map:AddWaypointBlip", function(x, y)
+mapUI:Subscribe('Map:AddWaypointBlip', function(x, y)
     local waypointBlip = {
         coords = { x = x, y = y },
-        name = "Waypoint",
+        name = 'Waypoint',
         imgUrl = './media/map-icons/marker.svg',
-        type = "waypoint"
+        type = 'waypoint'
     }
 
-    mapUI:CallEvent("Map:SetWaypoint", waypointBlip)
-    mapUI:CallEvent("Map:BlinkWaypoint")
-    Events.Call("Minimap:SetWaypoint", waypointBlip)
-    Events.Call("Minimap:BlinkWaypoint")
+    mapUI:CallEvent('Map:SetWaypoint', waypointBlip)
+    mapUI:CallEvent('Map:BlinkWaypoint')
+    Events.Call('Minimap:SetWaypoint', waypointBlip)
+    Events.Call('Minimap:BlinkWaypoint')
 end)
 
-mapUI:Subscribe("Map:RemoveWaypointBlip", function()
-    mapUI:CallEvent("Map:RemoveWaypoint")
-    Events.Call("Minimap:RemoveWaypoint")
+mapUI:Subscribe('Map:RemoveWaypointBlip', function()
+    mapUI:CallEvent('Map:RemoveWaypoint')
+    Events.Call('Minimap:RemoveWaypoint')
 end)
 
 -- Toggle map visibility via the "M" key
-mapUI:Subscribe("Map:ExitMap", function() Map:ToggleVisibility() end)
-Input.Subscribe("KeyDown", function(key_name)
-    if key_name == "M" then Map:ToggleVisibility() end
+mapUI:Subscribe('Map:ExitMap', function() Map:ToggleVisibility() end)
+Input.Subscribe('KeyDown', function(key_name)
+    if key_name == 'M' then Map:ToggleVisibility() end
 end)
 
 -- Updates player position on the map each tick
-Client.Subscribe("Tick", function(delta_time)
+Client.Subscribe('Tick', function(delta_time)
     local player = Client.GetLocalPlayer()
     local character = player and player:GetControlledCharacter()
     if character then
         local location = character:GetLocation()
         local heading = character:GetRotation().Yaw
-        mapUI:CallEvent("Map:UpdatePlayerPos", location.X, location.Y, heading)
+        mapUI:CallEvent('Map:UpdatePlayerPos', location.X, location.Y, heading)
     end
 end)
 
 -- Outputs current coordinates to chat upon command
-Chat.Subscribe("PlayerSubmit", function(message)
-    if message == "GetCoords" then
+Chat.Subscribe('PlayerSubmit', function(message)
+    if message == 'GetCoords' then
         local character = Client.GetLocalPlayer():GetControlledCharacter()
         if character then
             local location = character:GetLocation()
-            Chat.AddMessage("You are at " .. location.X .. ", " .. location.Y .. ", " .. location.Z)
+            Chat.AddMessage('You are at ' .. location.X .. ', ' .. location.Y .. ', ' .. location.Z)
         end
     end
 end)
 
 -- Load initial settings for blips and coordinates
 Package.Subscribe('Load', function()
-    mapUI:CallEvent("Map:SetKnownCoords", MapSettings.KnownGameCoords, MapSettings.KnownImageCoords)
-    mapUI:CallEvent("Map:SetBlips", MapSettings.MapBlips)
-    Events.Call("Minimap:SetInitialBlips", MapSettings.MapBlips)
+    mapUI:CallEvent('Map:SetKnownCoords', MapSettings.KnownGameCoords, MapSettings.KnownImageCoords)
+    mapUI:CallEvent('Map:SetBlips', MapSettings.MapBlips)
+    Events.Call('Minimap:SetInitialBlips', MapSettings.MapBlips)
 end)
 
 -- Initialize default blip IDs and icons if missing
@@ -153,3 +150,5 @@ for _, blip in ipairs(MapSettings.MapBlips or {}) do
     blip.id = blip.id or GenerateHashId()
     blip.imgUrl = blip.imgUrl or './media/map-icons/NonImgBlip.svg'
 end
+
+Package.Export('Map', Map)
