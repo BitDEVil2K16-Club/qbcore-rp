@@ -58,7 +58,7 @@ Input.Subscribe('KeyDown', function(key_name)
         if hold_time <= 0 then
             --Events.CallRemote('QBCore:Console:CallCommand', 'revive')
             Events.CallRemote('hospital:server:RespawnAtHospital')
-            hold_time = 5
+            hold_time = 50
             isDead = false
             DeathTimer(false)
         end
