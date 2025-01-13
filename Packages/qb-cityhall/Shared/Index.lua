@@ -12,7 +12,7 @@ Config = {
 
     Locations = {
         {
-            coords = { Vector(-265.0, -963.6, 31.2), Rotator() },
+            coords = { Vector(-50194.7, 38451.2, 215.0), Rotator(0.0, 180.00004577637, 0.0) },
             showBlip = true,
             blipData = {
                 sprite = 487,
