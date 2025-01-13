@@ -1,7 +1,7 @@
 Config = {
     BossMenus = {
         police = {
-            Vector(447.16, -974.31, 30.47),
+            Vector(-194849.8, 219318.8, 214.5),
         },
         ambulance = {
             Vector(311.21, -599.36, 43.29),
