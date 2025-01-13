@@ -291,7 +291,7 @@ end)
 
 -- Keybinds
 
-Input.Register('Target', Config.OpenKey, 'Open Target')
+Input.Register('Target', Config.OpenKey)
 Input.Bind('Target', InputEvent.Pressed, enableTarget)
 Input.Bind('Target', InputEvent.Released, disableTarget)
 

@@ -216,15 +216,15 @@ end)
 
 -- Commands
 
-Input.Register('openInv', Config.Keybinds.Open, 'Open Inventory')
-Input.Register('toggleHotbar', Config.Keybinds.Hotbar, 'Toggle Hotbar')
+Input.Register('Inventory', Config.Keybinds.Open)
+Input.Register('Hotbar', Config.Keybinds.Hotbar)
 
-Input.Bind('openInv', InputEvent.Pressed, function()
+Input.Bind('Inventory', InputEvent.Pressed, function()
 	Events.CallRemote('qb-inventory:server:openInventory')
 	Input.SetInputEnabled(false)
 end)
 
-Input.Bind('toggleHotbar', InputEvent.Pressed, function()
+Input.Bind('Hotbar', InputEvent.Pressed, function()
 	Events.CallRemote('qb-inventory:server:toggleHotbar')
 end)
 
