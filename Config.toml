@@ -44,7 +44,8 @@
         "qb-ambulancejob",
         "qb-policejob",
         "qb-radio",
-        "qb-management"
+        "qb-management",
+        "qb-cityhall"
     ]
     # asset packs list (this will additionally load the asset packs you define here)
     assets = [
