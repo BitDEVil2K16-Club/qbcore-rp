@@ -155,6 +155,24 @@ function QBCore.Functions.GetClosestSCharacter(source, coords)
     return closest_ped, closest_distance
 end
 
+function QBCore.Functions.GetClosestPawn(source, coords)
+    local player_ped = source:GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local characters = HPawn.GetAll()
+    local closest_pawn, closest_distance = nil, -1
+    for i = 1, #characters do
+        local ped = characters[i]
+        local ped_coords = ped:GetLocation()
+        local distance = player_coords:Distance(ped_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_pawn = ped
+            closest_distance = distance
+        end
+    end
+    return closest_pawn, closest_distance
+end
+
 function QBCore.Functions.GetClosestProp(coords)
     local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
     if not player_ped then return end
