@@ -20,7 +20,7 @@ Config = {
     CleanupDropTime = 15,    -- in minutes
     CleanupDropInterval = 1, -- in minutes
 
-    ItemDropObject = 'nanos-world::SM_Toolbox',
+    ItemDropObject = 'abcca-qbcore::SM_Trash',
 }
 
 VehicleStorage = {
