@@ -45,18 +45,21 @@ end
 -- World Getters
 
 function QBCore.Functions.GetClosestPlayer(coords)
-    local player_ped = Client.GetLocalPlayer():GetControlledCharacter()
+    local player = Client.GetLocalPlayer()
+    local player_ped = player:GetControlledCharacter()
     if not player_ped then return end
     local player_coords = coords or player_ped:GetLocation()
     local players = HCharacter.GetAll()
     local closest_player, closest_distance = nil, -1
     for i = 1, #players do
         local ped = players[i]
-        local ped_coords = ped:GetLocation()
-        local distance = player_coords:Distance(ped_coords)
-        if closest_distance == -1 or distance < closest_distance then
-            closest_player = ped
-            closest_distance = distance
+        if ped ~= player_ped then
+            local ped_coords = ped:GetLocation()
+            local distance = player_coords:Distance(ped_coords)
+            if closest_distance == -1 or distance < closest_distance then
+                closest_player = ped
+                closest_distance = distance
+            end
         end
     end
     return closest_player, closest_distance
@@ -150,6 +153,24 @@ function QBCore.Functions.GetClosestSCharacter(source, coords)
         end
     end
     return closest_ped, closest_distance
+end
+
+function QBCore.Functions.GetClosestPawn(source, coords)
+    local player_ped = source:GetControlledCharacter()
+    if not player_ped then return end
+    local player_coords = coords or player_ped:GetLocation()
+    local characters = HPawn.GetAll()
+    local closest_pawn, closest_distance = nil, -1
+    for i = 1, #characters do
+        local ped = characters[i]
+        local ped_coords = ped:GetLocation()
+        local distance = player_coords:Distance(ped_coords)
+        if closest_distance == -1 or distance < closest_distance then
+            closest_pawn = ped
+            closest_distance = distance
+        end
+    end
+    return closest_pawn, closest_distance
 end
 
 function QBCore.Functions.GetClosestProp(coords)

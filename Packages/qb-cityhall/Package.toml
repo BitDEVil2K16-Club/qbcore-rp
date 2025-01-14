@@ -19,7 +19,7 @@
     compatibility_version = "1.25"
     # packages requirements
     packages_requirements = [
-
+        "qb-target"
     ]
     # asset packs requirements
     assets_requirements = [

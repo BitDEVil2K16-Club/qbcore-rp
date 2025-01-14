@@ -6,20 +6,22 @@ QBCore.Functions.CreateCallback('qb-management:server:getEmployees', function(so
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     if not Player.PlayerData.job.isboss then return end
+    local citizen_id = Player.PlayerData.citizenid
     local employees = {}
     local job_name = Player.PlayerData.job.name
-    local players = MySQL.query.await("SELECT * FROM `players` WHERE `job` LIKE '%" .. job_name .. "%'", {})
+    local players = MySQL.query.await('SELECT * FROM players WHERE job LIKE ?', { '%' .. job_name .. '%' })
     if players and players[1] then
         for _, value in pairs(players) do
-            local Target = QBCore.Functions.GetPlayerByCitizenId(value.citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(value.citizenid)
-            if Target and Target.PlayerData.job.name == job_name then
-                local isOnline = Target.PlayerData.source
-                employees[#employees + 1] = {
-                    empSource = Target.PlayerData.citizenid,
-                    grade = Target.PlayerData.job.grade,
-                    isboss = Target.PlayerData.job.isboss,
-                    name = (isOnline and '🟢 ' or '❌ ') .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname
-                }
+            if value.citizenid ~= citizen_id then
+                local Target = QBCore.Functions.GetPlayerByCitizenId(value.citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(value.citizenid)
+                if Target and Target.PlayerData.job.name == job_name then
+                    local isOnline = Target.PlayerData.source
+                    employees[#employees + 1] = {
+                        citizenid = Target.PlayerData.citizenid,
+                        job_info = Target.PlayerData.job,
+                        name = (isOnline and '🟢 ' or '❌ ') .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname
+                    }
+                end
             end
         end
         table.sort(employees, function(a, b)
@@ -33,20 +35,22 @@ QBCore.Functions.CreateCallback('qb-management:server:getMembers', function(sour
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     if not Player.PlayerData.gang.isboss then return end
+    local citizen_id = Player.PlayerData.citizenid
     local members = {}
     local gang_name = Player.PlayerData.gang.name
-    local players = MySQL.query.await("SELECT * FROM `players` WHERE `gang` LIKE '%" .. gang_name .. "%'", {})
+    local players = MySQL.query.await('SELECT * FROM players WHERE gang LIKE ?', { '%' .. gang_name .. '%' })
     if players and players[1] then
         for _, value in pairs(players) do
-            local Target = QBCore.Functions.GetPlayerByCitizenId(value.citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(value.citizenid)
-            if Target and Target.PlayerData.gang.name == gang_name then
-                local isOnline = Target.PlayerData.source
-                members[#members + 1] = {
-                    empSource = Target.PlayerData.citizenid,
-                    grade = Target.PlayerData.gang.grade,
-                    isboss = Target.PlayerData.gang.isboss,
-                    name = (isOnline and '🟢 ' or '❌ ') .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname
-                }
+            if value.citizenid ~= citizen_id then
+                local Target = QBCore.Functions.GetPlayerByCitizenId(value.citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(value.citizenid)
+                if Target and Target.PlayerData.gang.name == gang_name then
+                    local isOnline = Target.PlayerData.source
+                    members[#members + 1] = {
+                        citizenid = Target.PlayerData.citizenid,
+                        gang_info = Target.PlayerData.gang,
+                        name = (isOnline and '🟢 ' or '❌ ') .. Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname
+                    }
+                end
             end
         end
         table.sort(members, function(a, b)
@@ -60,15 +64,17 @@ QBCore.Functions.CreateCallback('qb-management:server:closestPlayers', function(
     local ped = source:GetControlledCharacter()
     if not ped then return end
     local player_coords = ped:GetLocation()
-    local players = QBCore.Functions.GetPlayers()
+    local players = QBCore.Functions.GetQBPlayers()
     local closestPlayers = {}
     for _, v in pairs(players) do
-        local targetPed = v:GetControlledCharacter()
-        if targetPed then
-            local targetLocation = targetPed:GetLocation()
-            local distance = player_coords:Distance(targetLocation)
-            if distance < 400 then
-                table.insert(closestPlayers, v)
+        if v.PlayerData.source ~= source then
+            local targetPed = v.PlayerData.source:GetControlledCharacter()
+            if targetPed then
+                local targetLocation = targetPed:GetLocation()
+                local distance = player_coords:Distance(targetLocation)
+                if distance < 400 then
+                    table.insert(closestPlayers, v.PlayerData)
+                end
             end
         end
     end
@@ -121,7 +127,7 @@ Events.SubscribeRemote('qb-management:server:fireEmployee', function(source, tar
     end
 end)
 
-Events.SubscribeRemote('qb-management:server:updateEmployee', function(source, data)
+Events.SubscribeRemote('qb-management:server:updateEmployee', function(source, target, grade)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     local player_job = Player.PlayerData.job
@@ -129,17 +135,17 @@ Events.SubscribeRemote('qb-management:server:updateEmployee', function(source, d
         Events.CallRemote('QBCore:Notify', source, Lang:t('error.unauthorized'), 'error')
         return
     end
-    if data.grade > player_job.grade.level then
+    if grade > player_job.grade.level then
         Events.CallRemote('QBCore:Notify', source, Lang:t('error.unauthorized'), 'error')
         return
     end
-    local Employee = QBCore.Functions.GetPlayerByCitizenId(data.cid)
+    local Employee = QBCore.Functions.GetPlayerByCitizenId(target)
     if not Employee then return end
     local employee_rank = Employee.PlayerData.job.grade.level
-    if Employee.Functions.SetJob(player_job.name, data.grade) then
+    if Employee.Functions.SetJob(player_job.name, grade) then
         Employee.Functions.Save()
         Events.CallRemote('QBCore:Notify', source, Lang:t('success.e_updated'), 'success')
-        if employee_rank > data.grade then
+        if employee_rank > grade then
             Events.CallRemote('QBCore:Notify', Employee.PlayerData.source, Lang:t('error.demoted'), 'error')
         else
             Events.CallRemote('QBCore:Notify', Employee.PlayerData.source, Lang:t('success.e_updatedt'), 'success')

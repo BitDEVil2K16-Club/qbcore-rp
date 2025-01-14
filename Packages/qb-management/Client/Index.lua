@@ -80,7 +80,7 @@ end)
 -- Job Events
 
 local BossMenuOptions = {
-    { id = 'boss-employees', label = Lang:t('job_options.employees'), event = 'qb-management:client:employeelist' },
+    { id = 'boss-employees', label = Lang:t('job_options.employees'), event = 'qb-management:client:employeeList' },
     { id = 'boss-hire',      label = Lang:t('job_options.hire'),      event = 'qb-management:client:hireMenu' },
     { id = 'boss-stash',     label = Lang:t('job_options.stash'),     remoteEvent = 'qb-management:server:jobStash' },
     { id = 'boss-wardrobe',  label = Lang:t('job_options.wardrobe'),  event = 'qb-management:client:wardrobe' },
@@ -120,11 +120,8 @@ Events.Subscribe('qb-management:client:employeeList', function()
             end)
         else
             for _, employee in pairs(employees) do
-                employee_list:addButton('employee-' .. employee.citizenid, employee.name .. ' (' .. employee.grade.name .. ')', function()
-                    Events.Call('qb-management:client:manageEmployee', {
-                        player = employee,
-                        work = PlayerJob
-                    })
+                employee_list:addButton('employee-' .. employee.citizenid, employee.name .. ' (' .. employee.job_info.grade.name .. ')', function()
+                    Events.Call('qb-management:client:manageEmployee', employee)
                 end)
             end
         end
@@ -132,18 +129,21 @@ Events.Subscribe('qb-management:client:employeeList', function()
             Events.Call('qb-management:client:openJobMenu')
         end)
         employee_list:Open(false, true)
-    end, PlayerJob.name)
+    end, player_data.job.name)
 end)
 
-Events.Subscribe('qb-management:client:manageEmployee', function(data)
+Events.Subscribe('qb-management:client:manageEmployee', function(employee)
     local employee_options = ContextMenu.new()
-    for gradeId, gradeData in pairs(QBCore.Shared.Jobs[data.work.name].grades) do
+    local job_name = employee.job_info.name
+    local job_data = QBShared.Jobs[job_name]
+    if not job_data then return end
+    for gradeId, gradeData in pairs(job_data.grades) do
         employee_options:addButton('grade-' .. gradeId, gradeData.name .. ' (' .. Lang:t('job_options.grade') .. gradeId .. ')', function()
-            Events.CallRemote('qb-management:server:updateEmployee', data.player.empSource, tonumber(gradeId), gradeData.name)
+            Events.CallRemote('qb-management:server:updateEmployee', employee.citizenid, tonumber(gradeId))
         end)
     end
     employee_options:addButton('fire-employee', Lang:t('job_options.fire'), function()
-        Events.CallRemote('qb-management:server:fireEmployee', data.player.empSource)
+        Events.CallRemote('qb-management:server:fireEmployee', employee.citizenid)
     end)
     employee_options:addButton('return-button', Lang:t('job_options.return'), function()
         Events.Call('qb-management:client:employeeList')
@@ -155,14 +155,13 @@ Events.Subscribe('qb-management:client:hireMenu', function()
     local hire_menu = ContextMenu.new()
     QBCore.Functions.TriggerCallback('qb-management:server:closestPlayers', function(players)
         if not players or #players == 0 then
-            hire_menu:addButton('no-players', Lang:t('job_options.no_nearby'), function()
-                Events.Call('qb-management:client:openJobMenu')
-            end)
+            QBCore.Functions.Notify(Lang:t('job_options.no_nearby'), 'error')
+            return
         else
             for _, player in pairs(players) do
-                if player and player.sourceplayer ~= Client.GetLocalPlayer():GetID() then
-                    hire_menu:addButton('hire-' .. player.sourceplayer, player.name .. ' (' .. Lang:t('job_options.cid') .. player.citizenid .. ' - ID: ' .. player.sourceplayer .. ')', function()
-                        Events.CallRemote('qb-management:server:hireEmployee', player.sourceplayer)
+                if player then
+                    hire_menu:addButton('hire-' .. player.netId, player.charinfo.firstname .. ' ' .. player.charinfo.lastname, function()
+                        Events.CallRemote('qb-management:server:hireEmployee', player.source)
                     end)
                 end
             end
@@ -217,11 +216,8 @@ Events.Subscribe('qb-management:client:memberList', function()
             end)
         else
             for _, member in pairs(members) do
-                member_list:addButton('member-' .. member.citizenid, member.name .. ' (' .. member.grade.name .. ')', function()
-                    Events.Call('qb-management:client:manageMember', {
-                        player = member,
-                        work = PlayerGang
-                    })
+                member_list:addButton('member-' .. member.citizenid, member.name .. ' (' .. member.gang_info.name .. ')', function()
+                    Events.Call('qb-management:client:manageMember', member)
                 end)
             end
         end
@@ -229,18 +225,21 @@ Events.Subscribe('qb-management:client:memberList', function()
             Events.Call('qb-management:client:openGangMenu')
         end)
         member_list:Open(false, true)
-    end, PlayerGang.name)
+    end, player_data.gang.name)
 end)
 
-Events.Subscribe('qb-management:client:manageMember', function()
+Events.Subscribe('qb-management:client:manageMember', function(member)
     local member_options = ContextMenu.new()
-    for gradeId, gradeData in pairs(QBCore.Shared.Gangs[data.work.name].grades) do
+    local gang_name = employee.gang_info.name
+    local gang_data = QBShared.Gangs[gang_name]
+    if not gang_data then return end
+    for gradeId, gradeData in pairs(gang_data.grades) do
         member_options:addButton('grade-' .. gradeId, gradeData.name .. ' (' .. Lang:t('gang_options.grade') .. gradeId .. ')', function()
-            Events.CallRemote('qb-management:server:updateMember', data.player.empSource, tonumber(gradeId))
+            Events.CallRemote('qb-management:server:updateMember', member.citizenid, tonumber(gradeId))
         end)
     end
     member_options:addButton('fire-member', Lang:t('gang_options.fire'), function()
-        Events.CallRemote('qb-management:server:removeMember', data.player.empSource)
+        Events.CallRemote('qb-management:server:removeMember', member.citizenid)
     end)
     member_options:addButton('return-button', Lang:t('gang_options.return'), function()
         Events.Call('qb-management:client:memberList')
@@ -289,7 +288,7 @@ for job, zones in pairs(Config.BossMenus) do
             options = {
                 {
                     type = 'client',
-                    event = 'qb-management:client:OpenJobMenu',
+                    event = 'qb-management:client:openJobMenu',
                     icon = 'fas fa-sign-in-alt',
                     label = Lang:t('target.label'),
                     canInteract = function() return job == player_data.job.name and player_data.job.isboss end
@@ -310,7 +309,7 @@ for gang, zones in pairs(Config.GangMenus) do
             options = {
                 {
                     type = 'client',
-                    event = 'qb-management:client:OpenGangMenu',
+                    event = 'qb-management:client:openGangMenu',
                     icon = 'fas fa-sign-in-alt',
                     label = Lang:t('targetgang.label'),
                     canInteract = function() return gang == player_data.gang.name and player_data.gang.isboss end

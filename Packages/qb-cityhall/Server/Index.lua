@@ -36,12 +36,12 @@ local function getClosestLocation(source)
     local pedCoords = ped:GetLocation()
     local closest = nil
     local closestDist = 9999
-    for _, locations in pairs(Config.Locations) do
+    for index, locations in pairs(Config.Locations) do
         local coords = locations.coords
         local hallCoords = coords[1]
         local dist = #(pedCoords - hallCoords)
         if dist < closestDist then
-            closest = locations
+            closest = index
             closestDist = dist
         end
     end
@@ -105,10 +105,10 @@ Events.SubscribeRemote('qb-cityhall:server:requestId', function(source, item)
         return false
     end
     if not AddItem(source, item, 1, false, info, 'qb-cityhall:server:requestId') then
-        Events.CallRemote('QBCore:Notify', source, Lang:t('error.item_failed', { item = item }), 'error')
+        Events.CallRemote('QBCore:Notify', source, Lang:t('error.item_failed', { value = item }), 'error')
     else
         Player.Functions.RemoveMoney('cash', itemInfo.cost, 'cityhall id')
-        Events.CallRemote('qb-inventory:client:ItemBox', source, QBCore.Shared.Items[item], 'add')
+        Events.CallRemote('qb-inventory:client:ItemBox', source, QBShared.Items[item], 'add')
     end
 end)
 
@@ -116,13 +116,13 @@ Events.SubscribeRemote('qb-cityhall:server:applyJob', function(source, job)
     local hall, distance = getClosestLocation(source)
     if not hall or distance > 500 then return end
     if not availableJobs[job] then return end
-    local JobInfo = QBCore.Shared.Jobs[job]
+    local JobInfo = QBShared.Jobs[job]
     if not JobInfo then return end
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     if Player.Functions.SetJob(job, 0) then
-        Events.CallRemote('QBCore:Notify', source, Lang:t('info.new_job', { job = JobInfo.label }))
+        Events.CallRemote('QBCore:Notify', source, Lang:t('info.new_job', { value = JobInfo.label }))
     else
-        Events.CallRemote('QBCore:Notify', source, Lang:t('error.job_failed', { job = JobInfo.label }))
+        Events.CallRemote('QBCore:Notify', source, Lang:t('error.job_failed', { value = JobInfo.label }))
     end
 end)

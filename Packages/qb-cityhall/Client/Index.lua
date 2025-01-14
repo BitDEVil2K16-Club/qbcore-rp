@@ -33,10 +33,10 @@ end
 
 local function openCityHall()
     local city_hall = ContextMenu.new()
-    boss_menu:addButton('cityhall-jobs', 'Jobs', function()
+    city_hall:addButton('cityhall-jobs', 'Jobs', function()
         jobMenu()
     end)
-    boss_menu:addButton('cityhall-licenses', 'Licenses', function()
+    city_hall:addButton('cityhall-licenses', 'Licenses', function()
         licenseMenu()
     end)
     city_hall:Open(false, true)
