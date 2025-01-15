@@ -68,7 +68,7 @@ HCharacter.Subscribe('TakeDamage', function(self, damage, bone, type, from_direc
     if isDead then return end
 
     -- TODO: Handle other forms of damage (vehicle, etc)
-    local weapon = causer:IsA('weapon')
+    local weapon = causer:IsA(Weapon)
     if not weapon then return end -- Punch or other damage? Doesn't need to decrease armor or stagger player
 
     local playerArmor = QBCore.Functions.GetPlayerData().metadata.armor
