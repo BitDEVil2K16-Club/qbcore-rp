@@ -114,6 +114,9 @@ end)
 -- Bleeding Tick Logic
 
 Player.Subscribe('Possess', function(self, character)
+    local Player = Client.GetLocalPlayer()
+    if self ~= Player then return end
+
     PlayerPed = character
 end)
 
@@ -122,11 +125,9 @@ function StartBleedTimer()
         if not PlayerPed then return end -- No ped, nothing to bleed yet, but continue to run interval
         if BleedAmount > 0 then
             prevPos = prevPos or PlayerPed:GetLocation()
-            if prevPos:Distance(PlayerPed:GetLocation()) < 1000 then
-                prevPos = PlayerPed:GetLocation() -- Update position after calculations for next tick
-                return
-            end
-            print('Moved more than 1000 distance units')
+            if prevPos:Distance(PlayerPed:GetLocation()) < 200 then return end
+            prevPos = PlayerPed:GetLocation() -- Update location if they've moved
+
             -- Begin fading/blacking out timer
             if not isDead then
                 fadeOutTimer = fadeOutTimer + 1
