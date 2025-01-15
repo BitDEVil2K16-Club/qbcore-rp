@@ -108,7 +108,9 @@ end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:setHealth', function(source, playerId, amount)
     local ped = source:GetControlledCharacter()
+    print('Checking for ped')
     if not ped then return end
+    print('Found ped, setting health to: ' .. ped:GetHealth() - amount)
     ped:SetHealth(ped:GetHealth() - amount)
 end)
 

@@ -121,47 +121,31 @@ function StartBleedTimer()
     BleedTick = Timer.SetInterval(function()
         if not PlayerPed then return end -- No ped, nothing to bleed yet, but continue to run interval
         if BleedAmount > 0 then
-            if bleedTickTimer < Config.BleedTickRate then
-                -- For first 30 ticks
-                prevPos = prevPos or PlayerPed:GetLocation()
-                if prevPos:Distance(PlayerPed:GetLocation()) < 1.0 then
-                    -- Hasn't moved, increase timer closer to bleeding out
-                    bleedTickTimer = bleedTickTimer + 1
-                else
-                    -- Character is moving, bleed more
-                    bleedTickTimer = bleedTickTimer + Config.BleedMovementTick
-                    advanceBleedTimer = advanceBleedTimer + Config.BleedMovementAdvance -- Increase timer for bleeding leveling up
-                end
-
+            prevPos = prevPos or PlayerPed:GetLocation()
+            if prevPos:Distance(PlayerPed:GetLocation()) < 1000 then
                 prevPos = PlayerPed:GetLocation() -- Update position after calculations for next tick
                 return
             end
-
+            print('Moved more than 1000 distance units')
             -- Begin fading/blacking out timer
             if not isDead then
                 fadeOutTimer = fadeOutTimer + 1
-                if fadeOutTimer == Config.FadeOutTimer then -- Every 2 seconds, check if fade out, increase blackoutTimer
+                if fadeOutTimer == Config.FadeOutTimer then -- Every 30 seconds, check if fade out, increase blackoutTimer
                     local Player = Client.GetLocalPlayer() -- Could cache it if it's intensive
                     if blackoutTimer + 1 >= Config.BlackoutTimer and not onPainKillers then
-                        -- Black out after 10 ticks (could be 5 seconds if severe)
-
-                        Player:StartCameraFade(0.0, 1.0, 1.0, Color(0.0, 0.0, 0.0, 1.0), true, true)
-
+                        -- Black out (ragdoll) after 10 ticks (could be 5 ticks if severe)
                         Events.CallRemote('qb-ambulancejob:server:damageRagdoll', 1500)
-                        Timer.SetTimeout(function()
-                            Player:StopCameraFade()
-                        end, 1500)
                     else
                         blackoutTimer = blackoutTimer + (BleedAmount > 3 and 2 or 1) -- Severe bleeding, increase blackoutTimer by 2
                         
-                        Player:StartCameraFade(0.0, 0.8, 1.0, Color(0.0, 0.0, 0.0, 1.0), true, false)
+                        Player:StartCameraFade(0.0, 0.8, 5.0, Color(0.0, 0.0, 0.0, 1.0), true, false)
+                        -- Damage player for bleeding
+                        local bleedDamage = BleedAmount * Config.BleedTickDamage
+                        print('Severity: ' .. BleedAmount, 'Damage Taken: ' .. bleedDamage)
+                        Events.CallRemote('qb-ambulancejob:server:setHealth', nil, bleedDamage)
                     end
                     fadeOutTimer = 0
                 end
-
-                -- Damage player for bleeding
-                local bleedDamage = BleedAmount * Config.BleedTickDamage
-                Events.CallRemote('qb-ambulancejob:server:setHealth', nil, bleedDamage)
             end
         end
     end, 1000)
