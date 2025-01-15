@@ -48,6 +48,7 @@ Input.Subscribe('KeyPress', function(key_name)
 		end
 		my_webui:SetVisibility(WidgetVisibility.Hidden)
 		menu_open = false
+		Events.CallRemote('qb-adminmenu:server:toggleInput', true)
 	end
 end)
 
@@ -58,6 +59,7 @@ Input.Bind('AdminMenu', InputEvent.Pressed, function()
 		my_webui:CallEvent('openMenu')
 		my_webui:SetVisibility(WidgetVisibility.Visible)
 		menu_open = true
+		Events.CallRemote('qb-adminmenu:server:toggleInput', false)
 	else
 		my_webui:CallEvent('closeMenu')
 		if Input.IsMouseEnabled() then
@@ -65,6 +67,7 @@ Input.Bind('AdminMenu', InputEvent.Pressed, function()
 		end
 		my_webui:SetVisibility(WidgetVisibility.Hidden)
 		menu_open = false
+		Events.CallRemote('qb-adminmenu:server:toggleInput', true)
 	end
 end)
 

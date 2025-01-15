@@ -1,13 +1,14 @@
 local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 
--- Expermiental
+-- Events
 
-Player.Subscribe('DimensionChange', function(self, old_dimension, new_dimension)
-    local ped = self:GetControlledCharacter()
+Events.SubscribeRemote('qb-adminmenu:server:toggleInput', function(source, bool)
+    local ped = source:GetControlledCharacter()
     if not ped then return end
-    local ped_dimension = ped:GetDimension()
-    if ped_dimension ~= new_dimension then ped:SetDimension(new_dimension) end
+    ped:SetInputEnabled(bool)
 end)
+
+-- Commands
 
 QBCore.Commands.Add('invisible', '', {}, false, function(source)
     local ped = source:GetControlledCharacter()
