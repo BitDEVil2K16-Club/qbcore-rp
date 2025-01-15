@@ -1,4 +1,3 @@
-// General
 let isInDropdown = false;
 let scrollDelay = false;
 let persistentOptions = null;
@@ -72,11 +71,17 @@ function handleNavigation(e) {
             break;
 
         case 8: // Backspace
+            e.preventDefault();
+            e.stopPropagation();
+            Events.Call("CloseMenu");
+            break;
+
         case 27: // Escape
-            Events.Call("closeContextMenu");
+            Events.Call("CloseMenu");
             break;
     }
 }
+
 function handleEditMode(e) {
     let $selected = $(".option.selected");
     if (!$selected.length) return;
@@ -84,20 +89,22 @@ function handleEditMode(e) {
     switch (e.keyCode) {
         case 37: // ArrowLeft
         case 39: // ArrowRight
-            // Ajustar valor del slider/number
             adjustOptionValue($selected, e.keyCode);
             break;
 
         case 8: // BackSpace
+            e.preventDefault();
+            e.stopPropagation();
+            editMode = false;
+            break;
+
         case 27: // Escape
-            // Salir de editMode
             editMode = false;
             break;
     }
 }
 
 function adjustOptionValue($option, keyCode) {
-    // Ejemplo para range o number:
     if ($option.hasClass("range-input") || $option.hasClass("number-input")) {
         let $input = $option.find('input[type="number"], input[type="range"]');
         if ($input.length === 0) return;
@@ -106,36 +113,31 @@ function adjustOptionValue($option, keyCode) {
         let step = 1;
 
         if (keyCode === 37) {
-            // arrow left
             currentVal -= step;
         } else {
             currentVal += step;
         }
-        // Asigna valor
-        $input.val(currentVal).trigger("input"); // disparar su callback con "input"
+        $input.val(currentVal).trigger("input");
     }
 }
 
-/* Mover foco up/down si NO estamos en editMode: */
 function moveFocus(keyCode) {
     let $selected = $(".option.selected");
     let index = visibleOptionElements.indexOf($selected.get(0));
     if (index < 0) index = 0;
 
     if (keyCode === 38 && index > 0) {
-        // up
         $selected.removeClass("selected");
         index--;
         $(visibleOptionElements[index]).addClass("selected");
     } else if (keyCode === 40 && index < visibleOptionElements.length - 1) {
-        // down
         $selected.removeClass("selected");
         index++;
         $(visibleOptionElements[index]).addClass("selected");
     }
-    // scroll
     $(".option.selected").get(0).scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
+
 const showNotification = (type, title, description) => {
     let element = `<div class="notification entering ${type}" ${description ? "" : "style='align-items: center !important;'"}>
         <div class="icon">
@@ -189,7 +191,6 @@ const setOptions = (options) => {
     persistentOptions = options;
     options.forEach((option) => {
         let type = option.type;
-
         switch (type) {
             case "checkbox":
                 $options.append(getCheckbox(option));
@@ -252,17 +253,18 @@ const setOptions = (options) => {
         let option = findOptionById(options, id);
         $(".option").removeClass("selected");
         $(this).addClass("selected");
-        Events.Call("ExecuteCallback", id, option);
+        option.checked = !$(this).hasClass("active");
+        $(this).toggleClass("active", option.checked);
+        Events.Call("ExecuteCallback", id, option.checked);
     });
 
     $(".option.checkbox .check").on("click", function (e) {
+        e.stopPropagation();
         let id = $(this).parent().data("id");
         let option = findOptionById(options, id);
-        $(".option").removeClass("selected");
-        $(this).parent().addClass("selected");
-        if ($(this).hasClass("check")) {
-            $(this).parent().toggleClass("active");
-        }
+        $(this).parent().toggleClass("active");
+        option.checked = $(this).parent().hasClass("active");
+        Events.Call("ExecuteCallback", id, option.checked);
     });
 
     $(".dropdown > .option svg").on("click", function () {
@@ -353,11 +355,11 @@ const setOptions = (options) => {
         $(this)
             .parent()
             .find(".less")
-            .toggleClass("unable", value == min);
+            .toggleClass("unable", value === min);
         $(this)
             .parent()
             .find(".more")
-            .toggleClass("unable", value == max);
+            .toggleClass("unable", value === max);
 
         $value.css("width", $value.val().length * 8 + "px");
     });
@@ -385,11 +387,11 @@ const setOptions = (options) => {
         $(this)
             .parent()
             .find(".left")
-            .toggleClass("unable", index == 0);
+            .toggleClass("unable", index === 0);
         $(this)
             .parent()
             .find(".right")
-            .toggleClass("unable", index == list.length - 1);
+            .toggleClass("unable", index === list.length - 1);
     });
 
     $(".option.list, .option.quantity").on("click", function (e) {
@@ -417,16 +419,15 @@ const setOptions = (options) => {
         $(this)
             .parent()
             .find(".less")
-            .toggleClass("unable", value == option.min);
+            .toggleClass("unable", value === option.min);
         $(this)
             .parent()
             .find(".more")
-            .toggleClass("unable", value == option.max);
+            .toggleClass("unable", value === option.max);
 
         $(this).css("width", $(this).val().length * 8 + "px");
     });
 
-    // List-picker
     $(".option.list-picker .controls button").on("click", function () {
         let id = $(this).parent().parent().data("id");
         let option = findOptionById(options, id);
@@ -444,8 +445,6 @@ const setOptions = (options) => {
         }
 
         $value.text(list[index].label);
-
-        // Actualizamos las flechas
         $(this)
             .parent()
             .find(".left")
@@ -456,7 +455,6 @@ const setOptions = (options) => {
             .toggleClass("unable", index === list.length - 1);
     });
 
-    // Y para click en la opción (seleccionarla):
     $(".option.list-picker").on("click", function (e) {
         e.stopPropagation();
         $(".option").removeClass("selected");
@@ -465,7 +463,8 @@ const setOptions = (options) => {
 };
 
 function getColorPicker(option) {
-    return `<div class="option color-input" data-id="${option.id}">
+    return `
+    <div class="option color-input" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="input">
             <input type="color" value="${option.value || "#ffffff"}">
@@ -474,7 +473,8 @@ function getColorPicker(option) {
 }
 
 function getDatePicker(option) {
-    return `<div class="option date-input" data-id="${option.id}">
+    return `
+    <div class="option date-input" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="input">
             <input type="date" value="${option.value || "2024-01-01"}">
@@ -482,9 +482,9 @@ function getDatePicker(option) {
     </div>`;
 }
 
-// Existing input builders
 const getCheckbox = (option) => {
-    return `<div class="option checkbox ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option checkbox ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="check">
             <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -507,8 +507,20 @@ const getDropdown = (option) => {
             case "dropdown":
                 subOptions += getDropdown(opt);
                 break;
+            case "button":
+                subOptions += getButton(opt);
+                break;
+            case "color":
+                subOptions += getColorPicker(opt);
+                break;
+            case "date":
+                subOptions += getDatePicker(opt);
+                break;
             case "text-input":
                 subOptions += getTextInput(opt);
+                break;
+            case "list":
+                $options.append(getList(opt));
                 break;
             case "range":
                 subOptions += getRange(opt);
@@ -526,15 +538,15 @@ const getDropdown = (option) => {
                 subOptions += getSelectInput(opt);
                 break;
             case "list-picker":
-                $options.append(getListPicker(option));
+                $options.append(getListPicker(opt));
                 break;
-
             default:
                 break;
         }
     });
 
-    return `<div class="dropdown" data-id="${option.id}">
+    return `
+    <div class="dropdown" data-id="${option.id}">
         <div class="option">
             <p class="name">${option.label}</p>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -549,7 +561,8 @@ const getDropdown = (option) => {
 };
 
 const getButton = (option) => {
-    return `<div class="option action ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option action ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label || option.text}</p>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -560,7 +573,8 @@ const getButton = (option) => {
 };
 
 const getTextInput = (option) => {
-    return `<div class="option text-input ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option text-input ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="input">
             <input type="text" placeholder="${option.placeholder || "Enter text"}">
@@ -569,7 +583,8 @@ const getTextInput = (option) => {
 };
 
 const getRange = (option) => {
-    return `<div class="option range-input" data-id="${option.id}">
+    return `
+    <div class="option range-input" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="slider-container">
             <input type="range" class="slider" min="${option.min}" max="${option.max}" value="${option.value}">
@@ -579,7 +594,8 @@ const getRange = (option) => {
 };
 
 const getList = (option) => {
-    return `<div class="option list" data-id="${option.id}">
+    return `
+    <div class="option list" data-id="${option.id}">
         <p class="name">${option.label}</p>
         <div class="controls">
             <button class="left">
@@ -602,9 +618,9 @@ const getList = (option) => {
         </div>`;
 };
 
-// New functions for missing types
 const getPasswordInput = (option) => {
-    return `<div class="option password-input ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option password-input ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label || "Password"}</p>
         <div class="input">
             <input type="password" placeholder="${option.placeholder || "Enter password"}">
@@ -624,7 +640,8 @@ const getRadioInput = (option) => {
             `;
         });
     }
-    return `<div class="option radio" data-id="${option.id}">
+    return `
+    <div class="option radio" data-id="${option.id}">
         <p class="name">${option.label || "Radio Options"}</p>
         <div class="input radio-group">
             ${radiosHTML}
@@ -633,7 +650,8 @@ const getRadioInput = (option) => {
 };
 
 const getNumberInput = (option) => {
-    return `<div class="option number-input ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option number-input ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label || "Number Input"}</p>
         <div class="input">
             <input type="number" placeholder="${option.placeholder || "Enter number"}" value="${option.value || ""}">
@@ -648,7 +666,8 @@ const getSelectInput = (option) => {
             selectOptions += `<option value="${opt.value}" ${opt.selected ? "selected" : ""}>${opt.text}</option>`;
         });
     }
-    return `<div class="option select-input ${option.active ? "active" : ""}" data-id="${option.id}">
+    return `
+    <div class="option select-input ${option.active ? "active" : ""}" data-id="${option.id}">
         <p class="name">${option.label || "Select Input"}</p>
         <div class="input">
             <select>
@@ -667,16 +686,16 @@ function getListPicker(option) {
         <div class="controls">
             <button class="left">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
-                <path d="M4.58398 7.29199L10.0007 12.7087L15.4173 7.29199" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+                    <path d="M4.58398 7.29199L10.0007 12.7087L15.4173 7.29199" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </button>
             <p class="value">${firstLabel}</p>
             <button class="right">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
-                <path d="M4.58398 7.29199L10.0007 12.7087L15.4173 7.29199" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+                    <path d="M4.58398 7.29199L10.0007 12.7087L15.4173 7.29199" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </button>
         </div>
     </div>
@@ -729,11 +748,8 @@ const hideSubmenuHeader = () => {
     $(".context-menu .thread").addClass("hidden");
 };
 
-// Keyboard Navigation Support
 function focusOptionById(id) {
-    // Remove selection from any currently selected option
     $(".option").removeClass("selected");
-    // Find the new target by data-id
     let $target = $(`.option[data-id="${id}"]`);
     if ($target.length > 0) {
         $target.addClass("selected");
@@ -741,7 +757,6 @@ function focusOptionById(id) {
     }
 }
 
-// Trigger the callback or expand/collapse logic when "Enter" is pressed
 function selectFocusedOption() {
     let $focused = $(".option.selected");
     if ($focused.length === 0) return;
@@ -750,10 +765,9 @@ function selectFocusedOption() {
     let option = findOptionById(persistentOptions, id);
     if (!option) return;
 
-    // Check option type
     if ($focused.hasClass("checkbox")) {
         option.checked = !option.checked;
-        $focused.toggleClass("active");
+        $focused.toggleClass("active", option.checked);
         Events.Call("ExecuteCallback", id, option.checked);
     } else if ($focused.hasClass("action")) {
         Events.Call("ExecuteCallback", id, option);
@@ -767,21 +781,17 @@ function selectFocusedOption() {
         let selectedRadio = $focused.find('input[type="radio"]:checked').val();
         Events.Call("ExecuteCallback", id, selectedRadio);
     } else if ($focused.parent().hasClass("dropdown") && !$focused.hasClass("active")) {
-        // Expand dropdown if it's collapsed
         $focused.find("svg").click();
     } else if ($focused.parent().hasClass("dropdown") && $focused.hasClass("active")) {
         Events.Call("ExecuteCallback", id, option.label || option.id);
     } else if ($focused.hasClass("list-picker")) {
-        // Obtenemos el label actual
         let currentLabel = $focused.find(".value").text();
         let foundItem = option.list.find((item) => item.label === currentLabel);
-        // Llamar callback con foundItem.id o el label
         let param = foundItem ? foundItem.id : currentLabel;
         Events.Call("ExecuteCallback", id, param);
     }
 }
 
-// Expand the currently focused dropdown (trigger .active)
 function expandFocusedOption() {
     let $focused = $(".option.selected");
     if ($focused.parent().hasClass("dropdown") && !$focused.hasClass("active")) {
@@ -789,7 +799,6 @@ function expandFocusedOption() {
     }
 }
 
-// Collapse the currently focused dropdown
 function collapseFocusedOption() {
     let $focused = $(".option.selected");
     if ($focused.parent().hasClass("dropdown") && $focused.hasClass("active")) {
@@ -887,26 +896,10 @@ const hardcodedItems = [
     },
 ];
 
-/*
-setOptions(hardcodedItems);
-setMenuInfo({
-    title: 'Sniper Rifle',
-    description: 'A sniper rifle is a category of primary weapons available in Counter-Strike Online.'
-});
-
-setHeader({
-    svgSrc: './media/icons/Context-menu-icon.svg',
-    title: 'Context menu',
-    hotkey: 'C'
-});
-showUi()
-*/
-
 Events.Subscribe("buildContextMenu", function (items) {
     showUi();
     setOptions(items);
     persistentOptions = items;
-
     selectFirstOption();
 });
 
