@@ -125,8 +125,9 @@ local function handleEntity(trace_result, start_location)
 		clearTarget()
 		return
 	end
-	local entityHasOptions = Entities[trace_result.Entity] or Types[tostring(trace_result.ActorName)]
-	if not entityHasOptions then
+	local entity_has_options = Entities[trace_result.Entity]
+	local type_has_options = Types[tostring(trace_result.ActorName)]
+	if not entity_has_options or not type_has_options then
 		clearTarget()
 		return
 	end
@@ -136,10 +137,10 @@ local function handleEntity(trace_result, start_location)
 		updateEntityHighlight(target_entity, true)
 		nui_data = {}
 		local distance = start_location:Distance(trace_result.Location)
-		local optionsSource = Entities[target_entity] or Types[tostring(trace_result.ActorName)]
-		if optionsSource then
-			setupOptions(optionsSource, target_entity, distance)
-		end
+		local entity_options = Entities[target_entity]
+		local type_options = Types[tostring(trace_result.ActorName)]
+		if entity_options then setupOptions(entity_options, target_entity, distance) end
+		if type_options then setupOptions(type_options, target_entity, distance) end
 	end
 end
 
@@ -259,6 +260,12 @@ local function RemoveZone(name)
 end
 Package.Export('RemoveZone', RemoveZone)
 
+local function AddGlobalPlayer(parameters)
+	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+	SetOptions(Types['ALS_WorldCharacterBP_C'], distance, options)
+end
+Package.Export('AddGlobalPlayer', AddGlobalPlayer)
+
 -- Events
 
 my_webui:Subscribe('selectTarget', function(option)
@@ -309,8 +316,8 @@ end)
 -- Setup config options
 
 local function configureType(typeKey, configOption)
-	if not configOption or not next(configOption) then return end
 	if not Types[typeKey] then Types[typeKey] = {} end
+	if not configOption.distance or not configOption.options then return end
 	SetOptions(Types[typeKey], configOption.distance, configOption.options)
 end
 
@@ -319,3 +326,4 @@ configureType('WorldCharacterSimple', Config.GlobalWorldCharacterSimpleOptions)
 configureType('WorldProp', Config.GlobalWorldPropOptions)
 configureType('WorldWeapon', Config.GlobalWorldWeaponOptions)
 configureType('WorldStaticMesh', Config.GlobalWorldStaticMeshOptions)
+configureType('ALS_WorldCharacterBP_C', Config.ALS_WorldCharacterBP_C)

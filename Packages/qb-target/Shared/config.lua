@@ -49,6 +49,8 @@ Config = {
 		distance = 400,
 	},
 
+	ALS_WorldCharacterBP_C = {}, -- HCharacter
+
 	GlobalWorldPropOptions = {
 		options = {
 			{
