@@ -27,7 +27,7 @@ local function UpdateBlips()
             }
         end
     end
-    Events.BroadcastRemote('qb-policejob:client:UpdateBlips', dutyPlayers)
+    Events.BroadcastRemote('qb-policejob:client:updateBlips', dutyPlayers)
 end
 
 Timer.SetInterval(UpdateBlips, 5000)
@@ -43,14 +43,14 @@ local function GetCurrentCops()
         end
     end
     --return amount
-    Events.BroadcastRemote('qb-policejob:client:SetCopCount', amount)
+    Events.BroadcastRemote('qb-policejob:client:setCopCount', amount)
 end
 
 Timer.SetInterval(GetCurrentCops, 5000)
 
 local updatingCops = false
 
-Events.SubscribeRemote('qb-policejob:server:UpdateCurrentCops', function()
+Events.SubscribeRemote('qb-policejob:server:updateCurrentCops', function()
     local amount = 0
     local players = QBCore.Functions.GetQBPlayers()
     if updatingCops then return end
@@ -60,13 +60,13 @@ Events.SubscribeRemote('qb-policejob:server:UpdateCurrentCops', function()
             amount = amount + 1
         end
     end
-    Events.BroadcastRemote('qb-policejob:client:SetCopCount', amount)
+    Events.BroadcastRemote('qb-policejob:client:setCopCount', amount)
     updatingCops = false
 end)
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-policejob:server:GetCops', function(_, cb)
+QBCore.Functions.CreateCallback('qb-policejob:server:getCops', function(_, cb)
     local amount = 0
     local players = QBCore.Functions.GetQBPlayers()
     for _, v in pairs(players) do
@@ -77,7 +77,7 @@ QBCore.Functions.CreateCallback('qb-policejob:server:GetCops', function(_, cb)
     cb(amount)
 end)
 
-QBCore.Functions.CreateCallback('qb-policejob:server:IsPoliceForcePresent', function(_, cb)
+QBCore.Functions.CreateCallback('qb-policejob:server:isPoliceForcePresent', function(_, cb)
     local retval = false
     local players = QBCore.Functions.GetQBPlayers()
     for _, v in pairs(players) do
@@ -89,7 +89,7 @@ QBCore.Functions.CreateCallback('qb-policejob:server:IsPoliceForcePresent', func
     cb(retval)
 end)
 
-QBCore.Functions.CreateCallback('qb-policejob:GetDutyPlayers', function(_, cb)
+QBCore.Functions.CreateCallback('qb-policejob:getDutyPlayers', function(_, cb)
     local dutyPlayers = {}
     local players = QBCore.Functions.GetQBPlayers()
     for _, v in pairs(players) do
@@ -105,6 +105,14 @@ QBCore.Functions.CreateCallback('qb-policejob:GetDutyPlayers', function(_, cb)
 end)
 
 -- Events
+
+Events.SubscribeRemote('qb-policejob:server:leaveCamera', function(source, coords)
+    source:SetCameraLocation(coords)
+    local newChar = HCharacter(coords, Rotator(), source)
+    local player_dimension = source:GetDimension()
+    newChar:SetDimension(player_dimension)
+    source:Possess(newChar)
+end)
 
 Events.SubscribeRemote('qb-policejob:server:policeAlert', function(source, text)
     local src = source

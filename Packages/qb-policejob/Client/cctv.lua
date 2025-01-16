@@ -1,62 +1,54 @@
--- local currentCameraIndex = 0
--- local createdCamera = 0
+local current_camera = 0
+local viewing_camera = false
+local current_location
 
--- -- Functions
+-- Handler
 
--- local function CloseSecurityCamera()
---     DestroyCam(createdCamera, 0)
---     RenderScriptCams(0, 0, 1, 1, 1)
---     createdCamera = 0
---     ClearTimecycleModifier('scanline_cam_cheap')
---     SetFocusEntity(GetPlayerPed(PlayerId()))
---     if Config.SecurityCameras.hideradar then
---         DisplayRadar(true)
---     end
---     FreezeEntityPosition(GetPlayerPed(PlayerId()), false)
--- end
+Input.Subscribe('KeyPress', function(key_name)
+    if key_name == 'Left' and viewing_camera and current_camera ~= 0 then
+        if current_camera == 1 then return end
+        current_camera = current_camera - 1
+        local camera_info = Config.SecurityCameras.cameras[current_camera]
+        if not camera_info then return end
+        local player = Client.GetLocalPlayer()
+        player:SetCameraLocation(camera_info.coords)
+        player:SetCameraRotation(camera_info.rotation)
+    end
+end)
 
--- local function ChangeSecurityCamera(x, y, z, r)
---     if createdCamera ~= 0 then
---         DestroyCam(createdCamera, 0)
---         createdCamera = 0
---     end
---     local cam = CreateCam('DEFAULT_SCRIPTED_CAMERA', 1)
---     SetCamCoord(cam, x, y, z)
---     SetCamRot(cam, r.x, r.y, r.z, 2)
---     RenderScriptCams(1, 0, 0, 1, 1)
---     Wait(250)
---     createdCamera = cam
--- end
+Input.Subscribe('KeyPress', function(key_name)
+    if key_name == 'Right' and viewing_camera and current_camera ~= 0 then
+        current_camera = current_camera + 1
+        local camera_info = Config.SecurityCameras.cameras[current_camera]
+        local player = Client.GetLocalPlayer()
+        if not camera_info then
+            player:SetCameraLocation(Config.SecurityCameras.cameras[1].coords)
+            player:SetCameraRotation(Config.SecurityCameras.cameras[1].rotation)
+            current_camera = 1
+        else
+            player:SetCameraLocation(camera_info.coords)
+            player:SetCameraRotation(camera_info.rotation)
+        end
+    end
+end)
 
--- -- Events
+Input.Subscribe('KeyPress', function(key_name)
+    if key_name == 'BackSpace' and viewing_camera and current_camera ~= 0 then
+        current_camera = 0
+        viewing_camera = false
+        Events.CallRemote('qb-policejob:server:leaveCamera', current_location)
+        current_location = nil
+    end
+end)
 
--- Events.SubscribeRemote('police:client:ActiveCamera', function(cameraId)
---     local player = Client.GetLocalPlayer()
---     if Config.SecurityCameras.cameras[cameraId] then
---         player:StartCameraFade(0, 1, 0.1, Color(0, 0, 0, 1), true, true)
---         SendNUIMessage({
---             type = 'enablecam',
---             label = Config.SecurityCameras.cameras[cameraId].label,
---             id = cameraId,
---             connected = Config.SecurityCameras.cameras[cameraId].isOnline,
---             time = GetCurrentTime(),
---         })
---         local firstCamx = Config.SecurityCameras.cameras[cameraId].coords.X
---         local firstCamy = Config.SecurityCameras.cameras[cameraId].coords.Y
---         local firstCamz = Config.SecurityCameras.cameras[cameraId].coords.Z
---         local firstCamr = Config.SecurityCameras.cameras[cameraId].r
---         SetFocusArea(firstCamx, firstCamy, firstCamz, firstCamx, firstCamy, firstCamz)
---         ChangeSecurityCamera(firstCamx, firstCamy, firstCamz, firstCamr)
---         currentCameraIndex = cameraId
---         player:StopCameraFade()
---     elseif cameraId == 0 then
---         player:StartCameraFade(0, 1, 0.1, Color(0, 0, 0, 1), true, true)
---         CloseSecurityCamera()
---         SendNUIMessage({
---             type = 'disablecam',
---         })
---         player:StopCameraFade()
---     else
---         QBCore.Functions.Notify(Lang:t('error.no_camera'), 'error')
---     end
--- end)
+-- Events
+
+Events.SubscribeRemote('qb-policejob:client:viewCamera', function(camera_id)
+    current_camera = camera_id
+    viewing_camera = true
+    local camera_info = Config.SecurityCameras.cameras[camera_id]
+    local player = Client.GetLocalPlayer()
+    current_location = player:GetCameraLocation()
+    player:SetCameraLocation(camera_info.coords)
+    player:SetCameraRotation(camera_info.rotation)
+end)

@@ -1,10 +1,12 @@
-Events.Subscribe('qb-policejob:client:SendPoliceEmergencyAlert', function()
+Package.Require('cctv.lua')
+
+Events.Subscribe('qb-policejob:client:sendPoliceEmergencyAlert', function()
     local Player = QBCore.Functions.GetPlayerData()
     Events.CallRemote('police:server:policeAlert', Lang:t('info.officer_down', { lastname = Player.charinfo.lastname, callsign = Player.metadata.callsign }))
     Events.CallRemote('hospital:server:ambulanceAlert', Lang:t('info.officer_down', { lastname = Player.charinfo.lastname, callsign = Player.metadata.callsign }))
 end)
 
-Events.Subscribe('police:client:SeizeDriverLicense', function()
+Events.Subscribe('qb-policejob:client:seizeDriverLicense', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -14,7 +16,7 @@ Events.Subscribe('police:client:SeizeDriverLicense', function()
     end
 end)
 
-Events.Subscribe('qb-policejob:client:CheckStatus', function()
+Events.Subscribe('qb-policejob:client:checkStatus', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         if PlayerData.job.type == 'leo' then
             local player, distance = QBCore.Functions.GetClosestPlayer()
@@ -34,7 +36,7 @@ Events.Subscribe('qb-policejob:client:CheckStatus', function()
     end)
 end)
 
-Events.Subscribe('qb-policejob:client:EscortPlayer', function()
+Events.Subscribe('qb-policejob:client:escortPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -46,7 +48,7 @@ Events.Subscribe('qb-policejob:client:EscortPlayer', function()
     end
 end)
 
-Events.Subscribe('qb-policejob:client:JailPlayer', function()
+Events.Subscribe('qb-policejob:client:jailPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
