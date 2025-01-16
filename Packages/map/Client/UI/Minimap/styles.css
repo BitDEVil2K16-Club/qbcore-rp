@@ -6,6 +6,7 @@ body {
     /* opacity: 0; */
 }
 
+/* Nuevo contenedor para blips, cubre toda la pantalla */
 #blip-container {
     position: absolute;
     bottom: 75px;
@@ -13,7 +14,9 @@ body {
     width: 260px;
     height: 260px;
     pointer-events: none;
+    /* Para que no interfiera con otros elementos */
     z-index: 2;
+    /* Asegura que los blips se rendericen correctamente */
     transform-origin: bottom left;
     transform: scale(var(--scale));
 }
@@ -23,7 +26,9 @@ body {
     width: 100%;
     height: 100%;
     pointer-events: none;
+    /* Para que no interfiera con otros elementos */
     z-index: 1;
+    /* Asegura que los blips se rendericen correctamente */
 }
 
 .minimap-section {
@@ -38,6 +43,7 @@ body {
     align-items: center;
     transition: all 0.2s ease;
     z-index: 2;
+    /* Asegura que el minimapa esté por encima de los blips */
 }
 
 .minimap-section[data-position="top-left"] {
@@ -85,6 +91,16 @@ body {
     height: 50px;
 }
 
+.minimap-section .minimap .player-blip {
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    background-color: #00d9b2;
+    z-index: 3;
+    border-radius: 5000px;
+    pointer-events: none;
+  }
+
 .minimap-section .minimap {
     position: relative;
     width: 260px;
@@ -124,11 +140,11 @@ body {
     /* bottom: 0; */
     transform-origin: center;
     transform: translate(-50%, -50%) /* rotate(-29deg) */;
-    transition: opacity 0.2s ease-in-out;
     height: 20px;
     width: 20px;
     /* transition: all 0.2s ease-in-out; */
     z-index: 2;
+    opacity: 1;
 }
 
 .map-blip.blink {
@@ -155,25 +171,6 @@ body {
 .minimap-section .minimap .user-indicator.enemy {
     background-color: rgb(255, 0, 0);
 }
-
-.waypoint-marker {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    transform: translate(-50%, -50%);
-    transform-origin: center bottom;
-    transition: opacity 0.2s ease-in-out;
-    z-index: 3;
-    /* background-color: yellow; */
-    /* border: 1px solid white; */
-    border-radius: 50%;
-
-    background-image: url(./media/map-icons/Marker.svg);
-    background-size: cover;
-    height: 25px;
-    width: 25px;
-}
-
 
 @media screen and (max-width: 4000px) {
     body {

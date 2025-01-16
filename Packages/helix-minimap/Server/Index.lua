@@ -1,5 +1,0 @@
-Package.Subscribe('Load', function()
-    Timer.SetTimeout(function()
-        Server.ReloadPackage("helix-map")
-    end, 500)
-end)

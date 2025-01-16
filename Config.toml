@@ -23,8 +23,7 @@
     game_mode =         "qb-core"
     # packages list (set the packages you want to load)
     packages = [
-        "helix-map",
-        "helix-minimap",
+        "map",
         "core-ui",
         "qb-target",
         "qb-interior",
@@ -62,5 +61,5 @@
     map =               "abcca-nyc-wip::NYC_Small"
     # banned HELIX account IDs
     banned_ids = [
-        
+
     ]
