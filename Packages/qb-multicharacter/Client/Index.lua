@@ -6,6 +6,7 @@ local my_webui = WebUI('Multicharacter', 'file://html/index.html')
 local function openCharMenu(bool)
     local player = Client.GetLocalPlayer()
     player:SetCameraLocation(Config.CamCoords)
+    player:SetCameraRotation(Config.CamRotation)
     QBCore.Functions.TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
         local translations = {}
         for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do

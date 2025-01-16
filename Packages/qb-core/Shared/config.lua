@@ -2,7 +2,7 @@ QBConfig = {}
 QBConfig.Language = 'en'
 
 --QBConfig.MaxPlayers = GetConvarInt('sv_maxclients', 48) -- Gets max players from config file, default 48
-QBConfig.DefaultSpawn = Vector(6383.6, 3794.5, -315.8)
+QBConfig.DefaultSpawn = Vector(-33480.2, -11164.2, 239.6)
 QBConfig.UpdateInterval = 5    -- how often to update player data in minutes
 QBConfig.StatusInterval = 5000 -- how often to check if hunger/thirst is empty in milliseconds
 

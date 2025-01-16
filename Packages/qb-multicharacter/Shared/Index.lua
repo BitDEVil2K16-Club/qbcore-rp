@@ -1,10 +1,11 @@
 Config = {
-	CamCoords = Vector(-33208.4, -11188.8, 233.6), -- Camera coordinates for character preview screen
-	EnableDeleteButton = true,                  -- Define if the player can delete the character or not
-	customNationality = false,                  -- Defines if Nationality input is custom of blocked to the list of Countries
-	SkipSelection = false,                      -- Skip the spawn selection and spawns the player at the last location
-	DefaultNumberOfCharacters = 5,              -- Define maximum amount of default characters (maximum 5 characters defined by default)
-	PlayersNumberOfCharacters = {               -- Define maximum amount of player characters by rockstar license (you can find this license in your server's database in the player table)
+	CamCoords = Vector(-34704.9, -11081.1, 961.0),
+	CamRotation = Rotator(0.0, 1.3079679012299, 0.0),
+	EnableDeleteButton = true,
+	customNationality = false,
+	SkipSelection = false,
+	DefaultNumberOfCharacters = 5,
+	PlayersNumberOfCharacters = {
 		{ license = '', numberOfChars = 2 },
 	},
 }
