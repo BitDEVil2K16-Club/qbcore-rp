@@ -126,7 +126,7 @@ Events.SubscribeRemote('qb-ambulancejob:server:HealPlayer', function(source, pla
     ped:SetHealth(ped:GetMaxHealth())
 end)
 
-Events.SubscribeRemote('hospital:server:RespawnAtHospital', function(source)
+Events.SubscribeRemote('qb-ambulancejob:server:RespawnAtHospital', function(source)
     local player = QBCore.Functions.GetPlayer(source)
     if not player then return end
     local ped = source:GetControlledCharacter()
