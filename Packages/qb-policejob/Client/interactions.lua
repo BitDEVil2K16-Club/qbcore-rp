@@ -2,7 +2,7 @@ local isEscorting = false
 
 -- Functions
 
-Package.Export('IsHandcuffed', function()
+Package.Export('isHandcuffed', function()
     return isHandcuffed
 end)
 
@@ -46,7 +46,7 @@ end
 
 -- Events
 
-Events.SubscribeRemote('police:client:SetOutVehicle', function()
+Events.SubscribeRemote('police:client:setOutVehicle', function()
     local ped = PlayerPedId()
     if IsPedInAnyVehicle(ped, false) then
         local vehicle = GetVehiclePedIsIn(ped, false)
@@ -54,7 +54,7 @@ Events.SubscribeRemote('police:client:SetOutVehicle', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:PutInVehicle', function()
+Events.SubscribeRemote('police:client:putInVehicle', function()
     local ped = PlayerPedId()
     if isHandcuffed or isEscorted then
         local vehicle = QBCore.Functions.GetClosestVehicle()
@@ -73,7 +73,7 @@ Events.SubscribeRemote('police:client:PutInVehicle', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:SeizeCash', function()
+Events.SubscribeRemote('police:client:seizeCash', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -83,7 +83,7 @@ Events.SubscribeRemote('police:client:SeizeCash', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:SeizeDriverLicense', function()
+Events.SubscribeRemote('police:client:seizeDriverLicense', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -93,7 +93,7 @@ Events.SubscribeRemote('police:client:SeizeDriverLicense', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:RobPlayer', function()
+Events.SubscribeRemote('police:client:robPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     local ped = PlayerPedId()
     if player ~= -1 and distance < 2.5 then
@@ -124,7 +124,7 @@ Events.SubscribeRemote('police:client:RobPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:JailPlayer', function()
+Events.SubscribeRemote('police:client:jailPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -151,7 +151,7 @@ Events.SubscribeRemote('police:client:JailPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:BillPlayer', function()
+Events.SubscribeRemote('police:client:billPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -178,7 +178,7 @@ Events.SubscribeRemote('police:client:BillPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:PutPlayerInVehicle', function()
+Events.SubscribeRemote('police:client:putPlayerInVehicle', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -190,7 +190,7 @@ Events.SubscribeRemote('police:client:PutPlayerInVehicle', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:SetPlayerOutVehicle', function()
+Events.SubscribeRemote('police:client:setPlayerOutVehicle', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -202,7 +202,7 @@ Events.SubscribeRemote('police:client:SetPlayerOutVehicle', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:EscortPlayer', function()
+Events.SubscribeRemote('police:client:escortPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -214,7 +214,7 @@ Events.SubscribeRemote('police:client:EscortPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:KidnapPlayer', function()
+Events.SubscribeRemote('police:client:kidnapPlayer', function()
     local player, distance = QBCore.Functions.GetClosestPlayer()
     if player ~= -1 and distance < 2.5 then
         local playerId = GetPlayerServerId(player)
@@ -228,7 +228,7 @@ Events.SubscribeRemote('police:client:KidnapPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:CuffPlayerSoft', function()
+Events.SubscribeRemote('police:client:cuffPlayerSoft', function()
     if not IsPedRagdoll(PlayerPedId()) then
         local player, distance = QBCore.Functions.GetClosestPlayer()
         if player ~= -1 and distance < 1.5 then
@@ -245,7 +245,7 @@ Events.SubscribeRemote('police:client:CuffPlayerSoft', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:CuffPlayer', function()
+Events.SubscribeRemote('police:client:cuffPlayer', function()
     if not IsPedRagdoll(PlayerPedId()) then
         local player, distance = QBCore.Functions.GetClosestPlayer()
         if player ~= -1 and distance < 1.5 then
@@ -267,7 +267,7 @@ Events.SubscribeRemote('police:client:CuffPlayer', function()
     end
 end)
 
-Events.SubscribeRemote('police:client:GetEscorted', function(playerId)
+Events.SubscribeRemote('police:client:getEscorted', function(playerId)
     local ped = PlayerPedId()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         if PlayerData.metadata['isdead'] or isHandcuffed or PlayerData.metadata['inlaststand'] then
@@ -285,13 +285,13 @@ Events.SubscribeRemote('police:client:GetEscorted', function(playerId)
     end)
 end)
 
-Events.SubscribeRemote('police:client:DeEscort', function()
+Events.SubscribeRemote('police:client:unescort', function()
     isEscorted = false
     TriggerEvent('hospital:client:isEscorted', isEscorted)
     DetachEntity(PlayerPedId(), true, false)
 end)
 
-Events.SubscribeRemote('police:client:GetKidnappedTarget', function(playerId)
+Events.SubscribeRemote('police:client:getKidnappedTarget', function(playerId)
     local ped = PlayerPedId()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         if PlayerData.metadata['isdead'] or PlayerData.metadata['inlaststand'] or isHandcuffed then
@@ -310,7 +310,7 @@ Events.SubscribeRemote('police:client:GetKidnappedTarget', function(playerId)
     end)
 end)
 
-Events.SubscribeRemote('police:client:GetKidnappedDragger', function()
+Events.SubscribeRemote('police:client:getKidnappedDragger', function()
     QBCore.Functions.GetPlayerData(function(_)
         if not isEscorting then
             local dragger = PlayerPedId()
@@ -327,7 +327,7 @@ Events.SubscribeRemote('police:client:GetKidnappedDragger', function()
     end)
 end)
 
-Events.SubscribeRemote('police:client:GetCuffed', function(playerId, isSoftcuff)
+Events.SubscribeRemote('police:client:getCuffed', function(playerId, isSoftcuff)
     local ped = PlayerPedId()
     if not isHandcuffed then
         isHandcuffed = true

@@ -193,6 +193,9 @@ Timer.SetInterval(function()
 end, 10000)
 
 HCharacter.Subscribe('Fire', function(self, weapon)
+    local player = Client.GetLocalPlayer()
+    local ped = player:GetControlledCharacter()
+    if self ~= ped then return end
     if not WhitelistedWeapon(weapon) then
         shotAmount = shotAmount + 1
         if shotAmount > 5 and (CurrentStatusList == nil or CurrentStatusList['gunpowder'] == nil) then

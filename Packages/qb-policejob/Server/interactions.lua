@@ -1,4 +1,4 @@
-Events.SubscribeRemote('qb-policejob:server:SearchPlayer', function(source)
+Events.SubscribeRemote('qb-policejob:server:searchPlayer', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     local PlayerData = Player.PlayerData
@@ -15,7 +15,7 @@ Events.SubscribeRemote('qb-policejob:server:SearchPlayer', function(source)
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:CuffPlayer', function(source, playerId, isSoftcuff)
+Events.SubscribeRemote('qb-policejob:server:cuffPlayer', function(source, playerId, isSoftcuff)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -27,7 +27,7 @@ Events.SubscribeRemote('qb-policejob:server:CuffPlayer', function(source, player
     Events.CallRemote('qb-policejob:client:GetCuffed', CuffedPlayer.PlayerData.source, Player.PlayerData.source, isSoftcuff)
 end)
 
-Events.SubscribeRemote('qb-policejob:server:EscortPlayer', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:escortPlayer', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -43,7 +43,7 @@ Events.SubscribeRemote('qb-policejob:server:EscortPlayer', function(source, play
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:KidnapPlayer', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:kidnapPlayer', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -60,7 +60,7 @@ Events.SubscribeRemote('qb-policejob:server:KidnapPlayer', function(source, play
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SetPlayerOutVehicle', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:setPlayerOutVehicle', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -75,7 +75,7 @@ Events.SubscribeRemote('qb-policejob:server:SetPlayerOutVehicle', function(sourc
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:PutPlayerInVehicle', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:putPlayerInVehicle', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -90,7 +90,7 @@ Events.SubscribeRemote('qb-policejob:server:PutPlayerInVehicle', function(source
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:BillPlayer', function(source, playerId, price)
+Events.SubscribeRemote('qb-policejob:server:billPlayer', function(source, playerId, price)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -104,7 +104,7 @@ Events.SubscribeRemote('qb-policejob:server:BillPlayer', function(source, player
     Events.CallRemote('QBCore:Notify', OtherPlayer.PlayerData.source, Lang:t('info.fine_received', { fine = price }))
 end)
 
-Events.SubscribeRemote('qb-policejob:server:JailPlayer', function(source, playerId, time)
+Events.SubscribeRemote('qb-policejob:server:jailPlayer', function(source, playerId, time)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -122,17 +122,17 @@ Events.SubscribeRemote('qb-policejob:server:JailPlayer', function(source, player
         ['hasRecord'] = true,
         ['date'] = currentDate
     })
-    Events.CallRemote('qb-policejob:client:SendToJail', OtherPlayer.PlayerData.source, time)
+    Events.CallRemote('qb-policejob:client:sendToJail', OtherPlayer.PlayerData.source, time)
     Events.CallRemote('QBCore:Notify', source, Lang:t('info.sent_jail_for', { time = time }))
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SetHandcuffStatus', function(source, isHandcuffed)
+Events.SubscribeRemote('qb-policejob:server:setHandcuffStatus', function(source, isHandcuffed)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     Player.Functions.SetMetaData('ishandcuffed', isHandcuffed)
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SeizeCash', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:seizeCash', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -150,7 +150,7 @@ Events.SubscribeRemote('qb-policejob:server:SeizeCash', function(source, playerI
     Events.CallRemote('QBCore:Notify', SearchedPlayer.PlayerData.source, Lang:t('info.cash_confiscated'))
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SeizeDriverLicense', function(source, playerId)
+Events.SubscribeRemote('qb-policejob:server:seizeDriverLicense', function(source, playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -168,7 +168,7 @@ Events.SubscribeRemote('qb-policejob:server:SeizeDriverLicense', function(source
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:RobPlayer', function(playerId)
+Events.SubscribeRemote('qb-policejob:server:robPlayer', function(playerId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = playerId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -198,7 +198,7 @@ Events.SubscribeRemote('qb-policejob:server:showFingerprintId', function(session
     Events.CallRemote('qb-policejob:client:showFingerprintId', source, fid)
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SetTracker', function(source, targetId)
+Events.SubscribeRemote('qb-policejob:server:setTracker', function(source, targetId)
     local playerPed = source:GetControlledCharacter()
     local targetPed = targetId:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
@@ -220,7 +220,7 @@ Events.SubscribeRemote('qb-policejob:server:SetTracker', function(source, target
     end
 end)
 
-Events.SubscribeRemote('qb-policejob:server:SendTrackerLocation', function(source, coords, requestId)
+Events.SubscribeRemote('qb-policejob:server:sendTrackerLocation', function(source, coords, requestId)
     local Target = QBCore.Functions.GetPlayer(source)
     if not Target then return end
     local msg = Lang:t('info.target_location', { firstname = Target.PlayerData.charinfo.firstname, lastname = Target.PlayerData.charinfo.lastname })

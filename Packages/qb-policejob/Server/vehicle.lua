@@ -7,7 +7,7 @@ end
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-policejob:GetImpoundedVehicles', function(_, cb)
+QBCore.Functions.CreateCallback('qb-policejob:getImpoundedVehicles', function(_, cb)
     local vehicles = {}
     MySQL.query('SELECT * FROM player_vehicles WHERE state = ?', { 2 }, function(result)
         if result[1] then
@@ -17,7 +17,7 @@ QBCore.Functions.CreateCallback('qb-policejob:GetImpoundedVehicles', function(_,
     end)
 end)
 
-QBCore.Functions.CreateCallback('qb-policejob:IsPlateFlagged', function(_, cb, plate)
+QBCore.Functions.CreateCallback('qb-policejob:isPlateFlagged', function(_, cb, plate)
     local retval = false
     if Plates and Plates[plate] then
         if Plates[plate].isflagged then
@@ -29,7 +29,7 @@ end)
 
 -- Events
 
-Events.SubscribeRemote('qb-policejob:server:TakeOutImpound', function(source, plate, garage)
+Events.SubscribeRemote('qb-policejob:server:takeOutImpound', function(source, plate, garage)
     local playerPed = source:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
     local targetCoords = Config.Locations['impound'][garage]
@@ -38,7 +38,7 @@ Events.SubscribeRemote('qb-policejob:server:TakeOutImpound', function(source, pl
     Events.CallRemote('QBCore:Notify', source, Lang:t('success.impound_vehicle_removed'), 'success')
 end)
 
-Events.SubscribeRemote('qb-policejob:server:Impound', function(source, plate, fullImpound, price, body, engine, fuel)
+Events.SubscribeRemote('qb-policejob:server:impound', function(source, plate, fullImpound, price, body, engine, fuel)
     price = price and price or 0
     if IsVehicleOwned(plate) then
         if not fullImpound then
