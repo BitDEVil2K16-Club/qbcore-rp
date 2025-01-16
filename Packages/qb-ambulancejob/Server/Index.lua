@@ -8,7 +8,7 @@ for _, v in pairs(Config.Locations['hospital']) do
         local bed = v.beds[i]
         local coords = bed.coords
         local model = bed.model
-        local hospital_bed = Prop(Vector(coords.X, coords.Y, coords.Z), Rotator(), model, CollisionType.Normal, false)
+        local hospital_bed = Prop(Vector(coords.X, coords.Y, coords.Z), Rotator(0, bed.heading, 0), model, CollisionType.Normal, false)
         hospital_beds[#hospital_beds + 1] = hospital_bed
     end
 end
@@ -143,7 +143,8 @@ Events.SubscribeRemote('qb-ambulancejob:server:RespawnAtHospital', function(sour
         end
     end
     if not closest_bed then return end
-    ped:Respawn(closest_bed:GetLocation(), closest_bed:GetRotation())
+    local bedLocation = closest_bed:GetLocation()
+    ped:Respawn(Vector(bedLocation.X, bedLocation.Y, bedLocation.Z + 150.0), closest_bed:GetRotation())
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:damageRagdoll', function(source, length)
