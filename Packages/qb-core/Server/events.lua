@@ -35,13 +35,13 @@ Events.SubscribeRemote('QBCore:ToggleDuty', function(source)
     if not Player then return end
     if Player.PlayerData.job.onduty then
         Player.Functions.SetJobDuty(false)
-        Events.CallRemote('QBCore:Notify', src, Lang:t('info.off_duty'))
+        Events.CallRemote('QBCore:Notify', source, Lang:t('info.off_duty'))
     else
         Player.Functions.SetJobDuty(true)
-        Events.CallRemote('QBCore:Notify', src, Lang:t('info.on_duty'))
+        Events.CallRemote('QBCore:Notify', source, Lang:t('info.on_duty'))
     end
-    Events.Call('QBCore:Server:SetDuty', src, Player.PlayerData.job.onduty)
-    Events.CallRemote('QBCore:Client:SetDuty', src, Player.PlayerData.job.onduty)
+    Events.Call('QBCore:Server:SetDuty', source, Player.PlayerData.job.onduty)
+    Events.CallRemote('QBCore:Client:SetDuty', source, Player.PlayerData.job.onduty)
 end)
 
 -- Callbacks
