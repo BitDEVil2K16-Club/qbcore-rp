@@ -64,8 +64,6 @@ HCharacter.Subscribe('TakeDamage', function(self, damage, bone, type, from_direc
     local player = Client.GetLocalPlayer()
     local ped = player:GetControlledCharacter()
     if ped ~= self then return end
-    print('TakeDamage was called')
-    print(self, damage, bone, type, from_direction, instigator, causer)
     if isDead then return end
 
     -- TODO: Handle other forms of damage (vehicle, etc)
@@ -84,7 +82,6 @@ HCharacter.Subscribe('TakeDamage', function(self, damage, bone, type, from_direc
     if math.random(1, 100) <= staggerChance then -- If major damage weapon, use major stagger chance
         Events.CallRemote('qb-ambulancejob:server:damageRagdoll', 500)
     end
-    print('Applying bleed ' .. severity)
     ApplyBleed(severity)
 end)
 
@@ -142,7 +139,6 @@ function StartBleedTimer()
                         Player:StartCameraFade(0.0, 0.8, 5.0, Color(0.0, 0.0, 0.0, 1.0), true, false)
                         -- Damage player for bleeding
                         local bleedDamage = BleedAmount * Config.BleedTickDamage
-                        print('Severity: ' .. BleedAmount, 'Damage Taken: ' .. bleedDamage)
                         Events.CallRemote('qb-ambulancejob:server:setHealth', nil, bleedDamage)
                     end
                     fadeOutTimer = 0

@@ -75,26 +75,6 @@ end
 
 -- Handlers
 
-HCharacter.Subscribe('Death', function(self, last_damage_taken, last_bone_damaged, damage_type_reason, hit_from_direction, instigator, causer)
-    print('Death was called')
-    print(self, last_damage_taken, last_bone_damaged, damage_type_reason, hit_from_direction, instigator, causer)
-end)
-
-HCharacter.Subscribe('TakeDamage', function(self, damage, bone, type, from_direction, instigator, causer)
-    print('TakeDamage was called')
-    print(self, damage, bone, type, from_direction, instigator, causer)
-end)
-
-HCharacter.Subscribe('Respawn', function(self)
-    print('Respawn was called')
-    print(self)
-end)
-
-HCharacter.Subscribe('HealthChange', function(self, old_health, new_health)
-    print('HealthChange was called')
-    print(self, old_health, new_health)
-end)
-
 -- HCharacter::ApplyDamage(damage, bone_name?, damage_type?, from_direction?, instigator?, causer?)
 -- HCharacter:GetHealth() - both
 -- HCharacter:GetMaxHealth() - both
@@ -108,9 +88,7 @@ end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:setHealth', function(source, playerId, amount)
     local ped = source:GetControlledCharacter()
-    print('Checking for ped')
     if not ped then return end
-    print('Found ped, setting health to: ' .. ped:GetHealth() - amount)
     ped:SetHealth(ped:GetHealth() - amount)
 end)
 
