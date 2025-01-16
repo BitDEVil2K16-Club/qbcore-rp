@@ -26,22 +26,16 @@ local function Minimap_RemoveBlip(blipId)
     end
 end
 
--- Update player position on the Minimap (each Tick)
+-- Update player position on the Minimap
 Client.Subscribe('Tick', function(delta_time)
     local player = Client.GetLocalPlayer()
     if not player then return end
-
-    local char = player:GetControlledCharacter()
-    if not char then return end
-
     local camCoords  = player:GetCameraLocation()
     local camRotator = player:GetCameraRotation()
-    local charRot    = char:GetRotation()
-
     minimapUI:CallEvent('UpdatePlayerPos',
-        camCoords.X, -- player X
-        camCoords.Y, -- player Y
-        charRot.Yaw, -- heading
+        camCoords.X,    -- player X
+        camCoords.Y,    -- player Y
+        camRotator.Yaw, -- heading
         camRotator.Yaw
     )
 end)
@@ -120,13 +114,9 @@ end)
 Client.Subscribe('Tick', function(delta_time)
     local player = Client.GetLocalPlayer()
     if not player then return end
-
-    local character = player:GetControlledCharacter()
-    if character then
-        local loc = character:GetLocation()
-        local heading = character:GetRotation().Yaw
-        mapUI:CallEvent('Map:UpdatePlayerPos', loc.X, loc.Y, heading)
-    end
+    local loc = player:GetCameraLocation()
+    local heading = player:GetCameraRotation().Yaw
+    mapUI:CallEvent('Map:UpdatePlayerPos', loc.X, loc.Y, heading)
 end)
 
 -- Bigmap UI subscriptions
