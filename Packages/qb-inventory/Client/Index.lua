@@ -161,7 +161,7 @@ end)
 
 my_webui:Subscribe('GiveItem', function(data)
 	local player, distance = QBCore.Functions.GetClosestPlayer()
-	if player and distance < 10 then
+	if player and distance < 500 then
 		local playerId = player:GetID()
 		QBCore.Functions.TriggerCallback('qb-inventory:server:giveItem', function(success)
 			my_webui:CallEvent('GiveItemResponse', success, data)

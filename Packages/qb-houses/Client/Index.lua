@@ -1006,7 +1006,7 @@ Events.Subscribe('qb-houses:client:giveHouseKey', function()
 	local ped = client:GetControlledCharacter()
 	local coords = ped:GetLocation()
 	local player, distance = QBCore.Functions.GetClosestPlayer()
-	if player ~= -1 and distance < 2.5 and ClosestHouse then
+	if player ~= -1 and distance < 500 and ClosestHouse then
 		local playerId = player:GetID()
 		local housedist = #(coords - Vector(
 			Config.Houses[ClosestHouse].coords.enter.x,
