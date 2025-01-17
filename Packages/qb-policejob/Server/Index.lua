@@ -235,8 +235,8 @@ Events.SubscribeRemote('qb-policejob:server:putvehicle', function(source, data)
     if Player.PlayerData.job.type ~= 'leo' then return end
     local target_ped = data.entity
     if not target_ped then return end
-    -- local target_player = target_ped:GetPlayer()
-    -- if not target_player then return end
+    local target_player = target_ped:GetPlayer()
+    if not target_player then return end
     local closest_vehicle, distance = QBCore.Functions.GetClosestHVehicle(source)
     if not closest_vehicle or distance > 500 then return end
     local allowed_passengers = closest_vehicle:NumOfAllowedPassanger()
@@ -251,8 +251,8 @@ Events.SubscribeRemote('qb-policejob:server:takevehicle', function(source, data)
     if Player.PlayerData.job.type ~= 'leo' then return end
     local target_ped = data.entity
     if not target_ped then return end
-    -- local target_player = target_ped:GetPlayer()
-    -- if not target_player then return end
+    local target_player = target_ped:GetPlayer()
+    if not target_player then return end
     local closest_vehicle, distance = QBCore.Functions.GetClosestHVehicle(source)
     if not closest_vehicle or distance > 500 then return end
     print(closest_vehicle, distance)
