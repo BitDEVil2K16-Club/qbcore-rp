@@ -216,6 +216,8 @@ body > .bg {
     border-top: 1px solid #343437;
     padding: 16px;
     padding-top: 18px;
+
+    display: none;
 }
 
 .context-menu .info .head {
@@ -256,7 +258,7 @@ body > .bg {
     margin-bottom: 0;
     padding-right: 8px;
     gap: 8px;
-    height: calc(236px + 16px);
+    height: 290px;
     overflow-y: scroll;
 }
 

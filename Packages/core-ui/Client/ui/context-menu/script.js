@@ -724,6 +724,10 @@ function findOptionById(items, id) {
     return null;
 }
 
+const setMenuInfoState = (state) => {
+    $(".context-menu .info").css("display", state ? "flex" : "none");
+};
+
 const setMenuInfo = (info) => {
     const { title, description } = info;
     $(".context-menu .info .head p").text(title);
@@ -928,6 +932,10 @@ Events.Subscribe("setMenuInfo", function (title, description) {
         title: title,
         description: description,
     });
+});
+
+Events.Subscribe("setMenuInfoState", function (state) {
+    setMenuInfoState(state);
 });
 
 Events.Subscribe("FocusOptionById", function (id) {
