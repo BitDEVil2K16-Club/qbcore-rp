@@ -75,7 +75,7 @@ for _, loc in ipairs(Config.Locations['stash']) do
     }
 end
 
-Events.Subscribe('QBCore:Server:OnPlayerUnload', function()
+Events.Subscribe('QBCore:Server:OnPlayerUnload', function(source)
     local stretcher = source:GetValue('onStretcher', nil)
     if not stretcher then return end
     source:SetValue('onStretcher', nil, true)
