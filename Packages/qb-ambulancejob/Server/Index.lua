@@ -204,8 +204,8 @@ Events.SubscribeRemote('qb-ambulancejob:server:revivePlayer', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
 
-    local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
-    if not closestCharacter then return end
+    local closestCharacter, distance = QBCore.Functions.GetClosestHCharacter(source)
+    if not closestCharacter or distance > 800 then return end
 
     if closestCharacter:GetHealth() > 0 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.cant_help'), 'error') end
 
@@ -228,8 +228,8 @@ Events.SubscribeRemote('qb-ambulancejob:server:treatWounds', function(source)
 
     if Player.PlayerData.job.type ~= 'ems' then return end
 
-    local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
-    if not closestCharacter or closestCharacter:GetHealth() < closestCharacter:GetMaxHealth() then return end
+    local closestCharacter, distance = QBCore.Functions.GetClosestHCharacter(source)
+    if not closestCharacter or closestCharacter:GetHealth() < closestCharacter:GetMaxHealth() or distance > 800 then return end
 
     if RemoveItem(source, 'bandage', 1, false, 'qb-ambulancejob:server:treatWounds') then
         local ped = source:GetControlledCharacter()
@@ -252,8 +252,8 @@ QBCore.Functions.CreateCallback('qb-ambulancejob:server:getPeds', function(_, cb
 end)
 
 QBCore.Functions.CreateCallback('qb-ambulancejob:server:checkStatus', function(source, cb)
-    local closestPlayer = QBCore.Functions.GetClosestPlayer(source)
-    if not closestPlayer then return end
+    local closestPlayer, distance = QBCore.Functions.GetClosestPlayer(source)
+    if not closestPlayer or distance > 800 then return end
 
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
@@ -309,8 +309,8 @@ end)
 
 QBCore.Functions.CreateUseableItem('firstaid', function(source, item)
     if not RemoveItem(source, item.name, 1, item.slot) then return end
-    local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
-    if not closestCharacter then return end
+    local closestCharacter, distance = QBCore.Functions.GetClosestHCharacter(source)
+    if not closestCharacter or distance > 800 then return end
 
     if closestCharacter:GetHealth() > 0 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.cant_help'), 'error') end
 
