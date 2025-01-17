@@ -11,7 +11,9 @@ local Translations = {
         not_enough_money = 'You don\'t have enough money on you...',
         cant_help = 'You can\'t help this person...',
         not_ems = 'You are not EMS or not signed in',
-        not_online = 'Player Not Online'
+        not_online = 'Player Not Online',
+        stretcher_exists = 'You already have a stretcher, remove it for a new one',
+        s_too_far = 'Stretcher is too far from the patient',
     },
     success = {
         revived = 'You revived a person',
@@ -95,7 +97,10 @@ local Translations = {
         call = 'Call',
         check_in = '[E] Check in',
         check = 'Check In',
-        lie_bed = '[E] - To lie in bed'
+        lie_bed = '[E] - To lie in bed',
+        use_stretcher = 'Lay on Stretcher',
+        place_on_stretcher = 'Place patient on Stretcher',
+        take_off_stretcher = 'Take patient off Stretcher',
     },
     body = {
         head = 'Head',
