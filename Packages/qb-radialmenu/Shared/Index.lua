@@ -626,7 +626,7 @@ Config.JobInteractions = {
 			id = 'emergencybutton',
 			title = 'Emergency button',
 			icon = 'bell',
-			type = 'client',
+			type = 'server',
 			event = 'qb-policejob:server:panicButton',
 			shouldClose = true,
 		},
