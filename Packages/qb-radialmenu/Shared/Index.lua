@@ -515,8 +515,8 @@ Config.JobInteractions = {
 			id = 'revivep',
 			title = 'Revive',
 			icon = 'user-doctor',
-			type = 'client',
-			event = 'qb-ambulancejob:client:revivePlayer',
+			type = 'server',
+			event = 'qb-ambulancejob:server:revivePlayer',
 			shouldClose = true,
 		},
 		{

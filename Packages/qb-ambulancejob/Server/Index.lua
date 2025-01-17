@@ -147,9 +147,6 @@ Events.SubscribeRemote('qb-ambulancejob:server:setDeathStatus', function(source,
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:syncInjuries', function(source, injuries, isBleeding)
-    local Player = QBCore.Functions.GetPlayer(source)
-    if not Player then return end
-
     if not injuries then 
         -- Reset injuries on player unload
         PlayerInjuries[source:GetID()] = nil 
@@ -160,6 +157,28 @@ Events.SubscribeRemote('qb-ambulancejob:server:syncInjuries', function(source, i
         limbs = injuries,
         isBleeding = isBleeding,
     }
+end)
+
+Events.SubscribeRemote('qb-ambulancejob:server:revivePlayer', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+
+    local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
+    if not closestCharacter then return end
+
+    if closestCharacter:GetHealth() > 0 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.cant_help'), 'error') end
+
+    if Player.PlayerData.job.type == 'ems' or RemoveItem(source, 'firstaid', 1) then
+        local ped = source:GetControlledCharacter()
+        if not ped then return end
+        ped:PlayAnimation('nanos-world::A_Mannequin_Take_From_Floor', AnimationSlotType.UpperBody, true)
+        Timer.SetTimeout(function()
+            ped:StopAnimation('nanos-world::A_Mannequin_Take_From_Floor')
+            closestCharacter:Respawn(closestCharacter:GetLocation(), closestCharacter:GetRotation())
+            Events.CallRemote('QBCore:Notify', source, Lang:t('success.revived'), 'success')
+            Events.CallRemote('QBCore:Notify', source, Lang:t('success.wounds_healed'), 'success')
+        end, 3000)
+    end
 end)
 
 -- Callbacks
