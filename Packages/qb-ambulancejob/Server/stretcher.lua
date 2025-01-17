@@ -96,7 +96,7 @@ Events.SubscribeRemote('qb-ambulancejob:server:placeOnStretcher', function(sourc
     local closestCharacter, distance = QBCore.Functions.GetClosestHCharacter(source)
     if not closestCharacter or distance > 500 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.no_player'), 'error') end
 
-    if #(prop:GetLocation() - source:GetControlledCharacter():GetLocation()) > 800 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.s_too_far'), 'error') end
+    if prop:GetLocation():Distance(source:GetControlledCharacter():GetLocation()) > 800 then return Events.CallRemote('QBCore:Notify', source, Lang:t('error.s_too_far'), 'error') end
     UseStretcher(closestCharacter, prop)
 end)
 
