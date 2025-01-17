@@ -181,6 +181,29 @@ Events.SubscribeRemote('qb-ambulancejob:server:revivePlayer', function(source)
     end
 end)
 
+Events.SubscribeRemote('qb-ambulancejob:server:treatWounds', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+
+    if Player.PlayerData.job.type ~= 'ems' then return end
+
+    local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
+    if not closestCharacter then return end
+
+    if RemoveItem(source, 'bandage', 1, false, 'qb-ambulancejob:server:treatWounds') then
+        local ped = source:GetControlledCharacter()
+        ped:PlayAnimation('nanos-world::A_Mannequin_Take_From_Floor', AnimationSlotType.UpperBody, true)
+        Timer.SetTimeout(function()
+            ped:StopAnimation('nanos-world::A_Mannequin_Take_From_Floor')
+            Events.CallRemote('qb-ambulancejob:client:treatWounds', closestCharacter:GetPlayer())
+            Events.CallRemote('QBCore:Notify', source, Lang:t('success.helped_player'), 'success')
+            Events.CallRemote('QBCore:Notify', closestCharacter:GetPlayer(), Lang:t('success.wounds_healed'), 'success')
+        end, 3000)
+    else
+        Events.CallRemote('QBCore:Notify', source, Lang:t('error.no_bandage'), 'error')
+    end
+end)
+
 -- Callbacks
 
 QBCore.Functions.CreateCallback('qb-ambulancejob:server:getPeds', function(_, cb)

@@ -523,8 +523,8 @@ Config.JobInteractions = {
 			id = 'treatwounds',
 			title = 'Heal wounds',
 			icon = 'bandage',
-			type = 'client',
-			event = 'qb-ambulancejob:client:treatWounds',
+			type = 'server',
+			event = 'qb-ambulancejob:server:treatWounds',
 			shouldClose = true,
 		},
 		{

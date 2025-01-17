@@ -81,6 +81,15 @@ local function DoLimbAlert()
     QBCore.Functions.Notify(damageMessage, 'primary')
 end
 
+function ResetAll()
+    RemoveBleed(BleedAmount)
+    StopLimbTimer()
+    for _, v in pairs(Config.Bones) do
+        v.isDamaged = false
+        v.severity = 0
+    end
+end
+
 -- Handler
 
 HCharacter.Subscribe('TakeDamage', function(self, damage, bone, type, from_direction, instigator, causer)
@@ -135,6 +144,10 @@ end)
 Events.SubscribeRemote('qb-ambulancejob:client:stopBleed', function()
     if BleedAmount <= 0 then return end
     RemoveBleed(BleedAmount)
+end)
+
+Events.SubscribeRemote('qb-ambulancejob:client:treatWounds', function()
+    ResetAll()
 end)
 
 -- Bleeding Tick Logic
