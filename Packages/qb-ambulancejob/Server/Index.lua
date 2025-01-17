@@ -1,3 +1,4 @@
+Package.Require('stretcher.lua')
 -- Setup
 
 local peds = {}
@@ -73,6 +74,15 @@ for _, loc in ipairs(Config.Locations['stash']) do
         distance = 400,
     }
 end
+
+Events.Subscribe('QBCore:Server:OnPlayerUnload', function()
+    local stretcher = source:GetValue('onStretcher', nil)
+    if not stretcher then return end
+    source:SetValue('onStretcher', nil, true)
+
+    if not stretcher:IsValid() then return end
+    stretcher:SetValue('user', nil, true)
+end)
 
 -- Handlers
 

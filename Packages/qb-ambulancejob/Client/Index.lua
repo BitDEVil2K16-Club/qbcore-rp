@@ -1,5 +1,6 @@
 Package.Require('death.lua')
 Package.Require('wounding.lua')
+Package.Require('stretcher.lua')
 
 Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.TriggerCallback('qb-ambulancejob:server:getPeds', function(peds)
