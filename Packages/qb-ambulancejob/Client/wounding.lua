@@ -2,10 +2,8 @@ BleedAmount = 0
 local prevPos = nil
 local onPainKillers = false
 local painkillerAmount = 0
-local bleedTickTimer = 0
 local fadeOutTimer = 0
 local blackoutTimer = 0
-local advanceBleedTimer = 0
 
 -- Functions
 
