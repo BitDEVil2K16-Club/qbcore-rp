@@ -1,7 +1,6 @@
 BleedAmount = 0
 local prevPos = nil
 local onPainKillers = false
-local painkillerAmount = 0
 local fadeOutTimer = 0
 local blackoutTimer = 0
 
@@ -35,24 +34,6 @@ local function ApplyBleed(level)
         end
         StartBleedTimer()
         DoBleedAlert()
-    end
-end
-
-local function PainKillerLoop(pkAmount)
-    if not onPainKillers then
-        if pkAmount then
-            painkillerAmount = pkAmount
-        end
-        onPainKillers = true
-        while onPainKillers do
-            Wait(1)
-            painkillerAmount = painkillerAmount - 1
-            Wait(Config.PainkillerInterval * 1000)
-            if painkillerAmount <= 0 then
-                painkillerAmount = 0
-                onPainKillers = false
-            end
-        end
     end
 end
 
@@ -124,19 +105,22 @@ end)
 -- Events
 
 Events.SubscribeRemote('qb-ambulancejob:client:useIfaks', function()
-    if painkillerAmount < 3 then painkillerAmount = painkillerAmount + 1 end
-    PainKillerLoop()
+    onPainKillers = true
+    Timer.SetTimeout(function()
+        onPainKillers = false
+    end, 60000)
     if math.random(1, 100) < 50 then RemoveBleed(1) end
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:client:useBandage', function()
     if math.random(1, 100) < 50 then RemoveBleed(1) end
-    if math.random(1, 100) < 7 then ResetPartial() end
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:client:usePainkillers', function()
-    if painkillerAmount < 3 then painkillerAmount = painkillerAmount + 1 end
-    PainKillerLoop()
+    onPainKillers = true
+    Timer.SetTimeout(function()
+        onPainKillers = false
+    end, 30000)
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:client:stopBleed', function()
@@ -179,7 +163,7 @@ function StartBleedTimer()
                         Player:StartCameraFade(0.0, 0.8, 5.0, Color(0.0, 0.0, 0.0, 1.0), true, false)
                         -- Damage player for bleeding
                         local bleedDamage = BleedAmount * Config.BleedTickDamage
-                        Events.CallRemote('qb-ambulancejob:server:setHealth', nil, bleedDamage)
+                        Events.CallRemote('qb-ambulancejob:server:decreaseHealth', bleedDamage)
                     end
                     fadeOutTimer = 0
                 end
