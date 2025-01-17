@@ -63,7 +63,6 @@ Input.Subscribe('KeyDown', function(key_name)
     if isDead and key_name == 'E' and deathTime < 0 then
         hold_time = hold_time - 1
         if hold_time <= 0 then
-            --Events.CallRemote('QBCore:Console:CallCommand', 'revive')
             Events.CallRemote('qb-ambulancejob:server:RespawnAtHospital')
             hold_time = 50
             isDead = false

@@ -114,35 +114,12 @@ Events.SubscribeRemote('qb-ambulancejob:server:escortPlayer', function(source, d
     end
 end)
 
--- Handlers
-
--- HCharacter::ApplyDamage(damage, bone_name?, damage_type?, from_direction?, instigator?, causer?)
--- HCharacter:GetHealth() - both
--- HCharacter:GetMaxHealth() - both
--- HCharacter:Respawn(location?, rotation?)
--- HCharacter:SetHealth(new_health)
--- HCharacter:SetMaxHealth(new_max_health)
-
--- Functions
-
 -- Events
 
-Events.SubscribeRemote('qb-ambulancejob:server:setHealth', function(source, playerId, amount)
+Events.SubscribeRemote('qb-ambulancejob:server:decreaseHealth', function(source, amount)
     local ped = source:GetControlledCharacter()
     if not ped then return end
     ped:SetHealth(ped:GetHealth() - amount)
-end)
-
-Events.SubscribeRemote('qb-ambulancejob:server:KillPlayer', function(source, playerId)
-    local ped = source:GetControlledCharacter()
-    if not ped then return end
-    ped:SetHealth(0)
-end)
-
-Events.SubscribeRemote('qb-ambulancejob:server:HealPlayer', function(source, playerId)
-    local ped = source:GetControlledCharacter()
-    if not ped then return end
-    ped:SetHealth(ped:GetMaxHealth())
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:RespawnAtHospital', function(source)

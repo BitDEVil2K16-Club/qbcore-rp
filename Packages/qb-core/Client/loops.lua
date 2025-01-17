@@ -14,9 +14,8 @@ Timer.SetInterval(function()
 			local player = Client.GetLocalPlayer()
 			local ped = player:GetControlledCharacter()
 			if not ped then return end
-			local currentHealth = ped:GetHealth()
 			local decreaseThreshold = math.random(5, 10)
-			Events.CallRemote('qb-ambulancejob:server:setHealth', currentHealth - decreaseThreshold)
+			Events.CallRemote('qb-ambulancejob:server:decreaseHealth', decreaseThreshold)
 		end
 	end
 end, QBConfig.StatusInterval)
