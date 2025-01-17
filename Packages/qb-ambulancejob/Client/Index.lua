@@ -54,6 +54,55 @@ Events.Subscribe('qb-ambulancejob:client:checkStatus', function()
     end)
 end)
 
+AddGlobalPlayer({
+    options = {
+        {
+            label = 'Check Health Status',
+            icon = 'fas fa heart-pulse',
+            type = 'client',
+            event = 'qb-ambulancejob:client:checkStatus',
+            jobType = 'ems',
+            canInteract = function(entity)
+                return entity:GetPlayer()
+            end,
+        },
+        {
+            label = 'Revive',
+            icon = 'fas fa user-doctor',
+            type = 'server',
+            event = 'qb-ambulancejob:server:revivePlayer',
+            jobType = 'ems',
+            canInteract = function(entity)
+                if entity:GetValue('isDead', false) then return false end
+                return entity:GetPlayer()
+            end,
+        },
+        {
+            label = 'Heal wounds',
+            icon = 'fas fa bandage',
+            type = 'server',
+            event = 'qb-ambulancejob:server:treatWounds',
+            jobType = 'ems',
+            canInteract = function(entity)
+                if entity:GetHealth() < 100 then return false end
+                return entity:GetPlayer()
+            end,
+        },
+        {
+            label = 'Escort',
+            icon = 'user-group',
+            type = 'fas fa server',
+            event = 'qb-ambulancejob:server:escortPlayer',
+            jobType = 'ems',
+            canInteract = function(entity)
+                if not entity:GetValue('isDead', false) then return false end
+                return entity:GetPlayer()
+            end,
+        },
+    },
+    distance = 800,
+})
+
 QBCore.Functions.TriggerCallback('qb-ambulancejob:server:getPeds', function(peds)
     for ped, data in pairs(peds) do
         AddTargetEntity(ped, { options = data.options, distance = data.distance })

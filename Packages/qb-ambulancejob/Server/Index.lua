@@ -84,6 +84,36 @@ Events.Subscribe('QBCore:Server:OnPlayerUnload', function()
     stretcher:SetValue('user', nil, true)
 end)
 
+Events.SubscribeRemote('qb-ambulancejob:server:escortPlayer', function(source, data)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+    if Player.PlayerData.job.type ~= 'ems' then return end
+    local target_ped = data.entity
+    if not target_ped then return end
+    local target_coords = target_ped:GetLocation()
+    local player_ped = source:GetControlledCharacter()
+    local player_coords = player_ped:GetLocation()
+    local distance = player_coords:Distance(target_coords)
+    if distance > 500 then return end
+    local player_rotation = player_ped:GetRotation()
+    local placing_position = player_rotation:GetForwardVector() * 100
+    if not target_ped:GetValue('escorted', false) then
+        target_ped:SetInputEnabled(false)
+        target_ped:SetGravityEnabled(false)
+        target_ped:AttachTo(player_ped)
+        target_ped:SetRelativeLocation(Vector(99, 9, 0))
+        target_ped:SetCollision(CollisionType.Auto)
+        target_ped:SetValue('escorted', true, true)
+    else
+        target_ped:Detach()
+        target_ped:SetInputEnabled(true)
+        target_ped:SetLocation(placing_position + player_coords)
+        target_ped:SetCollision(CollisionType.Normal)
+        target_ped:SetGravityEnabled(true)
+        target_ped:SetValue('escorted', false, true)
+    end
+end)
+
 -- Handlers
 
 -- HCharacter::ApplyDamage(damage, bone_name?, damage_type?, from_direction?, instigator?, causer?)
@@ -154,6 +184,7 @@ Events.SubscribeRemote('qb-ambulancejob:server:setDeathStatus', function(source,
     if not Player then return end
 
     Player.Functions.SetMetaData('isdead', status)
+    source:GetControlledCharacter():SetValue('isDead', status, true)
 end)
 
 Events.SubscribeRemote('qb-ambulancejob:server:syncInjuries', function(source, injuries, isBleeding)
@@ -198,7 +229,7 @@ Events.SubscribeRemote('qb-ambulancejob:server:treatWounds', function(source)
     if Player.PlayerData.job.type ~= 'ems' then return end
 
     local closestCharacter = QBCore.Functions.GetClosestHCharacter(source)
-    if not closestCharacter then return end
+    if not closestCharacter or closestCharacter:GetHealth() < closestCharacter:GetMaxHealth() then return end
 
     if RemoveItem(source, 'bandage', 1, false, 'qb-ambulancejob:server:treatWounds') then
         local ped = source:GetControlledCharacter()

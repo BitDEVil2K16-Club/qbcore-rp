@@ -504,43 +504,11 @@ Config.VehicleSeats = {
 Config.JobInteractions = {
 	['ambulance'] = {
 		{
-			id = 'statuscheck',
-			title = 'Check Health Status',
-			icon = 'heart-pulse',
-			type = 'client',
-			event = 'qb-ambulancejob:client:checkStatus',
-			shouldClose = true,
-		},
-		{
-			id = 'revivep',
-			title = 'Revive',
-			icon = 'user-doctor',
-			type = 'server',
-			event = 'qb-ambulancejob:server:revivePlayer',
-			shouldClose = true,
-		},
-		{
-			id = 'treatwounds',
-			title = 'Heal wounds',
-			icon = 'bandage',
-			type = 'server',
-			event = 'qb-ambulancejob:server:treatWounds',
-			shouldClose = true,
-		},
-		{
 			id = 'emergencybutton2',
 			title = 'Emergency button',
 			icon = 'bell',
 			type = 'client',
 			event = 'qb-ambulancejob:client:panicButton',
-			shouldClose = true,
-		},
-		{
-			id = 'escort',
-			title = 'Escort',
-			icon = 'user-group',
-			type = 'client',
-			event = 'qb-ambulancejob:client:escortPlayer',
 			shouldClose = true,
 		},
 		{
