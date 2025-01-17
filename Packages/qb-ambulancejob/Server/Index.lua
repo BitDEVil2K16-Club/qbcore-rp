@@ -15,7 +15,7 @@ for _, v in pairs(Config.Locations['hospital']) do
 end
 
 for _, loc in ipairs(Config.Locations['checking']) do
-    local ped = HCharacter(loc, Rotator(0.0, 90.755416870117, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+    local ped = HCharacter(loc.coords, Rotator(0.0, loc.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
     ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
     ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
     ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
@@ -35,7 +35,7 @@ for _, loc in ipairs(Config.Locations['checking']) do
 end
 
 for _, loc in ipairs(Config.Locations['duty']) do
-    local ped = HCharacter(loc, Rotator(0.0, -168.2536315918, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+    local ped = HCharacter(loc.coords, Rotator(0.0, loc.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
     ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
     ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
     ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
@@ -179,6 +179,7 @@ QBCore.Functions.CreateCallback('qb-ambulancejob:server:checkStatus', function(s
 
     cb(PlayerInjuries[closestPlayer:GetID()])
 end)
+
 -- Items
 
 QBCore.Functions.CreateUseableItem('ifaks', function(source, item)

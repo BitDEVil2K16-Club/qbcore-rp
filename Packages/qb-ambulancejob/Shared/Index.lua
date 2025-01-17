@@ -33,23 +33,13 @@ Config = {
 
     Locations = {                 -- Edit the various interaction points for players or create new ones
         ['checking'] = {
-            Vector(6912.9, -4918.4, -299.8),
+            { coords = Vector(-251281.6, 40593.3, 194.5), heading = 167.43 },
         },
         ['duty'] = {
-            Vector(7213.0, -4640.5, -33.9),
+            { coords = Vector(-251037.1, 41092.9, 194.5), heading = -124.70 },
         },
         ['stash'] = {
             Vector(7195.6, -4366.1, -33.9),
-        },
-        ['beds'] = { -- Redundant, can be cleaned?
-            -- { coords = Vector(353.1, -584.6, 43.11),   taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(356.79, -585.86, 43.11), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(354.12, -593.12, 43.1),  taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(350.79, -591.8, 43.1),   taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(346.99, -590.48, 43.1),  taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(360.32, -587.19, 43.02), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(349.82, -583.33, 43.02), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
-            -- { coords = Vector(326.98, -576.17, 43.02), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
         },
         ['jailbeds'] = {
             -- { coords = Vector(1761.96, 2597.74, 45.66), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },
@@ -96,11 +86,6 @@ Config = {
             }
             -- add more locations here
         },
-        ['stations'] = {
-            { label = Lang:t('info.ws_hospital'), coords = Vector(-252606.4, 41048.8, 220.0) },
-            { label = Lang:t('info.dt_hospital'), coords = Vector(-33552.0, 134193.9, 225.2) },
-            { label = Lang:t('info.es_hospital'), coords = Vector(108301.3, 236084.8, 233.4) },
-        }
     },
 
     AuthorizedVehicles = { -- Grade is key, don't add same vehicle in multiple grades. Higher rank can see lower
