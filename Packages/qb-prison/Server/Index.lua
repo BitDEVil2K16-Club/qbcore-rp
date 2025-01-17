@@ -1,3 +1,5 @@
+local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
+
 -- Functions
 
 local function sendToJail(player_id, time)
