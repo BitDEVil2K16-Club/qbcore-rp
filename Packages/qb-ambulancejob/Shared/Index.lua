@@ -39,7 +39,9 @@ Config = {
             { coords = Vector(-251037.1, 41092.9, 194.5), heading = -124.70 },
         },
         ['stash'] = {
-            Vector(7195.6, -4366.1, -33.9),
+            { coords = Vector(-250745.6, 40187.0, 193.5), heading = -146.07 },
+            { coords = Vector(-31903.7, 133238.3, 195.7), heading = -136.44 },
+            { coords = Vector(106586.6, 235246.2, 206.8), heading = 79.67 },
         },
         ['jailbeds'] = {
             -- { coords = Vector(1761.96, 2597.74, 45.66), taken = false, model = 'abcca-qbcore::SM_HospitalBed' },

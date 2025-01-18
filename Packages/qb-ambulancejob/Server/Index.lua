@@ -15,8 +15,8 @@ for _, v in pairs(Config.Locations['hospital']) do
     end
 end
 
-for _, loc in ipairs(Config.Locations['checking']) do
-    local ped = HCharacter(loc.coords, Rotator(0.0, loc.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+for _, location in ipairs(Config.Locations['checking']) do
+    local ped = HCharacter(location.coords, Rotator(0.0, location.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
     ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
     ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
     ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
@@ -35,8 +35,8 @@ for _, loc in ipairs(Config.Locations['checking']) do
     }
 end
 
-for _, loc in ipairs(Config.Locations['duty']) do
-    local ped = HCharacter(loc.coords, Rotator(0.0, loc.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+for _, location in ipairs(Config.Locations['duty']) do
+    local ped = HCharacter(location.coords, Rotator(0.0, location.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
     ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
     ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
     ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
@@ -49,14 +49,15 @@ for _, loc in ipairs(Config.Locations['duty']) do
                 event = 'QBCore:ToggleDuty',
                 label = 'Toggle Duty',
                 icon = 'fas fa-clipboard',
+                jobType = 'ems',
             },
         },
         distance = 400,
     }
 end
 
-for _, loc in ipairs(Config.Locations['stash']) do
-    local ped = HCharacter(loc, Rotator(0.0, -168.2536315918, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+for _, location in ipairs(Config.Locations['stash']) do
+    local ped = HCharacter(location.coords, Rotator(0.0, location.heading, 0.0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
     ped:AddSkeletalMeshAttached('head', '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Male_Head')
     ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
     ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
@@ -69,6 +70,7 @@ for _, loc in ipairs(Config.Locations['stash']) do
                 event = 'qb-ambulancejob:server:stash',
                 label = 'Open Stash',
                 icon = 'fas fa-box',
+                jobType = 'ems',
             },
         },
         distance = 400,
@@ -220,6 +222,14 @@ Events.SubscribeRemote('qb-ambulancejob:server:treatWounds', function(source)
     else
         Events.CallRemote('QBCore:Notify', source, Lang:t('error.no_bandage'), 'error')
     end
+end)
+
+Events.SubscribeRemote('qb-ambulancejob:server:stash', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player or Player.PlayerData.job.type ~= 'ems' then return end
+
+    local stashName = 'ambulancestash_' .. Player.PlayerData.citizenid
+    OpenInventory(source, stashName)
 end)
 
 -- Callbacks
