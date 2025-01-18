@@ -17,7 +17,7 @@ Events.SubscribeRemote('qb-ambulancejob:server:createNewStretcher', function(str
                 stretcher = stretcher
             },
             {
-                label = 'Put on stretcher', --function() return prop:GetValue('user', nil) and Lang:t('text.take_off_stretcher') or Lang:t('text.place_on_stretcher') end,
+                label = Lang:t('text.person_with_stretcher'),
                 icon = 'fas fa-user-doctor',
                 action = function()
                     if not stretcher:GetValue('user', nil) then
@@ -25,6 +25,14 @@ Events.SubscribeRemote('qb-ambulancejob:server:createNewStretcher', function(str
                     end
                     Events.CallRemote('qb-ambulancejob:server:detachFromStretcher', stretcher)
                 end,
+                jobType = 'ems',
+            },
+            {
+                label = Lang:t('text.grab_stretcher'),
+                icon = 'fas fa-user-doctor',
+                type = 'server',
+                event = 'qb-ambulancejob:server:grabStretcher',
+                jobType = 'ems',
             },
         },
         distance = 800,

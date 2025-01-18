@@ -99,8 +99,8 @@ local Translations = {
         check = 'Check In',
         lie_bed = '[E] - To lie in bed',
         use_stretcher = 'Lay on Stretcher',
-        place_on_stretcher = 'Place patient on Stretcher',
-        take_off_stretcher = 'Take patient off Stretcher',
+        person_with_stretcher = 'Interact',
+        grab_stretcher = 'Grab/Drop Stretcher',
     },
     body = {
         head = 'Head',
