@@ -34,9 +34,13 @@ Config = {
     Locations = {                 -- Edit the various interaction points for players or create new ones
         ['checking'] = {
             { coords = Vector(-251281.6, 40593.3, 194.5), heading = 167.43 },
+            
+            { coords = Vector(107242.7, 235358.9, 200.8), heading = 34.18 },
         },
         ['duty'] = {
             { coords = Vector(-251037.1, 41092.9, 194.5), heading = -124.70 },
+
+            { coords = Vector(107474.6, 234912.2, 200.8), heading = 99.75 },
         },
         ['stash'] = {
             { coords = Vector(-250745.6, 40187.0, 193.5), heading = -146.07 },
