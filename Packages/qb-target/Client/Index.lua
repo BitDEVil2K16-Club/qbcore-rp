@@ -1,5 +1,4 @@
 local my_webui = WebUI('Target', 'file://html/index.html')
-local Config = Package.Require('config.lua')
 local player_data = QBCore.Functions.GetPlayerData()
 local target_active, target_entity, raycast_timer, player_ped = false, nil, nil, nil
 local active_sprites, nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}, {}
