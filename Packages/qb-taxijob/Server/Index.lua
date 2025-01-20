@@ -28,5 +28,8 @@ QBCore.Functions.CreateCallback('qb-taxijob:server:getPeds', function(_, cb)
 end)
 
 Events.SubscribeRemote('qb-taxijob:server:spawnTaxi', function(source)
-    QBCore.Functions.CreateVehicle(source, 'bp_taxi', Vector(22689, 100016, 98), Rotator(0, -90, 0))
+    local ped = source:GetControlledCharacter()
+    if not ped then return end
+    local vehicle = QBCore.Functions.CreateVehicle(source, 'bp_police', Vector(22681.1, 100404.4, 190.1), Rotator(0, -179, 0))
+    ped:EnterVehicle(vehicle)
 end)
