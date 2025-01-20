@@ -227,7 +227,7 @@ end
 
 -- Command
 
-Input.Register('RadialMenu', Config.Keybind)
+Input.Register('Radial Menu', Config.Keybind)
 
 Input.Bind('RadialMenu', InputEvent.Pressed, function()
 	if

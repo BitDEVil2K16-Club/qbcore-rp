@@ -125,7 +125,7 @@ local function openAdmin()
 	admin_menu:Open(false, false)
 end
 
-Input.Register('AdminMenu', 'F9')
+Input.Register('Admin Menu', 'F9')
 Input.Bind('AdminMenu', InputEvent.Pressed, function()
 	openAdmin()
 end)

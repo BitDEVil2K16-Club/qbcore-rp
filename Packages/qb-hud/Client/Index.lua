@@ -67,8 +67,8 @@ Player.Subscribe('VOIP', function(self, is_talking)
     my_webui:CallEvent('IsTalking', is_talking)
 end)
 
-Input.Register('VoiceLevel', 'Q', 'Change Voice Level')
-Input.Bind('VoiceLevel', InputEvent.Pressed, function() -- whisper, normal, shout
+Input.Register('Voice Level', 'Q')
+Input.Bind('Voice Level', InputEvent.Pressed, function() -- whisper, normal, shout
     voice_level = voice_level % #voiceLevels + 1
     updateVoiceLevel()
 end)

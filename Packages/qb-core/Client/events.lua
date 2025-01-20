@@ -35,8 +35,8 @@ Events.SubscribeRemote('QBCore:Notify', function(text, type, length, icon)
 end)
 
 local isVisible = true
-Input.Register('toggle_chat', 'L', 'Toggle Chat')
-Input.Bind('toggle_chat', InputEvent.Pressed, function()
+Input.Register('Toggle Chat', 'L')
+Input.Bind('Toggle Chat', InputEvent.Pressed, function()
     isVisible = not isVisible
     Chat.SetVisibility(isVisible)
 end)
@@ -89,7 +89,7 @@ end)
 
 Events.SubscribeRemote('QBCore:Console:RegisterCommand', function(name, help, paramList)
     Console.RegisterCommand(name, function(...)
-        local args = {...}
+        local args = { ... }
         local argsString = ''
         if #args > 0 then
             for _, argument in pairs(args) do
