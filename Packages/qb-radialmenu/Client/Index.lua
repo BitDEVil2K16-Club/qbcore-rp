@@ -177,33 +177,12 @@ local function selectOption(t, t2)
 	return false
 end
 
-local function IsPoliceOrEMS()
-	return (PlayerData.job.name == 'police' or PlayerData.job.type == 'leo' or PlayerData.job.name == 'ambulance')
-end
-
-local function IsDowned()
-	return (PlayerData.metadata['isdead'] or PlayerData.metadata['inlaststand'])
-end
-
 local function SetupRadialMenu()
 	FinalMenuItems = {}
-	if IsDowned() and IsPoliceOrEMS() then
-		FinalMenuItems = {
-			[1] = {
-				id = 'emergencybutton2',
-				title = Lang:t('options.emergency_button'),
-				icon = 'circle-exclamation',
-				type = 'client',
-				event = 'police:client:SendPoliceEmergencyAlert',
-				shouldClose = true,
-			},
-		}
-	else
-		SetupSubItems()
-		FinalMenuItems = deepcopy(Config.MenuItems)
-		for _, v in pairs(DynamicMenuItems) do
-			FinalMenuItems[#FinalMenuItems + 1] = v
-		end
+	SetupSubItems()
+	FinalMenuItems = deepcopy(Config.MenuItems)
+	for _, v in pairs(DynamicMenuItems) do
+		FinalMenuItems[#FinalMenuItems + 1] = v
 	end
 end
 
@@ -219,9 +198,6 @@ local function setRadialState(bool, sendMessage, delay)
 	if sendMessage then
 		my_webui:CallEvent('ui', bool, FinalMenuItems, Config.Toggle, Config.Keybind)
 	end
-	if delay then
-		Wait(500)
-	end
 	inRadialMenu = bool
 end
 
@@ -230,18 +206,11 @@ end
 Input.Register('Radial Menu', Config.Keybind)
 
 Input.Bind('RadialMenu', InputEvent.Pressed, function()
-	if
-		((IsDowned() and IsPoliceOrEMS()) or not IsDowned())
-		and not PlayerData.metadata['ishandcuffed']
-		and not inRadialMenu
-	then
-		setRadialState(true, true)
-	end
+	if not inRadialMenu then setRadialState(true, true) end
 end)
 
--- Subscribes for Releasing the key
 Input.Bind('RadialMenu', InputEvent.Released, function()
-	setRadialState(false, true)
+	if inRadialMenu then setRadialState(false, true) end
 end)
 
 -- Events
