@@ -57,10 +57,11 @@
         "abcca-shells",
         "ecdbd-h",
         "qbcore-vehicles-mm",
+        "qb-core-animations",
     ]
     # default startup map
     map =               "abcca-nyc-wip::NYC_Small"
     # banned HELIX account IDs
     banned_ids = [
-
+        
     ]

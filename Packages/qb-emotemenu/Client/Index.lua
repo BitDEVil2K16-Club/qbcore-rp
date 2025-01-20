@@ -1,6 +1,5 @@
-Input.Register('EmoteMenu', Config.Keybind)
-
-Input.Bind('EmoteMenu', InputEvent.Pressed, function()
+Input.Register('Emote Menu', Config.Keybind)
+Input.Bind('Emote Menu', InputEvent.Pressed, function()
     local emote_menu = ContextMenu.new()
     for emote, data in pairs(Config.Emotes) do
         emote_menu:addDropdown(data.name, data.name, {
@@ -26,4 +25,21 @@ Input.Bind('EmoteMenu', InputEvent.Pressed, function()
     end
     emote_menu:SetHeader('Emote Menu', '')
     emote_menu:Open(false, true)
+end)
+
+local hands_up = false
+Input.Register('Hands Up', 'X')
+Input.Bind('Hands Up', InputEvent.Pressed, function()
+    if not hands_up then
+        Events.CallRemote('qb-emotemenu:server:playAnimation', 'HandUp_Idle_01')
+        hands_up = true
+    end
+end)
+
+Input.Bind('Hands Up', InputEvent.Released, function()
+    if hands_up then
+        hands_up = false
+        Events.CallRemote('qb-emotemenu:server:stopAnimation', 'HandUp_Idle_01')
+        Events.CallRemote('qb-emotemenu:server:playAnimation', 'HandDown_01')
+    end
 end)

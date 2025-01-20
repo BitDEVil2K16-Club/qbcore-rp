@@ -145,5 +145,26 @@ Config = {
         CrouchingToStanding = { name = 'Locomotion - Transition Crouching to Standing', animation_path = 'nanos-world::A_Mannequin_CrouchingToStanding', slot_type = AnimationSlotType.FullBody, loop = false },
         ProningToCrouching = { name = 'Locomotion - Transition Proning to Crouching', animation_path = 'nanos-world::A_Mannequin_ProningToCrouching', slot_type = AnimationSlotType.FullBody, loop = false },
         CrouchingToProne = { name = 'Locomotion - Transition Crouching to Prone', animation_path = 'nanos-world::A_Mannequin_CrouchingToProne', slot_type = AnimationSlotType.FullBody, loop = false },
+
+        -- qbcore animations
+        Bandaging_self_wound = { name = 'QB Anims - Bandage', animation_path = 'qb-core-animations::Bandaging_self_wound', slot_type = AnimationSlotType.UpperBody, loop = false },
+        Bandaging_someone_wound = { name = 'QB Anims - Bandage Other', animation_path = 'qb-core-animations::Bandaging_someone_wound', slot_type = AnimationSlotType.UpperBody, loop = false },
+        Being_bandaging = { name = 'QB Anims - Be Bandaged', animation_path = 'qb-core-animations::Being_bandaging', slot_type = AnimationSlotType.UpperBody, loop = false },
+        Doctor_Seating_Idle = { name = 'QB Anims - Doctor Seat Idle', animation_path = 'qb-core-animations::Doctor_Seating_Idle', slot_type = AnimationSlotType.FullBody, loop = false },
+        Drinking = { name = 'QB Anims - Drink', animation_path = 'qb-core-animations::Drinking', slot_type = AnimationSlotType.UpperBody, loop = false },
+        Eating_donut = { name = 'QB Anims - Eat', animation_path = 'qb-core-animations::Eating_donut', slot_type = AnimationSlotType.UpperBody, loop = false },
+        HandDown_01 = { name = 'QB Anims - Hands Down 1', animation_path = 'qb-core-animations::HandDown_01', slot_type = AnimationSlotType.UpperBody, loop = false },
+        HandDown_02 = { name = 'QB Anims - Hands Down 2', animation_path = 'qb-core-animations::HandDown_02', slot_type = AnimationSlotType.UpperBody, loop = false },
+        HandUp_01 = { name = 'QB Anims - Hands Up 1', animation_path = 'qb-core-animations::HandUp_01', slot_type = AnimationSlotType.UpperBody, loop = false },
+        HandUp_02 = { name = 'QB Anims - Hands Up 2', animation_path = 'qb-core-animations::HandUp_02', slot_type = AnimationSlotType.FullBody, loop = false },
+        HandUp_Idle_01 = { name = 'QB Anims - Hands Up 1 Idle', animation_path = 'qb-core-animations::HandUp_Idle_01', slot_type = AnimationSlotType.UpperBody, loop = false },
+        HandUp_Idle_02 = { name = 'QB Anims - Hands Up 2 Idle', animation_path = 'qb-core-animations::HandUp_Idle_02', slot_type = AnimationSlotType.FullBody, loop = false },
+        Male_Lockpicking_Animation = { name = 'QB Anims - Lockpick', animation_path = 'qb-core-animations::Male_Lockpicking_Animation', slot_type = AnimationSlotType.FullBody, loop = false },
+        Rescuscitating_Someone = { name = 'QB Anims - CPR', animation_path = 'qb-core-animations::Rescuscitating_Someone', slot_type = AnimationSlotType.FullBody, loop = true },
+        Talking_on_police_radio = { name = 'QB Anims - Radio', animation_path = 'qb-core-animations::Talking_on_police_radio', slot_type = AnimationSlotType.UpperBody, loop = false },
+        talking_radio_Idle = { name = 'QB Anims - Radio Idle', animation_path = 'qb-core-animations::talking_radio_Idle', slot_type = AnimationSlotType.UpperBody, loop = false },
+        Using_a_Defibrillator_on_someone = { name = 'QB Anims - Defib', animation_path = 'qb-core-animations::Using_a_Defibrillator_on_someone', slot_type = AnimationSlotType.FullBody, loop = false },
     }
 }
+
+return Config
