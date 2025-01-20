@@ -1,3 +1,5 @@
+local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
+
 QBCore.Commands.Add('cam', Lang:t('commands.camera'), { { name = 'camid', help = Lang:t('info.camera_id') } }, false, function(source, args)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
