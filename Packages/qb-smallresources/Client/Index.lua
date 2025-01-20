@@ -70,6 +70,8 @@ Timer.SetInterval(function()
     if not ped then return end
     
     local pedLocation = ped:GetLocation()
+    if pedLocation.Z > -10000 then return end
+
     local zIndex = 1000
     local traceFinal = Vector(pedLocation.X, pedLocation.Y, pedLocation.Z + zIndex)
     local trace = Trace.LineSingle(pedLocation, traceFinal, CollisionChannel.WorldStatic)
