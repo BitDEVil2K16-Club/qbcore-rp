@@ -323,3 +323,20 @@ Events.SubscribeRemote('qb-adminmenu:client:showNames', function()
 		end
 	end
 end)
+
+-- NoCLip
+
+Input.Subscribe('KeyDown', function(key_name)
+	if key_name == 'LeftShift' and Client.GetLocalPlayer():GetValue('noclip', false) then
+		local player = Client.GetLocalPlayer()
+		if not player then return end
+		local camRotation = player:GetCameraRotation()
+		local forward = camRotation:GetForwardVector()
+		local up = camRotation:GetUpVector()
+		local moveDirection = Vector(0, 0, 0)
+		if Input.IsKeyDown('W') then moveDirection = moveDirection + forward end
+		if Input.IsKeyDown('SpaceBar') then moveDirection = moveDirection + up end
+		if Input.IsKeyDown('LeftControl') then moveDirection = moveDirection - up end
+		player:SetCameraLocation(player:GetCameraLocation() + (moveDirection * 300))
+	end
+end)
