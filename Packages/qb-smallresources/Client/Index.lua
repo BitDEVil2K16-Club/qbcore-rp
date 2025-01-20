@@ -13,7 +13,7 @@ Input.Subscribe('KeyPress', function(key_name)
     end
 end)
 
--- Weather
+-- Time & Weather
 
 Events.SubscribeRemote('qb-smallresources:client:spawnSky', function(current_weather, hours, minutes)
     if not Sky.IsSpawned(false) then Sky.Spawn(true) end
@@ -22,15 +22,9 @@ Events.SubscribeRemote('qb-smallresources:client:spawnSky', function(current_wea
     if Config.Time.synced then Sky.SetAnimateTimeOfDay(false) end
 end)
 
-Events.SubscribeRemote('qb-smallresources:client:changeTime', function(hours, minutes)
-    Sky.SetTimeOfDay(hours, minutes)
-end)
-
 Events.SubscribeRemote('qb-smallresources:client:changeWeather', function(weather)
     Sky.ChangeWeather(weather, 25.0)
 end)
-
--- Time
 
 Events.SubscribeRemote('qb-smallresources:client:changeTime', function(hour, minute)
     Sky.SetTimeOfDay(hour, minute)
@@ -68,14 +62,11 @@ end
 Timer.SetInterval(function()
     local ped = Client.GetLocalPlayer():GetControlledCharacter()
     if not ped then return end
-    
     local pedLocation = ped:GetLocation()
     if pedLocation.Z > -10000 then return end
-
     local zIndex = 1000
     local traceFinal = Vector(pedLocation.X, pedLocation.Y, pedLocation.Z + zIndex)
     local trace = Trace.LineSingle(pedLocation, traceFinal, CollisionChannel.WorldStatic)
-    
     while not trace.Success do
         zIndex = zIndex + 1000
         trace = Trace.LineSingle(pedLocation, Vector(pedLocation.X, pedLocation.Y, pedLocation.Z + zIndex), CollisionChannel.WorldStatic)
@@ -87,6 +78,5 @@ Timer.SetInterval(function()
             break
         end
     end
-
     if trace.Success then Events.CallRemote('qb-smallresources:server:mapTp', zIndex) end
 end, 8000)
