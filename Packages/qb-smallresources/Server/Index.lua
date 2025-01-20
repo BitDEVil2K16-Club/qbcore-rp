@@ -192,3 +192,14 @@ QBCore.Commands.Add('freezetime', 'Freeze or unfreeze time', {}, false, function
     local status = timeFrozen and 'frozen' or 'unfrozen'
     Events.CallRemote('QBCore:Notify', source, 'Time has been ' .. status)
 end, 'admin')
+
+-- Out of Map TP
+
+Events.SubscribeRemote('qb-smallresources:server:mapTp', function(source, zIndex)
+    local ped = source:GetControlledCharacter()
+    if not ped then return end
+    local pedCoords = ped:GetLocation()
+    if pedCoords.Z > -10000 then return end
+
+    ped:SetLocation(Vector(pedCoords.X, pedCoords.Y, pedCoords.Z + zIndex + 1000))
+end)

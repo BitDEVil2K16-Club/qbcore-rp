@@ -62,3 +62,29 @@ if Config.AFK.enable then
         end
     end, Config.AFK.timer * 1000 * 60)
 end
+
+-- Out of Map TP
+
+Timer.SetInterval(function()
+    local ped = Client.GetLocalPlayer():GetControlledCharacter()
+    if not ped then return end
+    
+    local pedLocation = ped:GetLocation()
+    local zIndex = 1000
+    local traceFinal = Vector(pedLocation.X, pedLocation.Y, pedLocation.Z + zIndex)
+    local trace = Trace.LineSingle(pedLocation, traceFinal, CollisionChannel.WorldStatic, TraceMode.DrawDebug)
+    
+    while not trace.Success do
+        zIndex = zIndex + 1000
+        trace = Trace.LineSingle(pedLocation, Vector(pedLocation.X, pedLocation.Y, pedLocation.Z + zIndex), CollisionChannel.WorldStatic, TraceMode.DrawDebug)
+        if trace.Success then
+            break
+        end
+
+        if zIndex == 200000 then
+            break
+        end
+    end
+
+    if trace.Success then Events.CallRemote('qb-smallresources:server:mapTp', zIndex) end
+end, 8000)
