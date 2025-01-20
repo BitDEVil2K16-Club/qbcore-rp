@@ -321,7 +321,6 @@ local function configureType(typeKey, configOption)
 end
 
 configureType('WorldVehicleWheeled', Config.GlobalWorldVehicleWheeledOptions)
-configureType('WorldCharacterSimple', Config.GlobalWorldCharacterSimpleOptions)
 configureType('WorldProp', Config.GlobalWorldPropOptions)
 configureType('WorldWeapon', Config.GlobalWorldWeaponOptions)
 configureType('WorldStaticMesh', Config.GlobalWorldStaticMeshOptions)
