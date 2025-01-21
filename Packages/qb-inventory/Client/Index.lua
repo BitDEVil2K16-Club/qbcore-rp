@@ -225,10 +225,12 @@ Input.Bind('Inventory', InputEvent.Pressed, function()
 end)
 
 Input.Bind('Hotbar', InputEvent.Pressed, function()
+	if Input.IsMouseEnabled() then return end
 	Events.CallRemote('qb-inventory:server:toggleHotbar')
 end)
 
 Input.Subscribe('KeyPress', function(key_name)
+	if Input.IsMouseEnabled() then return end
 	local index
 	if key_name == 'One' then
 		index = 1

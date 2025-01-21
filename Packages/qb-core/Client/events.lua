@@ -37,6 +37,7 @@ end)
 local isVisible = true
 Input.Register('Toggle Chat', 'L')
 Input.Bind('Toggle Chat', InputEvent.Pressed, function()
+    if Input.IsMouseEnabled() then return end
     isVisible = not isVisible
     Chat.SetVisibility(isVisible)
 end)

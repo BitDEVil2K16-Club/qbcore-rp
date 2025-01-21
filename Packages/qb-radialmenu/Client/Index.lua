@@ -206,6 +206,7 @@ end
 Input.Register('Radial Menu', Config.Keybind)
 
 Input.Bind('RadialMenu', InputEvent.Pressed, function()
+	if Input.IsMouseEnabled() then return end
 	if not inRadialMenu then setRadialState(true, true) end
 end)
 

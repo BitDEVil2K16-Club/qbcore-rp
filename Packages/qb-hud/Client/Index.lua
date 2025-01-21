@@ -69,6 +69,7 @@ end)
 
 Input.Register('Voice Level', 'Q')
 Input.Bind('Voice Level', InputEvent.Pressed, function() -- whisper, normal, shout
+    if Input.IsMouseEnabled() then return end
     voice_level = voice_level % #voiceLevels + 1
     updateVoiceLevel()
 end)
