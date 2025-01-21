@@ -280,7 +280,7 @@ QBCore.Functions.CreateUseableItem('bandage', function(source, item)
     local health = ped:GetHealth()
     local max_health = ped:GetMaxHealth()
     local heal_amount = 10
-    ped:PlayAnimation('qb-core-animations::Bandaging_self_wound', AnimationSlotType.FullBody, true)
+    ped:PlayAnimation('qb-core-animations::Bandaging_self_wound', AnimationSlotType.UpperBody, true)
     Timer.SetTimeout(function()
         ped:StopAnimation('qb-core-animations::Bandaging_self_wound')
         if health + heal_amount > max_health then
