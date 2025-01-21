@@ -87,7 +87,7 @@ end)
 Events.SubscribeRemote('qb-ambulancejob:server:detachFromStretcher', function(source, prop)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
-    if prop:GetValue('user', nil) ~= source or Player.PlayerData.job.type ~= 'ems' then return end
+    if prop:GetValue('user', nil) ~= source and Player.PlayerData.job.type ~= 'ems' then return end
 
     DetachFromStretcher(prop:GetValue('user', nil):GetControlledCharacter(), prop)
 end)
