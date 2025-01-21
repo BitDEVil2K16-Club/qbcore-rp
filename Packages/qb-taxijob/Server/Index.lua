@@ -27,9 +27,32 @@ QBCore.Functions.CreateCallback('qb-taxijob:server:getPeds', function(_, cb)
     cb(peds)
 end)
 
+QBCore.Functions.CreateCallback('qb-taxijob:server:getJob', function(_, cb, currentPassenger)
+    local location = Config.NPCLocations[#Config.NPCLocations]
+    -- Need to figure a way for rotations
+
+    if not currentPassenger then
+        local ped = HCharacter(location, Rotator(0, 0, 0), '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body')
+        ped:AddSkeletalMeshAttached('head', 'helix::SK_Male_Head')
+        ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
+        ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
+        ped:AddSkeletalMeshAttached('feet', 'helix::SK_Delivery_Shoes')
+        return cb(location, ped)
+    end
+
+    cb(location)
+end)
+
 Events.SubscribeRemote('qb-taxijob:server:spawnTaxi', function(source)
     local ped = source:GetControlledCharacter()
     if not ped then return end
     local vehicle = QBCore.Functions.CreateVehicle(source, 'bp_police', Vector(22681.1, 100404.4, 190.1), Rotator(0, -179, 0))
     ped:EnterVehicle(vehicle)
+end)
+
+Events.SubscribeRemote('qb-taxijob:server:pickupPassenger', function(source, ped)
+    local playerPed = source:GetControlledCharacter()
+    if not playerPed or not ped then return end
+    ped:LookAt(playerPed:GetLocation())
+    ped:MoveTo(playerPed:GetLocation(), 400)
 end)
