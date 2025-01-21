@@ -7,6 +7,7 @@ body {
     top: 0;
     padding: 0;
     margin: 0;
+    font-family: "Fira Code", monospace;
 }
 
 .container {
@@ -134,7 +135,14 @@ body {
 
 .channel {
     position: absolute;
-    bottom: 24vh;
+    bottom: 20vh;
+    left: 5.3vh;
+    background: none;
+}
+
+.volume {
+    position: absolute;
+    bottom: 26vh;
     left: 5.3vh;
     background: none;
 }
@@ -143,18 +151,21 @@ body {
     color: rgba(0, 0, 0, 0.5);
 }
 
-.channel span {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.75);
-}
-
 .channel input {
     text-align: center;
     border: none;
     font-size: 25px;
     background: none;
     outline: none;
-    font-family: "Fira Code", monospace;
+    width: 5vw;
+}
+
+.volume input {
+    text-align: center;
+    border: none;
+    font-size: 25px;
+    background: none;
+    outline: none;
     width: 5vw;
 }
 

@@ -1,18 +1,13 @@
 local my_webui = WebUI('radio', 'file://html/index.html')
 local radio_open = false
 local radio_volume = 50
+local radio_channel = 1
 
 -- Functions
 
-local function connectToChannel(channel)
-    if channel > 0 then
-        Events.CallRemote('qb-radio:server:connectToChannel', channel)
-    end
-end
-
 local function disconnectRadio()
     if radio_connected then
-        Events.CallRemote('qb-radio:server:disconnectRadio', radio_channel)
+        Events.CallRemote('qb-radio:server:disconnect', radio_channel)
         Input.SetMouseEnabled(true)
         my_webui:CallEvent('CONNECT_RADIO', false)
     end
@@ -22,7 +17,7 @@ local function openRadio()
     radio_open = true
     my_webui:BringToFront()
     Input.SetMouseEnabled(true)
-    my_webui:CallEvent('OPEN_RADIO')
+    my_webui:CallEvent('OPEN_RADIO', radio_channel, radio_volume)
 end
 
 local function closeRadio()
@@ -32,14 +27,15 @@ local function closeRadio()
 end
 
 local function useRadio()
-    if not radio_open then
-        openRadio()
-    else
-        closeRadio()
-    end
+    if not radio_open then openRadio() else closeRadio() end
 end
 
 -- Events
+
+Events.SubscribeRemote('qb-radio:client:update', function(channel)
+    radio_channel = channel
+    my_webui:CallEvent('UPDATE_CHANNEL', radio_channel)
+end)
 
 Events.SubscribeRemote('qb-radio:client:useRadio', useRadio)
 
@@ -49,16 +45,18 @@ Input.Subscribe('KeyPress', function(key_name)
     end
 end)
 
--- NUI
+-- NUi
 
 my_webui:Subscribe('JOIN_RADIO', function(channel)
     if not radio_open then return end
-    connectToChannel(channel)
+    if tonumber(channel) > 0 and tonumber(channel) < 32 then
+        Events.CallRemote('qb-radio:server:connect', tonumber(channel))
+    end
 end)
 
 my_webui:Subscribe('LEAVE_RADIO', function()
     if not radio_open then return end
-    Events.CallRemote('qb-radio:server:disconnectRadio')
+    Events.CallRemote('qb-radio:server:disconnect')
 end)
 
 my_webui:Subscribe('POWERED_OFF', function()
@@ -72,6 +70,7 @@ my_webui:Subscribe('VOLUME_UP', function()
     if radio_volume <= 95 then
         radio_volume = radio_volume + 5
         Client.GetLocalPlayer():SetVOIPVolume(radio_volume)
+        my_webui:CallEvent('UPDATE_VOLUME', radio_volume)
     end
 end)
 
@@ -80,15 +79,16 @@ my_webui:Subscribe('VOLUME_DOWN', function()
     if radio_volume >= 10 then
         radio_volume = radio_volume - 5
         Client.GetLocalPlayer():SetVOIPVolume(radio_volume)
+        my_webui:CallEvent('UPDATE_VOLUME', radio_volume)
     end
 end)
 
 my_webui:Subscribe('INCREASE_RADIO_CHANNEL', function()
     if not radio_open then return end
-    Events.CallRemote('qb-radio:server:increaseChannel')
+    Events.CallRemote('qb-radio:server:increaseChannel', radio_channel)
 end)
 
 my_webui:Subscribe('DECREASE_RADIO_CHANNEL', function()
     if not radio_open then return end
-    Events.CallRemote('qb-radio:server:decreaseChannel')
+    Events.CallRemote('qb-radio:server:decreaseChannel', radio_channel)
 end)

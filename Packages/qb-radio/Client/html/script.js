@@ -19,6 +19,7 @@ const handleClick = function (e) {
         Events.Call("JOIN_RADIO", channel);
     } else if (e.target && e.target.id === "disconnect") {
         Events.Call("LEAVE_RADIO");
+        document.querySelector("#channel").value = "";
     } else if (e.target && e.target.id === "volumeUp") {
         Events.Call("VOLUME_UP");
     } else if (e.target && e.target.id === "volumeDown") {
@@ -32,12 +33,22 @@ const handleClick = function (e) {
     }
 };
 
-Events.Subscribe("OPEN_RADIO", () => {
+Events.Subscribe("OPEN_RADIO", (channel, volume) => {
     slideUp();
     document.addEventListener("click", handleClick);
+    document.querySelector("#channel").value = channel;
+    document.querySelector("#volume").value = volume;
 });
 
 Events.Subscribe("CLOSE_RADIO", () => {
     slideDown();
     document.removeEventListener("click", handleClick);
+});
+
+Events.Subscribe("UPDATE_CHANNEL", (newChannel) => {
+    document.querySelector("#channel").value = newChannel;
+});
+
+Events.Subscribe("UPDATE_VOLUME", (newVolume) => {
+    document.querySelector("#volume").value = newVolume;
 });
