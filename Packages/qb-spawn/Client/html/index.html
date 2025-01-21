@@ -58,7 +58,7 @@
 
                 methods: {
                     click_location: function (type, name) {
-                        if (type == "normal") {
+                        if (type == "normal" || type == "current") {
                             Events.Call("qb-spawn:setCam", {
                                 posname: name,
                                 type: type,
