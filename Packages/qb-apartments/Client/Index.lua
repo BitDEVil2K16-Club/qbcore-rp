@@ -455,8 +455,7 @@ Events.Subscribe('qb-apartments:client:OpenStash', function()
 end)
 
 Events.SubscribeRemote('qb-apartments:client:ChangeOutfit', function()
-	--Events.CallRemote("InteractSound_SV:PlayOnSource", "Clothes1", 0.4)
-	--Events.Call("qb-clothing:client:openOutfitMenu")
+	-- TODO: Implement outfit menu
 end)
 
 Events.Subscribe('qb-apartments:client:Logout', function()
