@@ -112,12 +112,7 @@ QBCore.Functions.CreateCallback('qb-houses:server:locations', function(_, cb, ho
 end)
 
 QBCore.Functions.CreateCallback('qb-houses:server:getKeys', function(_, cb, house)
-    local retval = nil
-    local result = MySQL.query.await('SELECT keyholders FROM player_houses WHERE house = ?', { house })
-    if result and result[1] then
-        retval = result[1]
-    end
-    cb(retval)
+    cb(housekeyholders[house])
 end)
 
 QBCore.Functions.CreateCallback('qb-houses:server:getHouses', function(_, cb)

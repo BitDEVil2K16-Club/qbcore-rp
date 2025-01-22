@@ -42,7 +42,6 @@ local function setClosestHouse()
         end
         if closest then
             closest_house = closest
-            print('closest_house', closest_house)
             QBCore.Functions.TriggerCallback('qb-houses:server:ownership', function(key, owned)
                 has_key = key
                 is_owned = owned
@@ -161,7 +160,6 @@ local function registerExit(id)
     if not POIOffsets then return end
     local house = Config.Houses[id]
     local coords = Vector(house.coords['enter'].x - POIOffsets.exit.x, house.coords['enter'].y - POIOffsets.exit.y, house.coords['enter'].z - Config.MinZOffset + POIOffsets.exit.z)
-    print('Registering exit at ', coords)
     local options = {
         {
             type = 'client',
@@ -257,7 +255,6 @@ end
 
 local function stashTarget(stashLocation)
     local coords = Vector(stashLocation.x, stashLocation.y, stashLocation.z)
-    print('Registering stash at ', coords)
     local options = {
         {
             type = 'client',
@@ -277,7 +274,6 @@ end
 
 local function outfitTarget(outfitLocation)
     local coords = Vector(outfitLocation.x, outfitLocation.y, outfitLocation.z)
-    print('Registering outfit at ', coords)
     local options = {
         {
             type = 'client',
@@ -297,7 +293,6 @@ end
 
 local function logoutTarget(logoutLocation)
     local coords = Vector(logoutLocation.x, logoutLocation.y, logoutLocation.z)
-    print('Registering logout at ', coords)
     local options = {
         {
             type = 'client',
