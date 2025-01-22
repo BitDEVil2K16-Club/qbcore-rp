@@ -24,6 +24,14 @@ for i = 1, #Config.JobLocations do
     }
 end
 
+local function CancelJob(source)
+    local job = activeJobs[source:GetID()]
+    if not job then return end
+    
+    if job.passenger and job.passenger:IsValid() then job.passenger:Destroy() end
+    activeJobs[source:GetID()] = nil
+end
+
 local function GetRandomLocation(currentCoords)
     local location = Config.NPCLocations[math.random(#Config.NPCLocations)]
     if location:Distance(currentCoords) < 1000 then return GetRandomLocation(currentCoords) end
@@ -34,7 +42,7 @@ QBCore.Functions.CreateCallback('qb-taxijob:server:getPeds', function(_, cb)
     cb(peds) -- Returns null/destroyed peds sometimes due to networking
 end)
 
-QBCore.Functions.CreateCallback('qb-taxijob:server:getJob', function(source, cb)
+QBCore.Functions.CreateCallback('qb-taxijob:server:getLocation', function(source, cb)
     local location = GetRandomLocation(source:GetControlledCharacter():GetLocation())
     -- Need to figure a way for rotations
     if not activeJobs[source:GetID()] then
@@ -51,11 +59,7 @@ QBCore.Functions.CreateCallback('qb-taxijob:server:getJob', function(source, cb)
 end)
 
 Events.Subscribe('QBCore:Server:OnPlayerUnload', function(source)
-    local job = activeJobs[source:GetID()]
-    if not job then return end
-    
-    if job.passenger and job.passenger:IsValid() then job.passenger:Destroy() end
-    activeJobs[source:GetID()] = nil -- Remove job if player unloads
+    CancelJob(source) -- Cancel job if player unloads
 end)
 
 Events.SubscribeRemote('qb-taxijob:server:spawnTaxi', function(source)
@@ -80,4 +84,9 @@ Events.SubscribeRemote('qb-taxijob:server:dropoff', function(source)
     activeJobs[source:GetID()] = nil
     Player.Functions.AddMoney('cash', amount, 'qb-taxijob:server:dropoff')
     Events.CallRemote('QBCore:Notify', source, 'You were paid $'.. amount, 'success')
+end)
+
+Events.SubscribeRemote('qb-taxijob:server:cancelJob', function(source)
+    CancelJob(source)
+    Events.CallRemote('QBCore:Notify', source 'You cancelled your current job', 'error')
 end)

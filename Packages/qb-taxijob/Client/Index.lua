@@ -29,7 +29,7 @@ local function getNextLocation()
         current_marker = nil
     end
     Events.Call('Map:RemoveBlip', 'taxi_job')
-    QBCore.Functions.TriggerCallback('qb-taxijob:server:getJob', function(jobLocation, isPickingUp)
+    QBCore.Functions.TriggerCallback('qb-taxijob:server:getLocation', function(jobLocation, isPickingUp)
         hasPassenger = not isPickingUp -- if new job, hasPassenger is false
         location = jobLocation -- Could be pickup, or dropoff (tracked server-side per source)
         QBCore.Functions.Notify(hasPassenger and 'Go to dropoff' or 'Pick up passenger')
@@ -58,8 +58,14 @@ end)
 Events.Subscribe('qb-taxijob:client:start', function()
     if is_working then return end
     is_working = true
-    getNextLocation()
     Events.CallRemote('qb-taxijob:server:spawnTaxi')
+end)
+
+Events.Subscribe('qb-taxijob:client:startMission', function()
+    if not is_working then return QBCore.Functions.Notify('You are not working', 'error') end
+    if hasPassenger then return QBCore.Functions.Notify('You already have a passenger', 'error') end
+    Events.CallRemote('qb-taxijob:server:cancelJob')
+    getNextLocation()
 end)
 
 Input.Subscribe('KeyDown', function(key_name)
@@ -75,6 +81,5 @@ Input.Subscribe('KeyDown', function(key_name)
         else
             Events.CallRemote('qb-taxijob:server:dropoff')
         end
-        getNextLocation()
     end
 end)
