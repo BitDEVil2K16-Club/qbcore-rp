@@ -57,7 +57,7 @@ end)
 
 Events.Subscribe('qb-taxijob:client:start', function()
     is_working = not is_working -- Toggleable working state
-    if not is_working then return end
+    if not is_working then return QBCore.Functions.Notify('You are no longer working', 'success') end
     Events.CallRemote('qb-taxijob:server:spawnTaxi')
 end)
 

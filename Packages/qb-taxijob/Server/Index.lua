@@ -89,5 +89,5 @@ end)
 
 Events.SubscribeRemote('qb-taxijob:server:cancelJob', function(source)
     CancelJob(source)
-    Events.CallRemote('QBCore:Notify', source 'You cancelled your current job', 'error')
+    Events.CallRemote('QBCore:Notify', source, 'You cancelled your current job', 'error')
 end)
