@@ -78,6 +78,8 @@ Input.Subscribe('KeyDown', function(key_name)
     if key_name == 'F' then
         local playerPed = Client.GetLocalPlayer():GetControlledCharacter()
         if not playerPed then return end
+        local vehicle = QBCore.Functions.GetClosestHVehicle()
+        if not vehicle or vehicle:GetVehicleSpeed() > 10 then return end
         if not location or playerPed:GetLocation():Distance(location) > 1000 then return end
         if not hasPassenger then -- If passenger isn't in vehicle
             Events.CallRemote('qb-taxijob:server:pickupPassenger')
