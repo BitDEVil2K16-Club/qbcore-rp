@@ -385,7 +385,7 @@ Events.SubscribeRemote('qb-apartments:client:SetHomeBlip', function(home)
 		Apartments.Locations[name].blip = Events.Call('Map:AddBlip', {
 			id = name,
 			name = Apartments.Locations[name].label,
-			imgUrl = './media/map-icons/Hotel-icon.svg',
+			imgUrl = './media/map-icons/apt_owned.svg',
 			coords = coords,
 		})
 	end
