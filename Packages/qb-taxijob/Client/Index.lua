@@ -35,7 +35,7 @@ local function getNextLocation()
             pickupLocation = jobLocation
             Passenger = newPassenger
         else
-            dropoff_location = jobLocation
+            dropoff_Location = jobLocation
         end
 
         Events.Call('Map:AddBlip', {
@@ -46,7 +46,6 @@ local function getNextLocation()
             group = newPassenger and 'Taxi Pickup' or 'Taxi Dropoff',
         })
     end, Passenger)
-    end
 end
 
 -- Event Handlers
@@ -69,18 +68,21 @@ Events.Subscribe('qb-taxijob:client:start', function()
 end)
 
 Input.Subscribe('KeyDown', function(key_name)
-    if not is_working or not dropoff_location then return end
-    if key_name == 'E' then
+    if not is_working then return end
+    if key_name == 'F' then
         local playerPed = Client.GetLocalPlayer():GetControlledCharacter()
         if not playerPed then return end
 
         if pickupLocation and Passenger then
-            if playerPed:Distance(pickupLocation) > 1000 then return end
+            if playerPed:GetLocation():Distance(pickupLocation) > 1000 then return end
             Events.CallRemote('qb-taxijob:server:pickupPassenger', Passenger)
-        elseif dropoff_location then
-            if playerPed:Distance(dropoffLocation) > 1000 then return end
+            pickupLocation = nil
+        elseif dropoff_Location then
+            if playerPed:GetLocation():Distance(dropoff_Location) > 1000 then return end
             Events.CallRemote('qb-taxijob:server:dropoff')
             Passenger = nil
+            dropoff_Location = nil
         end
+        getNextLocation()
     end
 end)
