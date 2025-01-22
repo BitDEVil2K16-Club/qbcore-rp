@@ -56,13 +56,13 @@ Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
 end)
 
 Events.Subscribe('qb-taxijob:client:start', function()
-    if is_working then return end
-    is_working = true
+    is_working = not is_working -- Toggleable working state
+    if not is_working then return end
     Events.CallRemote('qb-taxijob:server:spawnTaxi')
 end)
 
 Events.Subscribe('qb-taxijob:client:startMission', function()
-    if not is_working then return QBCore.Functions.Notify('You are not working', 'error') end
+    if not is_working then return QBCore.Functions.Notify('You are not working', 'error') end -- Could be removed and changed to a vehicle check
     if hasPassenger then return QBCore.Functions.Notify('You already have a passenger', 'error') end
     Events.CallRemote('qb-taxijob:server:cancelJob')
     getNextLocation()

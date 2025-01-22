@@ -15,7 +15,7 @@ for i = 1, #Config.JobLocations do
             {
                 type = 'client',
                 event = 'qb-taxijob:client:start',
-                label = 'Start Working',
+                label = 'Start/Stop Working',
                 icon = 'fas fa-taxi',
                 job = 'taxi'
             },
