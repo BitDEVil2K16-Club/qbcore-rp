@@ -1,3 +1,4 @@
+local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 local is_working = false
 local current_marker = nil
 local location = nil
@@ -32,7 +33,7 @@ local function getNextLocation()
     QBCore.Functions.TriggerCallback('qb-taxijob:server:getLocation', function(jobLocation, isPickingUp)
         hasPassenger = not isPickingUp -- if new job, hasPassenger is false
         location = jobLocation -- Could be pickup, or dropoff (tracked server-side per source)
-        QBCore.Functions.Notify(hasPassenger and 'Go to dropoff' or 'Pick up passenger')
+        QBCore.Functions.Notify(hasPassenger and Lang:t('info.goto_dropoff') or Lang:t('info.pickup'), 'success')
         Events.Call('Map:AddBlip', {
             id = 'taxi_job',
             name = 'Taxi Job',
@@ -60,14 +61,14 @@ Events.Subscribe('qb-taxijob:client:start', function()
     if not is_working then
         if location then Events.CallRemote('qb-taxijob:server:cancelJob') end
         location = nil
-        return QBCore.Functions.Notify('You are no longer working', 'success') 
+        return QBCore.Functions.Notify(Lang:t('success.clocked_off'), 'success') 
     end
     Events.CallRemote('qb-taxijob:server:spawnTaxi')
 end)
 
 Events.Subscribe('qb-taxijob:client:startMission', function()
-    if not is_working then return QBCore.Functions.Notify('You are not working', 'error') end -- Could be removed and changed to a vehicle check
-    if hasPassenger then return QBCore.Functions.Notify('You already have a passenger', 'error') end
+    if not is_working then return QBCore.Functions.Notify(Lang:t('error.not_working'), 'error') end -- Could be removed and changed to a vehicle check
+    if hasPassenger then return QBCore.Functions.Notify(Lang:t('error.has_passenger'), 'error') end
     if location then Events.CallRemote('qb-taxijob:server:cancelJob') end
     getNextLocation()
 end)
@@ -77,13 +78,15 @@ Input.Subscribe('KeyDown', function(key_name)
     if key_name == 'F' then
         local playerPed = Client.GetLocalPlayer():GetControlledCharacter()
         if not playerPed then return end
-        if playerPed:GetLocation():Distance(location) > 1000 then return end
+        if not location or playerPed:GetLocation():Distance(location) > 1000 then return end
         if not hasPassenger then -- If passenger isn't in vehicle
             Events.CallRemote('qb-taxijob:server:pickupPassenger')
-            QBCore.Functions.Notify('You have picked up your passenger, head to the location marked.', 'success')
             hasPassenger = true -- Passenger is in vehicle
+            getNextLocation()
         else
             Events.CallRemote('qb-taxijob:server:dropoff')
+            hasPassenger = false
+            location = nil
         end
     end
 end)

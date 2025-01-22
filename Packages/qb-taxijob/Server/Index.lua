@@ -1,3 +1,4 @@
+local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 local peds = {}
 local activeJobs = {}
 for i = 1, #Config.JobLocations do
@@ -72,7 +73,7 @@ end)
 
 Events.SubscribeRemote('qb-taxijob:server:pickupPassenger', function(source)
     local job = activeJobs[source:GetID()]
-    if not job.passenger or not job.passenger:IsValid() then return end
+    if not job or not job.passenger or not job.passenger:IsValid() then return end
     activeJobs[source:GetID()].passenger:Destroy() -- Remove ped, simulate getting into vehicle
 end)
 
@@ -84,10 +85,10 @@ Events.SubscribeRemote('qb-taxijob:server:dropoff', function(source)
     local amount = math.floor(activeJobs[source:GetID()].distance * Config.Meter.Rate + Config.Meter.StartingPrice)
     activeJobs[source:GetID()] = nil
     Player.Functions.AddMoney('cash', amount, 'qb-taxijob:server:dropoff')
-    Events.CallRemote('QBCore:Notify', source, 'You were paid $'.. amount, 'success')
+    Events.CallRemote('QBCore:Notify', source, Lang:t('success.payout', { amount = amount }), 'success')
 end)
 
 Events.SubscribeRemote('qb-taxijob:server:cancelJob', function(source)
     CancelJob(source)
-    Events.CallRemote('QBCore:Notify', source, 'You cancelled your current job', 'error')
+    Events.CallRemote('QBCore:Notify', source, Lang:t('error.job_cancelled'), 'error')
 end)
