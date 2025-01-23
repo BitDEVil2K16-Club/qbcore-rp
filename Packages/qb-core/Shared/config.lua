@@ -42,6 +42,7 @@ QBConfig.Server.Permissions = {                -- string for player account id f
 		['ebc0e470-7c49-477a-85cb-7684f3a40ed4'] = true, -- Maggie
 		['b04771ab-3d22-4364-beaa-e0b48e70911c'] = true, -- Kravs
 		['65687081-32ee-40e0-9391-4874c194bf5c'] = true, -- Joel
+		['e4f9ce8c-c7e4-4b27-b80c-38c9846ca468'] = true -- HELIXStaging
 	},
 	admin = {},
 	mod = {},

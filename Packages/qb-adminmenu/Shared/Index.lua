@@ -9,6 +9,7 @@ Config = {
         { name = 'Godmode',    command = 'godmode' },
         { name = 'Names',      command = 'names' },
         { name = 'Blips',      command = 'blips' },
+        { name = 'Helicam',    command = 'helicam' }
     },
     devOptions = {
         { name = 'Copy Vector',   command = 'coords' },
