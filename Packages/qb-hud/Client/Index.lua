@@ -147,37 +147,34 @@ end)
 
 -- Vehicles
 
+HCharacter.Subscribe('ValueChange', function(self, state, value)
+    local player = Client.GetLocalPlayer()
+    local ped = player:GetControlledCharacter()
+    if ped ~= self then return end
+    if state == 'in_vehicle' then
+        in_vehicle = value
+        if value then
+            my_webui:CallEvent('ShowSpeedometer', true)
+        else
+            my_webui:CallEvent('ShowSpeedometer', false)
+        end
+    end
+    if state == 'current_vehicle' then
+        current_vehicle = value
+    end
+end)
+
 Events.SubscribeRemote('qb-hud:client:fixVehicle', function()
     if in_vehicle and current_vehicle then
         Events.CallRemote('qb-hud:server:fixVehicle', current_vehicle)
     end
 end)
 
-HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    print('EnterVehicle')
-    in_vehicle = true
-    current_vehicle = vehicle
-    my_webui:CallEvent('ShowSpeedometer', true)
-end)
-
-HCharacter.Subscribe('LeaveVehicle', function(self, vehicle)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    print('LeaveVehicle')
-    in_vehicle = false
-    current_vehicle = nil
-    my_webui:CallEvent('ShowSpeedometer', false)
-end)
-
 Input.Subscribe('KeyPress', function(key_name)
     if key_name == 'E' then
         if not in_vehicle then
             local vehicle, distance = QBCore.Functions.GetClosestHVehicle()
-            if vehicle and distance < 300 and distance > 150 then
+            if vehicle and distance < 300 then
                 local current_passengers = vehicle:NumOfCurrentPassanger()
                 local allowed_passengers = vehicle:NumOfAllowedPassanger()
                 if current_passengers >= allowed_passengers then return end

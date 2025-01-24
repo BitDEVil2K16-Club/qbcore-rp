@@ -20,32 +20,56 @@ Player.Subscribe('Ready', function(self)
     self:AddVOIPChannel(1)
 end)
 
+HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
+    self:SetValue('in_vehicle', true, true)
+    self:SetValue('current_vehicle', vehicle, true)
+    self:SetValue('current_seat', seat_index, true)
+    vehicle:SetValue('seat_taken_' .. seat_index, true, true)
+end)
+
+HCharacter.Subscribe('LeaveVehicle', function(self, vehicle)
+    local seat_index = self:GetValue('current_seat')
+    self:SetValue('in_vehicle', false, true)
+    self:SetValue('current_vehicle', nil, true)
+    self:SetValue('current_seat', nil, true)
+    vehicle:SetValue('seat_taken_' .. seat_index, false, true)
+end)
+
 -- Events
+
+local function closestSeat(ped, vehicle)
+    local closest_door = nil
+    local closest_distance = math.huge
+    local ped_coords = ped:GetLocation()
+    local vehicle_coords = vehicle:GetLocation()
+    local door_data = vehicle:GetDoors()
+    for door_index, door_info in pairs(door_data) do
+        local door_offset = vehicle_coords + door_info.offset_location
+        local door_distance = math.abs(ped_coords:Distance(door_offset))
+        if (not closest_door or door_distance < closest_distance) and door_distance <= door_info.sphere_radius * 3 then
+            closest_door = door_index
+            closest_distance = door_distance
+        end
+    end
+    if closest_door then
+        return door_data[closest_door].seat_index
+    end
+    return nil
+end
 
 Events.SubscribeRemote('qb-hud:server:enterVehicle', function(source, vehicle)
     local ped = source:GetControlledCharacter()
     if not ped then return end
-    local seatIndex = -1
-    for i = 0, vehicle:NumOfAllowedPassanger() do
-        if not vehicle:GetValue('seat_taken_' .. i) then
-            seatIndex = i
-            break
-        end
-    end
-    ped:EnterVehicle(vehicle, seatIndex)
-    vehicle:SetValue('seat_taken_' .. seatIndex, true)
-    ped:SetValue('current_seat', seatIndex)
+    local seat_index = closestSeat(ped, vehicle)
+    if not seat_index then return end
+    if vehicle:GetValue('seat_taken_' .. seat_index, false) then return end
+    ped:EnterVehicle(vehicle, seat_index)
 end)
 
 Events.SubscribeRemote('qb-hud:server:leaveVehicle', function(source, vehicle)
     local ped = source:GetControlledCharacter()
     if not ped then return end
     if not vehicle then return end
-    local seatIndex = ped:GetValue('current_seat')
-    if seatIndex then
-        vehicle:SetValue('seat_taken_' .. seatIndex, false)
-        ped:SetValue('current_seat', nil)
-    end
     ped:LeaveVehicle()
 end)
 
