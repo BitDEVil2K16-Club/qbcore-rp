@@ -2,13 +2,50 @@ Package.Require('death.lua')
 Package.Require('wounding.lua')
 Package.Require('stretcher.lua')
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+local function initaliseData()
     QBCore.Functions.TriggerCallback('qb-ambulancejob:server:getPeds', function(peds)
         for ped, data in pairs(peds) do
             AddTargetEntity(ped, { options = data.options, distance = data.distance })
         end
     end)
+    
+    QBCore.Functions.TriggerCallback('qb-ambulancejob:server:getStretchers', function(stretchers)
+        for _, stretcher in pairs(stretchers) do
+            AddTargetEntity(v, {
+                options = {
+                    {
+                        label = Lang:t('text.use_stretcher'),
+                        icon = 'fas fa-bed',
+                        type = 'server',
+                        event = 'qb-ambulancejob:server:useStretcher',
+                        stretcher = stretcher
+                    },
+                    {
+                        label = function() return prop:GetValue('user', nil) and Lang:t('text.take_off_stretcher') or Lang:t('text.place_on_stretcher') end,
+                        icon = 'fas fa-user-doctor',
+                        action = function()
+                            if not prop:GetValue('user', nil) then
+                                return Events.CallRemote('qb-ambulancejob:server:placeOnStretcher', stretcher)
+                            end
+                            Events.CallRemote('qb-ambulancejob:server:detachFromStretcher', stretcher)
+                        end,
+                    },
+                },
+                distance = 800,
+            })
+        end
+    end)
     Events.CallRemote('qb-ambulancejob:server:syncInjuries', Config.Bones, BleedAmount > 0 and true or false)
+end
+
+Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+    initaliseData()
+end)
+
+Package.Subscribe('Load', function()
+    if Client.GetValue('isLoggedIn', false) then
+        initaliseData()
+    end
 end)
 
 Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
