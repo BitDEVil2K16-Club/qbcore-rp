@@ -17,9 +17,8 @@ Input.Bind('Emote Menu', InputEvent.Pressed, function()
                 id = 'stop-' .. emote,
                 label = 'Stop',
                 type = 'button',
-                emote = emote,
                 callback = function()
-                    Events.CallRemote('qb-emotemenu:server:stopAnimation', emote)
+                    Events.CallRemote('qb-emotemenu:server:stopAnimation')
                 end
             }
         })
