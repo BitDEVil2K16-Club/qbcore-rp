@@ -1,4 +1,12 @@
-@import url("https://fonts.cdnfonts.com/css/pricedown");
+@font-face {
+    font-family: "Intro Bold Italic";
+    src: url("./media/Intro\ Bold\ Italic.otf");
+}
+
+@font-face {
+    font-family: "Intro Regular Italic";
+    src: url("./media/Intro\ Regular\ Italic.otf");
+}
 
 ::-webkit-scrollbar {
     display: none !important;
@@ -10,6 +18,7 @@
 }
 
 /* Money */
+
 #money-container {
     position: absolute;
     right: 2vw;
@@ -20,7 +29,7 @@
 
 #sign,
 #bank {
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #00ac31;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -28,7 +37,7 @@
 
 #plus {
     font-size: 50px;
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #00ac31;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -36,14 +45,14 @@
 
 #minus {
     font-size: 50px;
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #ac0000;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
 }
 
 #money {
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #ffffff;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -51,12 +60,12 @@
 
 #money-cash {
     color: #ffffff;
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
 }
 
 #money-bank {
     color: #ffffff;
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
 }
 
 /* Player HUD */
@@ -70,24 +79,231 @@
 
 /* Vehicle */
 
-speed:after {
-    content: "MPH";
-    display: block;
-    padding-top: 3px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-bottom: 8px;
-    font-weight: 900;
+.speedometer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0px;
+    width: 398px;
+    height: 398px;
+    transform-origin: bottom right;
+    transform: scale(var(--scale));
 }
 
-speed {
-    transform: rotate(150deg);
-    font-size: 2.4vh;
-    position: fixed;
-    color: #fff;
+.speedometer .shadow {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: url(./media/shadow.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+    opacity: 0.8;
+}
+
+.speedometer .handshake-alert {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    fill: rgba(255, 255, 255, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.speedometer .handshake-alert.on {
+    opacity: 1;
+}
+
+.speedometer .speed-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-49.5%, -49.5%);
+    height: 70.5%;
+    width: 70.5%;
+    stroke-width: 1.1px;
+}
+
+.speedometer .speed-percentage .circle {
+    stroke: white;
+    transition: all 0.7s linear;
+    transform-origin: center;
+    transform: rotate(229deg);
+}
+
+.speedometer .speed-percentage .fuel {
+    stroke: #00d9b2;
+    transition: all 1s linear;
+    transform-origin: center;
+    transform: rotate(132.5deg) scaleX(-1);
+    stroke-width: 0.4px;
+}
+
+.speedometer .engine-state {
+    position: absolute;
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%);
+    gap: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Intro Bold Italic";
+    font-style: italic;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.4);
+    text-shadow: 0px 0px 55px;
+}
+
+.speedometer .engine-state svg {
+    fill: rgba(255, 255, 255, 0.4);
+}
+
+.speedometer h1 {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    font-family: "Intro Bold Italic";
+    font-style: italic;
+    font-size: 54px;
+    line-height: 54px;
+    display: flex;
+    align-items: center;
     text-align: center;
-    font-weight: 600;
-    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    text-shadow: 0px 0px 55px rgba(0, 0, 0, 0.65);
+}
+
+.speedometer h1 span {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.speedometer h1::after {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    content: "mph";
+    font-family: "Intro Bold Italic";
+    font-style: italic;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.25);
+    text-shadow: 0px 0px 55px rgba(0, 0, 0, 0.65);
+    text-transform: uppercase;
+}
+
+.speedometer .gear {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 55px rgba(0, 0, 0, 0.65);
+    outline: 2px solid white;
+    outline-offset: 5px;
+}
+
+.speedometer .needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-100%, -50%) rotate(-42deg);
+    padding-right: 26px;
+    filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.65));
+    transform-origin: right;
+    transition: transform 0.7s linear;
+}
+
+.speedometer .gear span {
+    font-family: "Intro Regular Italic";
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    text-shadow: 0px 0px 55px rgba(0, 0, 0, 0.65);
+}
+
+.speedometer .engine-icon {
+    position: absolute;
+    left: 15%;
+    bottom: 27.7%;
+    fill: rgba(255, 255, 255, 0.4);
+    transition: fill 1s linear;
+}
+
+.speedometer .engine-icon.on {
+    fill: #00d9b2;
+}
+
+.speedometer .fuel-icon {
+    position: absolute;
+    right: 15%;
+    bottom: 27.7%;
+    fill: #00d9b2;
+    transition: fill 1s linear;
+}
+
+.speedometer .fuel-icon.medium-fuel {
+    fill: #ffc700;
+}
+
+.speedometer .fuel-icon.low-fuel {
+    fill: #ff0000;
+    animation: blink 1s infinite;
+}
+
+.speedometer .speedometer-bg {
+    position: absolute;
+    left: 50%;
+    top: 43%;
+    width: 115%;
+    height: 115%;
+    transform: translate(-50%, -50%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -4;
 }
 
 /* Weapon */
@@ -98,7 +314,7 @@ speed {
     right: 20px;
     font-size: 50px;
     font-weight: bold;
-    font-family: "Pricedown Bl", sans-serif;
+    font-family: "Intro Bold Italic", sans-serif;
 }
 
 .current-ammo {
@@ -109,84 +325,6 @@ speed {
 .total-ammo {
     color: #808080;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
-}
-
-/* Minimap */
-
-.minimap-section {
-    position: absolute;
-    bottom: 75px;
-    left: 30px;
-    transform-origin: bottom left;
-    transform: scale(var(--scale));
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.2s ease;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-}
-
-.minimap-section.hidden {
-    transform: scale(var(--scale)) translateX(-200%);
-}
-
-.minimap-section .minimap .player-indicator {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    z-index: 2;
-}
-
-.minimap-section .minimap {
-    position: relative;
-    width: 255px;
-    height: 255px;
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.8);
-    box-shadow: 0px 0px 45px -15px #000000;
-    border: 2px solid white;
-    /* border-radius: 10px; */
-}
-
-.minimap-section .minimap .rotator-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    transform-origin: center;
-}
-
-.minimap-section .minimap .rotator-container > div {
-    position: absolute;
-    width: fit-content;
-    height: fit-content;
-    transform-origin: center;
-}
-
-.minimap-section .minimap .map {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-}
-
-.minimap-section .minimap .map-blip {
-    position: absolute;
-    transform-origin: center;
-    transform: translate(-50%, -50%);
-    height: 20px;
-    width: 20px;
-    z-index: 2;
-    opacity: 1;
-}
-
-.minimap-section .minimap .map-blip.active {
-    transform: translate(-50%, -50%) scale(1.5);
 }
 
 .q-ml-xl {

@@ -90,10 +90,14 @@ Timer.SetInterval(function()
             local vehicle_health = current_vehicle:GetHealth()
             local vehicle_max_health = current_vehicle:GetMaxHealth()
             local vehicle_speed = current_vehicle:GetVehicleSpeed()
+            local vehicle_acceleration = current_vehicle:GetVehicleAcceleration()
+            local vehicle_rpm = current_vehicle:GetVehicleRPM()
+            local vehicle_gear = current_vehicle:GetVehicleGear()
+
             if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
             if vehicle_speed < 0 then vehicle_speed = 0 end
             local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
-            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health)
+            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health, vehicle_gear, vehicle_rpm, vehicle_acceleration)
         end
         if has_weapon and current_weapon then
             local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)
@@ -170,20 +174,20 @@ Events.SubscribeRemote('qb-hud:client:fixVehicle', function()
     end
 end)
 
-Input.Subscribe('KeyPress', function(key_name)
-    if key_name == 'E' then
-        if not in_vehicle then
-            local vehicle, distance = QBCore.Functions.GetClosestHVehicle()
-            if vehicle and distance < 300 then
-                local current_passengers = vehicle:NumOfCurrentPassanger()
-                local allowed_passengers = vehicle:NumOfAllowedPassanger()
-                if current_passengers >= allowed_passengers then return end
-                Events.CallRemote('qb-hud:server:enterVehicle', vehicle)
-            end
-        else
-            if current_vehicle and current_vehicle:IsValid() then
-                Events.CallRemote('qb-hud:server:leaveVehicle', current_vehicle)
-            end
-        end
-    end
-end)
+-- Input.Subscribe('KeyPress', function(key_name)
+--     if key_name == 'E' then
+--         if not in_vehicle then
+--             local vehicle, distance = QBCore.Functions.GetClosestHVehicle()
+--             if vehicle and distance < 300 then
+--                 local current_passengers = vehicle:NumOfCurrentPassanger()
+--                 local allowed_passengers = vehicle:NumOfAllowedPassanger()
+--                 if current_passengers >= allowed_passengers then return end
+--                 Events.CallRemote('qb-hud:server:enterVehicle', vehicle)
+--             end
+--         else
+--             if current_vehicle and current_vehicle:IsValid() then
+--                 Events.CallRemote('qb-hud:server:leaveVehicle', current_vehicle)
+--             end
+--         end
+--     end
+-- end)

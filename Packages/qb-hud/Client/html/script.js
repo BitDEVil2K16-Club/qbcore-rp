@@ -2,6 +2,7 @@ const { createApp, ref, onMounted } = Vue;
 
 const app = createApp({
     setup() {
+        const speedStrokeDasharrayMinMax = [0, 51.5];
         const showAll = ref(false);
         // money
         const cash = ref(0);
@@ -22,8 +23,13 @@ const app = createApp({
         const talking = ref(false);
         // vehicle
         const speed = ref(0);
+        const vehHealth = ref(1000);
+        const vehMaxHealth = ref(1000);
         const fuel = ref(100);
         const fuelgauge = ref(100);
+        const acceleration = ref(0);
+        const rpm = ref(0);
+        const gear = ref(1);
         const seatbelt = ref(false);
         const cruise = ref(false);
         const showSpeedometer = ref(false);
@@ -124,9 +130,30 @@ const app = createApp({
             showSpeedometer.value = bool;
         }
 
-        function UpdateVehicleStats(speedAmount, fuelAmount) {
+        function setSpeed(mph) {
+            let rotate = (mph / 150) * (145 - -42) - 42;
+            const needle = document.querySelector(".speedometer .needle");
+            if (needle) {
+                needle.style.transform = `translate(-100%, -50%) rotate(${rotate}deg)`;
+            }
+
+            let speedStrokeDasharray = (mph / 150) * (speedStrokeDasharrayMinMax[1] - speedStrokeDasharrayMinMax[0]) + speedStrokeDasharrayMinMax[0];
+            const speedPercentageCircle = document.querySelector(".speedometer .speed-percentage .circle");
+            if (speedPercentageCircle) {
+                speedPercentageCircle.style.strokeDasharray = `${speedStrokeDasharray}, 100`;
+            }
+        }
+
+        function UpdateVehicleStats(speedAmount, fuelAmount, healthAmount, maxhealthAmount, accelerationAmount, rpmAmount, gearAmount) {
             speed.value = Math.floor(speedAmount);
             fuel.value = Math.floor(fuelAmount);
+            vehHealth.value = Math.floor(healthAmount / 10) + "%";
+            vehMaxHealth.value = Math.floor(maxhealthAmount);
+            acceleration.value = Math.floor(accelerationAmount);
+            rpm.value = rpmAmount;
+            gear.value = gearAmount;
+
+            setSpeed(speed.value);
 
             if (fuel.value <= 20) {
                 fuelColor.value = "#ff0000";
@@ -193,6 +220,11 @@ const app = createApp({
             minus,
             showUpdate,
             speed,
+            vehHealth,
+            vehMaxHealth,
+            acceleration,
+            rpm,
+            gear,
             fuel,
             fuelColor,
             fuelgauge,
