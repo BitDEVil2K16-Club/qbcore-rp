@@ -2,7 +2,6 @@ const { createApp, ref, onMounted } = Vue;
 
 const app = createApp({
     setup() {
-        const speedStrokeDasharrayMinMax = [0, 51.5];
         const showAll = ref(false);
         // money
         const cash = ref(0);
@@ -29,7 +28,7 @@ const app = createApp({
         const fuelgauge = ref(100);
         const acceleration = ref(0);
         const rpm = ref(0);
-        const gear = ref(1);
+        const vehGear = ref(1);
         const seatbelt = ref(false);
         const cruise = ref(false);
         const showSpeedometer = ref(false);
@@ -44,6 +43,7 @@ const app = createApp({
         const hungerColor = ref("#dd6e14");
         const thirstColor = ref("#1a7cad");
         const fuelColor = ref("#FFFFFF");
+        const engineColor = ref("#FFFFFF");
 
         function formatMoney(value) {
             const formatter = new Intl.NumberFormat("en-US", {
@@ -137,7 +137,8 @@ const app = createApp({
                 needle.style.transform = `translate(-100%, -50%) rotate(${rotate}deg)`;
             }
 
-            let speedStrokeDasharray = (mph / 150) * (speedStrokeDasharrayMinMax[1] - speedStrokeDasharrayMinMax[0]) + speedStrokeDasharrayMinMax[0];
+            const speedStrokeDasharrayMinMax = [0, 51.5];
+            const speedStrokeDasharray = (mph / 150) * (speedStrokeDasharrayMinMax[1] - speedStrokeDasharrayMinMax[0]) + speedStrokeDasharrayMinMax[0];
             const speedPercentageCircle = document.querySelector(".speedometer .speed-percentage .circle");
             if (speedPercentageCircle) {
                 speedPercentageCircle.style.strokeDasharray = `${speedStrokeDasharray}, 100`;
@@ -151,14 +152,31 @@ const app = createApp({
             vehMaxHealth.value = Math.floor(maxhealthAmount);
             acceleration.value = Math.floor(accelerationAmount);
             rpm.value = rpmAmount;
-            gear.value = gearAmount;
+
+            if (speed.value < 0) {
+                vehGear.value = "R";
+            } else {
+                vehGear.value = gearAmount > 0 ? gearAmount - 1 : gearAmount;
+            }
 
             setSpeed(speed.value);
+
+            const fuelStrokeDasharrayMinMax = [0, 20.8];
+            const fuelStrokeDasharray = (fuel.value / 100) * (fuelStrokeDasharrayMinMax[1] - fuelStrokeDasharrayMinMax[0]) + fuelStrokeDasharrayMinMax[0];
+            document.querySelector(".speed-percentage .fuel").setAttribute("stroke-dasharray", `${fuelStrokeDasharray}, 100`);
 
             if (fuel.value <= 20) {
                 fuelColor.value = "#ff0000";
             } else if (fuel.value <= 30) {
                 fuelColor.value = "#dd6e14";
+            }
+
+            if (healthAmount <= 200) {
+                engineColor.value = "#ff0000";
+            } else if (healthAmount <= 500) {
+                engineColor.value = "#FFA500";
+            } else {
+                engineColor.value = "#00FF00";
             }
         }
 
@@ -224,9 +242,10 @@ const app = createApp({
             vehMaxHealth,
             acceleration,
             rpm,
-            gear,
+            vehGear,
             fuel,
             fuelColor,
+            engineColor,
             fuelgauge,
             seatbelt,
             cruise,

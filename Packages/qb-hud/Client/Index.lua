@@ -93,11 +93,13 @@ Timer.SetInterval(function()
             local vehicle_acceleration = current_vehicle:GetVehicleAcceleration()
             local vehicle_rpm = current_vehicle:GetVehicleRPM()
             local vehicle_gear = current_vehicle:GetVehicleGear()
-
             if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
-            if vehicle_speed < 0 then vehicle_speed = 0 end
+            if vehicle_speed < 0 then
+                vehicle_speed = 0
+                vehicle_gear = 'R'
+            end
             local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
-            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health, vehicle_gear, vehicle_rpm, vehicle_acceleration)
+            my_webui:CallEvent('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health, vehicle_acceleration, vehicle_rpm, vehicle_gear)
         end
         if has_weapon and current_weapon then
             local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)

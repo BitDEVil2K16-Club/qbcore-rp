@@ -15,6 +15,7 @@
 #main-container {
     width: 100%;
     height: auto;
+    font-family: "Intro Bold Italic", sans-serif;
 }
 
 /* Money */
@@ -29,7 +30,6 @@
 
 #sign,
 #bank {
-    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #00ac31;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -37,7 +37,6 @@
 
 #plus {
     font-size: 50px;
-    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #00ac31;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -45,27 +44,20 @@
 
 #minus {
     font-size: 50px;
-    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #ac0000;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
 }
 
 #money {
-    font-family: "Intro Bold Italic", sans-serif;
     text-align: right;
     color: #ffffff;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7), 1px -1px 0 rgba(0, 0, 0, 0.7), -1px 1px 0 rgba(0, 0, 0, 0.7), 1px 1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#money-cash {
-    color: #ffffff;
-    font-family: "Intro Bold Italic", sans-serif;
-}
-
+#money-cash,
 #money-bank {
     color: #ffffff;
-    font-family: "Intro Bold Italic", sans-serif;
 }
 
 /* Player HUD */
@@ -150,9 +142,9 @@
     transform: translate(-50%, -50%);
     gap: 5px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: "Intro Bold Italic";
     font-style: italic;
     font-weight: 700;
     font-size: 16px;
@@ -170,10 +162,9 @@
 
 .speedometer h1 {
     position: absolute;
-    bottom: 20%;
+    bottom: 15%;
     left: 50%;
     transform: translate(-50%, 50%);
-    font-family: "Intro Bold Italic";
     font-style: italic;
     font-size: 54px;
     line-height: 54px;
@@ -195,7 +186,6 @@
     left: 50%;
     transform: translateX(-50%);
     content: "mph";
-    font-family: "Intro Bold Italic";
     font-style: italic;
     font-weight: 700;
     font-size: 20px;
@@ -239,7 +229,6 @@
 }
 
 .speedometer .gear span {
-    font-family: "Intro Regular Italic";
     font-style: italic;
     font-weight: 400;
     font-size: 20px;
@@ -314,7 +303,6 @@
     right: 20px;
     font-size: 50px;
     font-weight: bold;
-    font-family: "Intro Bold Italic", sans-serif;
 }
 
 .current-ammo {
@@ -419,5 +407,19 @@
 @media screen and (max-width: 800px) {
     body {
         --scale: 0.5;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }
