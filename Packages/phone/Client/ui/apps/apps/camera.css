@@ -1,0 +1,757 @@
+.camera-app {
+    background-color: black;
+
+    font-family: 'SF Pro Display', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    letter-spacing: .7px;
+    white-space: nowrap;
+
+    border-radius: 35px 35px 25px 25px;
+}
+
+.camera-app .camera-input {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.camera-app .camera {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.camera-app .camera .input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
+.camera-app .camera .input {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -65%);
+    border-radius: 14px;
+    overflow: hidden;
+    width: 96%;
+    height: 400px;
+
+    /* background-image: url("../../img/apps/camera/camera_img.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center; */
+    transition: all 0.5s ease;
+
+
+    transform-style: preserve-3d;
+}
+
+.camera-app .camera .input img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.camera-app .camera.front-camera .input {
+    transform: translate(-50%, -65%) rotateY(180deg);
+}
+
+.camera-app .camera.video-mode .input {
+    height: 636px;
+    border-radius: 33px;
+    transform: translate(-50%, -50%);
+}
+
+.camera-app .camera.video-mode.front-camera .input {
+    transform: translate(-50%, -50%) rotateY(180deg);
+}
+
+.camera-app .camera.loading .input img {
+    filter: blur(10px);
+    transform: scale(1.1);
+}
+
+.camera-app .camera .camera-type {
+    position: absolute;
+    left: 50%;
+    top: 480px;
+    transform: translate(-50%, 0);
+    width: fit-content;
+    height: 28px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-style: normal;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 12px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(7.5px);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    opacity: 1;
+    transition: all .2s ease;
+    pointer-events: all;
+
+}
+
+.camera-app .camera.recording .camera-type {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.camera-app .camera .camera-type::after {
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translate(0, -50%);
+    content: "";
+    height: 20px;
+    width: 56px;
+    border-radius: 6px;
+    background: rgba(246, 208, 8, 0.25);
+    transition: all .3s ease;
+}
+
+.camera-app .camera.photo-mode .camera-type::after {
+    transform: translate(100%, -50%);
+}
+
+.camera-app .camera .camera-type p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 56px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .camera-type p:hover {
+    color: white;
+}
+
+.camera-app .camera.video-mode .camera-type .video {
+    color: #F6D008;
+}
+
+.camera-app .camera.photo-mode .camera-type .photo {
+    color: #F6D008;
+}
+
+.camera-app .camera .camera-actions {
+    position: absolute;
+    left: 50%;
+    top: 530px;
+    transform: translate(-50%, 0);
+    width: 220px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.camera-app .camera .camera-actions .galery {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 40px;
+    opacity: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all .2s ease;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.camera-app .camera.recording .camera-actions .galery {
+    opacity: 0;
+}
+
+.camera-app .camera .camera-actions .galery:hover {
+    opacity: .8;
+}
+
+.camera-app .camera .camera-actions .shoot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 35px;
+    height: 52px;
+    width: 52px;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.camera-app .camera.video-mode .camera-actions .shoot {
+    background: rgba(249, 63, 54, 0.15);
+    border-color: red;
+}
+
+.camera-app .camera .camera-actions .shoot div {
+    height: 40px;
+    width: 40px;
+    background-color: white;
+    border-radius: 50px;
+    transition: all .2s ease;
+}
+
+.camera-app .camera.recording .camera-actions .shoot div {
+    height: 24px;
+    width: 24px;
+    border-radius: 8px;
+}
+
+.camera-app .camera.video-mode .camera-actions .shoot div {
+    background-color: red;
+}
+
+.camera-app .camera .camera-actions .shoot:hover div {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.camera-app .camera.video-mode .camera-actions .shoot:hover div {
+    background-color: rgba(249, 63, 54, 0.85);
+}
+
+.camera-app .camera .camera-actions .shoot-while-recording {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(2px, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 35px;
+    height: 38px;
+    width: 38px;
+    cursor: pointer;
+    transition: all .3s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.camera-app .camera.recording .camera-actions .shoot-while-recording {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.camera-app .camera .camera-actions .shoot-while-recording div {
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border-radius: 50px;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .camera-actions .shoot-while-recording:hover div {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.camera-app .camera .camera-actions .rotate-camera {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(7.5px);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all .2s ease;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.camera-app .camera.recording .camera-actions .rotate-camera {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.camera-app .camera .camera-actions .rotate-camera:hover {
+    /* height: 38px;
+    width: 38px; */
+    transform: translateY(-50%) scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
+    fill: white;
+}
+
+.camera-app .camera .camera-actions .rotate-camera.rotate {
+    animation: rotateButton .3ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-play-state: running;
+}
+
+.camera-app .camera .recording-time {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translate(-50%, -500%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 22px;
+    width: 74px;
+    background: #F93F36;
+    backdrop-filter: blur(7.5px);
+    border-radius: 6px;
+
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    color: #FFFFFF;
+    transition: all .2s ease;
+    pointer-events: none;
+}
+
+.camera-app .camera.recording .recording-time {
+    transform: translate(-50%, -50%);
+}
+
+.camera-app .camera .recording-time::after {
+    /* outline: 2px solid rgba(249, 63, 54, 0.6); */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    content: "";
+    height: 28px;
+    width: 80px;
+    border-radius: 8px;
+    background: rgba(249, 63, 54, 0.45);
+    backdrop-filter: blur(7.5px);
+    z-index: -1;
+}
+
+.camera-app .camera .photo-galery {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(200%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    transition: all .5s ease;
+}
+
+.camera-app .camera.in-galery .photo-galery {
+    transform: translate(-50%, -50%);
+}
+
+.camera-app .camera:not(.in-galery) .photo-galery {
+    transition-delay: .3s;
+}
+
+.camera-app .camera .photo-galery h1 {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translate(-50%, -500%);
+
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+    text-align: center;
+
+    color: #FFFFFF;
+
+    text-shadow: 0px 2px 25px rgba(0, 0, 0, 0.85);
+    transition: all .3s ease;
+}
+
+.camera-app .camera.in-galery .photo-galery h1 {
+    transform: translate(-50%, -50%);
+    transition-delay: .5s;
+}
+
+.camera-app .camera .photo-galery .content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 2px;
+    overflow-y: scroll;
+    z-index: -2;
+    padding-bottom: 92px;
+}
+
+.camera-app .camera .photo-galery .content::-webkit-scrollbar {
+    display: none;
+}
+
+.camera-app .camera .photo-galery .content img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .photo-galery .galery-actions {
+    position: absolute;
+    bottom: -300px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: 92px;
+    background: linear-gradient(0deg, rgba(9, 117, 253, 0.05), rgba(9, 117, 253, 0.05)), rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(17.5px);
+    border-radius: 22px;
+    transition: all .3s;
+}
+
+.camera-app .camera.in-galery .photo-galery .galery-actions {
+    bottom: 0;
+    transition-delay: .5s;
+}
+
+.camera-app .camera .photo-galery .galery-actions button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background: rgba(9, 117, 253, 0.2);
+    border: none;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    transition: all .2s ease;
+    cursor: pointer;
+}
+
+.camera-app .camera .photo-galery .galery-actions button:hover {
+    background: rgba(9, 117, 253, 0.25);
+
+}
+
+.camera-app .camera .photo-galery .galery-actions button.selected {
+    background: #0975FD;
+}
+
+.camera-app .camera .photo-galery .galery-actions button svg {
+    fill: #0975FD;
+}
+
+.camera-app .camera .photo-galery .galery-actions button.selected svg {
+    fill: white;
+}
+
+.camera-app .camera .photo-galery .galery-actions button p {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    color: rgba(9, 117, 253, 1);
+}
+
+.camera-app .camera .photo-galery .galery-actions button.selected p {
+    color: white;
+}
+
+.camera-app .camera .photo-galery .photo-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    transition: all .3s ease;
+}
+
+.camera-app .camera .photo-galery.in-slider .photo-slider {
+    backdrop-filter: blur(5px);
+    pointer-events: all;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.camera-app .camera .photo-galery:not(.in-slider) .photo-slider {
+    transition-delay: .4s;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture {
+    position: relative;
+    top: -800px;
+    margin-top: 50px;
+    height: 424px;
+    width: 280px;
+    transition: all .3s ease;
+    transition-duration: .5s;
+}
+
+.camera-app .camera .photo-galery.in-slider .photo-slider .picture {
+    top: 0;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture img {
+    position: absolute;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1;
+    transform: translateX(0);
+    transition: all .3s ease;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture img.old {
+    transform: translateX(-110%);
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture img.next {
+    transform: translateX(110%);
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .fav {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 13px;
+    background-color: transparent;
+    border: none;
+
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .fav svg {
+    cursor: pointer;
+    transition: all .2s ease;
+    stroke: rgba(9, 117, 253, 0.65);
+    stroke-width: 2px;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .fav svg:hover {
+    stroke: #0975FD;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .fav.active svg {
+    fill: #0975FD;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .fav.active svg:hover {
+    fill: rgba(9, 117, 253, 0.65);
+    stroke: transparent;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .quit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 8px;
+    background-color: transparent;
+    border: none;
+    height: 28px;
+    width: 28px;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: -4px 4px 25px rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+    border-radius: 111px;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .quit:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .quit svg {
+    fill: rgba(255, 255, 255, 0.65);
+    transition: all .2s ease;
+}
+
+.camera-app .camera .photo-galery .photo-slider .picture .quit:hover svg {
+    fill: white;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions {
+    position: absolute;
+    top: -800px;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .5s ease;
+}
+
+.camera-app .camera .photo-galery.in-slider .photo-slider .info-actions {
+    top: 484px;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    text-shadow: 0px 2px 25px rgba(0, 0, 0, 0.85);
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    width: 26px;
+    border: none;
+    background: #FFFFFF;
+    border-radius: 111px;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button.edit {
+    padding-left: 2px;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button.delete {
+    background: linear-gradient(0deg, #F93F36, #F93F36), #FFFFFF;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button.delete svg {
+    fill: white;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button:hover {
+    background: #DCDCDC;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button.delete:hover {
+    background: linear-gradient(0deg, rgba(249, 63, 54, 0.85), rgba(249, 63, 54, 0.85)), #FFFFFF;
+}
+
+.camera-app .camera .photo-galery .photo-slider .info-actions .photo-actions button svg {
+    fill: #0975FD;
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons {
+    position: absolute;
+    top: 964px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transition: all .3s ease;
+    transition-delay: .3s;
+}
+
+.camera-app .camera .photo-galery.in-slider .photo-slider .slider-buttons {
+    top: 564px;
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons .arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons .arrow svg {
+    fill: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons .arrow svg:hover {
+    fill: white;
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons p {
+    width: 120px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0px 2px 25px rgba(0, 0, 0, 0.85);
+}
+
+.camera-app .camera .photo-galery .photo-slider .slider-buttons p span {
+    color: rgba(255, 255, 255, 0.65);
+    margin-left: 4px;
+}
+
+.camera-app .camera .shadow-gradient {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    transition: all .2s ease;
+}
+
+@keyframes rotateButton {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-50%) rotate(180deg);
+    }
+}

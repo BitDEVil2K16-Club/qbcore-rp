@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../style.css">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+        integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="./include_me.js" defer></script>
+
+    <!-- App related Placeholders -->
+    <link rel="stylesheet" href="./apps/camera.css">
+    <script defer src="./apps/camera.js"></script>
+</head>
+
+<body>
+    <!-- Change data-app to the app name -> Register the app in the server side, look at pcrp-phone for the table -->
+    <!-- <img src="../img/iphone-case2.png" alt="" class="case"> -->
+    <div data-app="camera" class="app camera-app">
+        <!-- <img src="../img/apps/camera/camera_img.png" alt="" class="camera-input"> -->
+        <div class="camera photo-mode rear-camera in-galery">
+            <img src="../img/apps/camera/gradient.png" alt="" class="shadow-gradient">
+            <div class="input">
+                <img src="../img/apps/camera/rear_camera.png" alt="">
+            </div>
+            <div class="recording-time">
+                <p>00:00:00</p>
+            </div>
+            <div class="camera-type">
+                <p class="video">video</p>
+                <p class="photo">photo</p>
+            </div>
+            <div class="camera-actions">
+                <div class="galery">
+                    <img src="../img/apps/camera/galery_img.png" alt="" class="last-picture">
+                </div>
+                <button class="shoot">
+                    <div></div>
+                </button>
+
+                <button class="shoot-while-recording">
+                    <div></div>
+                </button>
+
+                <button class="rotate-camera">
+                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M14.2495 3L11.2495 6H13.4995C13.4995 8.4825 11.482 10.5 8.99951 10.5C8.24201 10.5 7.52201 10.3125 6.89951 9.975L5.80451 11.07C6.72701 11.655 7.82201 12 8.99951 12C12.3145 12 14.9995 9.315 14.9995 6H17.2495L14.2495 3ZM4.49951 6C4.49951 3.5175 6.51701 1.5 8.99951 1.5C9.75701 1.5 10.477 1.6875 11.0995 2.025L12.1945 0.93C11.272 0.345 10.177 0 8.99951 0C5.68451 0 2.99951 2.685 2.99951 6H0.749512L3.74951 9L6.74951 6H4.49951Z"
+                            fill="white" fill-opacity="0.85" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="photo-galery">
+                <h1>Photo Gallery</h1>
+                <div class="content">
+                    <!-- <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt="">
+                    <img src="../img/apps/camera/picture_1.png" alt=""> -->
+                </div>
+                <div class="galery-actions">
+                    <button class="library-btn selected">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M6.5013 10.6667H14.8346L11.9596 6.91669L10.043 9.41669L8.7513 7.75002L6.5013 10.6667ZM5.66797 14C5.20964 14 4.81714 13.8367 4.49047 13.51C4.1638 13.1834 4.00075 12.7911 4.0013 12.3334V2.33336C4.0013 1.87502 4.16464 1.48252 4.4913 1.15585C4.81797 0.829188 5.21019 0.666133 5.66797 0.666688H15.668C16.1263 0.666688 16.5188 0.830022 16.8455 1.15669C17.1721 1.48336 17.3352 1.87558 17.3346 2.33336V12.3334C17.3346 12.7917 17.1713 13.1842 16.8446 13.5109C16.518 13.8375 16.1257 14.0006 15.668 14H5.66797ZM2.33464 17.3334C1.8763 17.3334 1.4838 17.17 1.15714 16.8434C0.83047 16.5167 0.667415 16.1245 0.66797 15.6667V4.00002H2.33464V15.6667H14.0013V17.3334H2.33464Z" />
+                        </svg>
+                        <p>Library</p>
+                    </button>
+                    <button class="favorites-btn">
+                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M9.00033 15.7917L7.79199 14.6917C3.50033 10.8 0.666992 8.225 0.666992 5.08333C0.666992 2.50833 2.68366 0.5 5.25033 0.5C6.70033 0.5 8.09199 1.175 9.00033 2.23333C9.90866 1.175 11.3003 0.5 12.7503 0.5C15.317 0.5 17.3337 2.50833 17.3337 5.08333C17.3337 8.225 14.5003 10.8 10.2087 14.6917L9.00033 15.7917Z" />
+                        </svg>
+                    </button>
+                    <button class="camera-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M10.0016 12.6673C11.4744 12.6673 12.6683 11.4734 12.6683 10.0007C12.6683 8.52789 11.4744 7.33398 10.0016 7.33398C8.52887 7.33398 7.33496 8.52789 7.33496 10.0007C7.33496 11.4734 8.52887 12.6673 10.0016 12.6673Z" />
+                            <path
+                                d="M7.50033 1.66602L5.97533 3.33268H3.33366C2.41699 3.33268 1.66699 4.08268 1.66699 4.99935V14.9993C1.66699 15.916 2.41699 16.666 3.33366 16.666H16.667C17.5837 16.666 18.3337 15.916 18.3337 14.9993V4.99935C18.3337 4.08268 17.5837 3.33268 16.667 3.33268H14.0253L12.5003 1.66602H7.50033ZM10.0003 14.166C7.70033 14.166 5.83366 12.2993 5.83366 9.99935C5.83366 7.69935 7.70033 5.83268 10.0003 5.83268C12.3003 5.83268 14.167 7.69935 14.167 9.99935C14.167 12.2993 12.3003 14.166 10.0003 14.166Z" />
+                        </svg>
+                        <p>Camera</p>
+                    </button>
+                </div>
+                <div class="photo-slider">
+                    <div class="picture">
+                        <button class="fav">
+                            <svg width="18" height="16" viewBox="0 0 18 16" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M9.00033 15.7917L7.79199 14.6917C3.50033 10.8 0.666992 8.225 0.666992 5.08333C0.666992 2.50833 2.68366 0.5 5.25033 0.5C6.70033 0.5 8.09199 1.175 9.00033 2.23333C9.90866 1.175 11.3003 0.5 12.7503 0.5C15.317 0.5 17.3337 2.50833 17.3337 5.08333C17.3337 8.225 14.5003 10.8 10.2087 14.6917L9.00033 15.7917Z" />
+                            </svg>
+
+                        </button>
+                        <button class="quit">
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7.78675 1.21298C7.85342 1.14844 7.90661 1.07123 7.94322 0.985853C7.97983 0.900473 7.99912 0.808635 7.99997 0.715696C8.00082 0.622758 7.98321 0.53058 7.94816 0.444542C7.91312 0.358504 7.86135 0.280329 7.79586 0.214577C7.73038 0.148826 7.6525 0.0968159 7.56676 0.0615811C7.48103 0.0263463 7.38916 0.00859291 7.29651 0.00935641C7.20386 0.0101199 7.11229 0.0293851 7.02714 0.0660282C6.942 0.102671 6.86498 0.155958 6.80058 0.22278L4.00395 3.02726L1.20825 0.22278C1.14437 0.15401 1.06734 0.0988515 0.981748 0.0605949C0.896156 0.0223383 0.80376 0.00176715 0.710071 0.000108931C0.616382 -0.00154929 0.52332 0.0157394 0.436437 0.0509434C0.349553 0.0861473 0.270628 0.138545 0.20437 0.205012C0.138112 0.271478 0.0858776 0.350651 0.0507839 0.437807C0.0156902 0.524964 -0.00154444 0.618318 0.00010859 0.712302C0.00176162 0.806285 0.0222684 0.89897 0.0604052 0.984831C0.098542 1.07069 0.153528 1.14797 0.222082 1.21205L3.01592 4.01746L0.220222 6.82194C0.0969689 6.95463 0.029869 7.13013 0.0330584 7.31146C0.0362478 7.4928 0.109478 7.66581 0.23732 7.79405C0.365162 7.9223 0.537634 7.99576 0.718402 7.99896C0.89917 8.00216 1.07412 7.93485 1.20639 7.81121L4.00395 5.00673L6.79965 7.81214C6.93192 7.93578 7.10687 8.00309 7.28764 7.99989C7.46841 7.99669 7.64088 7.92323 7.76872 7.79499C7.89656 7.66675 7.96979 7.49373 7.97298 7.31239C7.97617 7.13106 7.90907 6.95556 7.78582 6.82287L4.99198 4.01746L7.78675 1.21298Z" />
+                            </svg>
+
+                        </button>
+                        <img src="../img/apps/camera/picture_1.png" alt="">
+                        <img class="old" src="../img/apps/camera/picture_1.png" alt="">
+                    </div>
+                    <div class="info-actions">
+                        <p class="date">Today, 12:34 PM</p>
+                        <div class="photo-actions">
+                            <button class="share">
+                                <svg width="12" height="11" viewBox="0 0 12 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 4.99998L7.33333 0.333313V2.99998C2.66667 3.66665 0.666667 6.99998 0 10.3333C1.66667 7.99998 4 6.93331 7.33333 6.93331V9.66665L12 4.99998Z" />
+                                </svg>
+                            </button>
+                            <button class="edit">
+                                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M10.8667 4.94998L8.03333 2.14998L8.96667 1.21665C9.22222 0.961091 9.53622 0.833313 9.90867 0.833313C10.2811 0.833313 10.5949 0.961091 10.85 1.21665L11.7833 2.14998C12.0389 2.40554 12.1722 2.71398 12.1833 3.07531C12.1944 3.43665 12.0722 3.74487 11.8167 3.99998L10.8667 4.94998ZM9.9 5.93331L2.83333 13H0V10.1666L7.06667 3.09998L9.9 5.93331Z" />
+                                </svg>
+
+                            </button>
+                            <button class="delete">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M2.66699 12C2.30033 12 1.98633 11.8693 1.72499 11.608C1.46366 11.3467 1.33321 11.0329 1.33366 10.6667V2H0.666992V0.666667H4.00033V0H8.00033V0.666667H11.3337V2H10.667V10.6667C10.667 11.0333 10.5363 11.3473 10.275 11.6087C10.0137 11.87 9.69988 12.0004 9.33366 12H2.66699ZM4.00033 9.33333H5.33366V3.33333H4.00033V9.33333ZM6.66699 9.33333H8.00033V3.33333H6.66699V9.33333Z" />
+                                </svg>
+
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-buttons">
+                        <button class="arrow left">
+                            <svg width="9" height="15" viewBox="0 0 9 15" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7.93555 13.9458C8.11263 13.7687 8.20117 13.5591 8.20117 13.3168C8.20117 13.0746 8.11263 12.8651 7.93555 12.6885L2.747 7.49998L7.95326 2.29373C8.11853 2.12845 8.20117 1.92185 8.20117 1.67394C8.20117 1.42602 8.11263 1.21352 7.93555 1.03644C7.75846 0.859355 7.5488 0.770813 7.30655 0.770813C7.0643 0.770813 6.85487 0.859355 6.67826 1.03644L0.728255 7.00415C0.657421 7.07498 0.60713 7.15172 0.57738 7.23435C0.54763 7.31699 0.532991 7.40554 0.533463 7.49998C0.533463 7.59442 0.548338 7.68297 0.578088 7.7656C0.607838 7.84824 0.657894 7.92498 0.728255 7.99581L6.69596 13.9635C6.86124 14.1288 7.06501 14.2114 7.30726 14.2114C7.54951 14.2114 7.75894 14.1229 7.93555 13.9458Z" />
+                            </svg>
+                        </button>
+                        <p class="photo-counter">1 <span>/ 256</span></p>
+                        <button class="arrow right">
+                            <svg width="9" height="15" viewBox="0 0 9 15" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1.06445 13.9458C0.88737 13.7687 0.798828 13.5591 0.798828 13.3168C0.798828 13.0746 0.88737 12.8651 1.06445 12.6885L6.253 7.49998L1.04674 2.29373C0.881467 2.12845 0.798828 1.92185 0.798828 1.67394C0.798828 1.42602 0.88737 1.21352 1.06445 1.03644C1.24154 0.859355 1.4512 0.770813 1.69345 0.770813C1.9357 0.770813 2.14513 0.859355 2.32174 1.03644L8.27175 7.00415C8.34258 7.07498 8.39287 7.15172 8.42262 7.23435C8.45237 7.31699 8.46701 7.40554 8.46654 7.49998C8.46654 7.59442 8.45166 7.68297 8.42191 7.7656C8.39216 7.84824 8.34211 7.92498 8.27175 7.99581L2.30404 13.9635C2.13876 14.1288 1.93499 14.2114 1.69274 14.2114C1.45049 14.2114 1.24106 14.1229 1.06445 13.9458Z" />
+                            </svg>
+
+                        </button>
+                    </div>
+                </div>
+                <img src="../img/apps/camera/gradient.png" alt="" class="shadow-gradient">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

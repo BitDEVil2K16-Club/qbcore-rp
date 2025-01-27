@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <link rel="stylesheet" href="../style.css">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    
+    
+    <!-- App related Placeholders -->
+    <link rel="stylesheet" href="./apps/calling.css">
+    <script src="./apps/calling.js" defer></script>
+    
+    <script src="./include_me.js" defer></script>
+</head>
+<body>
+    <!-- Change data-app to the app name -> Register the app in the server side, look at pcrp-phone for the table -->
+    <div data-app="calling" class="app calling-app">
+        <div class="dial--pad">
+            <div class="dial--button" data-dial="1"></div>
+            <div class="dial--button" data-dial="2"></div>
+            <div class="dial--button" data-dial="3"></div>
+            <div class="dial--button" data-dial="4"></div>
+            <div class="dial--button" data-dial="5"></div>
+            <div class="dial--button" data-dial="6"></div>
+            <div class="dial--button" data-dial="7"></div>
+            <div class="dial--button" data-dial="8"></div>
+            <div class="dial--button" data-dial="9"></div>
+            <div class="dial--button icon" data-dial="message">
+                <object data="./svg/message.svg" type=""></object>
+            </div>
+            <div class="dial--button" data-dial="0"></div>
+            <div class="dial--button icon" data-dial="backspace">
+                <object data="./svg/backspace.svg" type=""></object>
+            </div>
+        </div>
+        <div class="calling--prompt">
+            <div class="caller">
+                <div class="caller--picture"></div>
+                <div class="caller--name">John Oils</div>
+                <div class="caller--phone--type">mobile</div>
+            </div>
+
+            <div class="decline--call call--action" data-label="Decline">
+                <span class="material-symbols-outlined">
+                    call_end
+                </span>
+            </div>
+            <div class="answer--call call--action" data-label="Accept">
+                <span class="material-symbols-outlined">
+                    phone_enabled
+                </span>
+            </div>
+        </div>
+
+        <div class="calling--options">
+            <div class="call--details">
+                <div class="caller--name">John Oils</div>
+                <div class="call--duration">00:00</div>
+            </div>
+
+            <div class="action--buttons">
+                <div id="mic--toggle" class="action--button" data-label="mute">
+                    <div class="icon mute"></div>
+                </div>
+                <div id="keypad--toggle" class="action--button disabled" data-label="keypad">
+                    <div class="icon keypad"></div>
+                </div>
+                <div id="speaker--toggle" class="action--button active" data-label="audio">
+                    <div class="icon audio"></div>
+                </div>
+                <div id="add--to--call" class="action--button disabled" data-label="add call">
+                    <div class="icon add_call"></div>
+                </div>
+                <div id="video--toggle" class="action--button disabled" data-label="video">
+                    <div class="icon video"></div>
+                </div>
+                <div id="contacts--toggle" class="action--button disabled" data-label="contacts">
+                    <div class="icon contacts"></div>
+                </div>
+            </div>
+
+            <div class="decline--call call--action">
+                <span class="material-symbols-outlined">
+                    call_end
+                </span>
+            </div>
+        </div>
+    
+    </div>
+</body>
+</html>

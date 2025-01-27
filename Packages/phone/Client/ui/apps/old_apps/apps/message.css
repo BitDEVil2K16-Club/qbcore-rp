@@ -1,0 +1,256 @@
+body {
+    height: 100vh;
+    position: absolute;
+    inset: 0;
+}
+
+
+.message-app {
+    color: #fff;
+    background-color: #000;
+    text-align: center;
+    font-size: 1rem;
+
+    padding-inline: 5%;
+    padding-top: 25%;
+}
+
+.message-app .message--index {
+    display: flex;
+    text-align: initial;
+    align-items: center;
+    margin-bottom: 1.5vh;
+
+    position: relative;
+    font-size: 0.75rem;
+}
+
+.message-app .message--index::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 5vh;
+    right: 0;
+    border: 0.1px solid rgba(255, 255, 255, 0.15);
+    bottom: -1vh;            
+}
+
+/* .message-app .message--index:last-child::after {
+    display: none;
+} */
+.message-app .message--index:last-child {
+    margin-bottom: 0;
+}
+
+.message-app .avatar {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 100%;
+    background: red;
+    flex-shrink: 0;
+    margin-right: 1vh;
+}
+
+.message-app .message--header .avatar {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 100%;
+    background: red;
+    flex-shrink: 0;
+    margin-right: 0;
+}
+
+.go--back span{
+    color: #248bf5;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.message-app .message--header .contact--name {
+    font-size: 1rem;
+    margin-block: 0.5vh;
+    font-weight:300;
+}
+
+.message-app .subject {
+    font-weight: bold;
+}
+
+.message-app .top {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2vh;
+}
+
+.message-app .all--messages {
+    height: 100%;
+}
+
+.message-app .messages-list::-webkit-scrollbar{
+    display: none;
+  }
+
+.message-app .messages-list {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.message-app .messages-list .message--index .top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5vh;
+}
+
+.message-app .messages-list .content .message {
+    width: 100%;
+    height: 2.5vh;
+    overflow: hidden;
+    opacity: 0.5;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    height: 1rem;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.message-app .message--date {
+    padding-right: 2vh;
+    opacity: 0.5;
+}
+
+.message-app > .message {
+    height: 3vh;
+    overflow: hidden;
+    opacity: 0.5;
+}
+
+.message-app .message--content {
+    position: relative;
+}
+.message-app .message--header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 20%;
+
+    padding-top: 15%;
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    /* padding-top: 45%; */
+    padding-inline: 5%;
+
+    background-color: rgb(79 79 79 / 65%);
+    backdrop-filter: blur(6px);
+
+    z-index: 2;
+}
+.message-app .message--list {
+    height: 100%;
+    width: 100%;
+    background: #000;
+
+    position: absolute;
+    inset: 0;
+    left: 100%;
+}
+
+.message-app .contact--info {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.message-app .message--list {
+    padding-top: 55%;
+    padding-inline: 2vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1vh;
+    /* padding-top: 14vh; */
+}
+.message-app .message--list .message {
+    position: relative;
+}
+
+.message-app .message--list .message::before,  .message-app .message--list .message::after{
+    bottom: -0.1rem;
+    content: "";
+    height: 1rem;
+    position: absolute;
+}
+
+.message-app .message--list .message.recent::before {
+    border-bottom-right-radius: 0.8rem 0.7rem;
+    border-left: 1rem solid #262625;
+    left: -0.35rem;
+    transform: translate(0, -0.1rem);
+}
+.message-app .message--list .message.recent::after {
+    
+    background-color: #000;
+    border-bottom-right-radius: 0.5rem;
+    left: 20px;
+    transform: translate(-30px, -2px);
+    width: 10px;
+}
+
+.message-app .message--list .message.recent.sender::before {
+    border: 0;
+    border-radius: 0;
+    left: unset;
+    /* inset: unset; */
+
+    border-bottom-left-radius: 0.8rem 0.7rem;
+    border-right: 1rem solid #248bf5;
+    right: -0.35rem;
+    transform: translate(0, -0.1rem);
+    
+}
+.message-app .message--list .message.recent.sender::after {
+    border: 0;
+    border-radius: 0;
+    /* inset: unset; */
+
+    background-color: #000;
+    border-bottom-left-radius: 0.5rem;
+    right: -40px;
+    transform:translate(-30px, -2px);
+    width: 10px;
+    left: unset;
+}
+
+.message-app .message--list .message.sender {
+    background-color: #248bf5;
+    align-self: flex-end;
+}
+
+.message-app .message--list .message {
+    border-radius: 1.5vh;
+
+    text-align: left;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1vh;
+    color: #fff;
+    border-radius: 1vh;
+    align-self: flex-start;
+    width: 75%;
+}
+
+.message--footer {
+    height: 8vh;
+    background-color: rgb(79 79 79 / 45%);  
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

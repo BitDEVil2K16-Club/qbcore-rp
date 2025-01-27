@@ -1,0 +1,103 @@
+.prompt-app {
+    font-family: 'SF Pro Display';
+
+    position: absolute;
+    /* inset: 16px 18px; */
+    background: radial-gradient(50.04% 50.04% at 50% 50%, rgba(255, 52, 52, 0.2) 0%, rgba(255, 52, 52, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, rgba(9, 1, 1, 0.45);
+    backdrop-filter: blur(12.5px);
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-inline: 50px;
+}
+
+.prompt-app .profile {
+    width: 60px;
+    height: 60px;
+
+    outline: 2px solid rgba(249, 63, 54, 0.25);
+
+    outline-offset: 6px;
+}
+
+.prompt-app .prompt--confirm {
+    background: rgba(255, 52, 52, 0.15);
+    border: 1px solid rgba(255, 52, 52, 0.15);
+    border-radius: 6px;
+    width: 200px;
+    height: 36px;
+    margin-bottom: 4px;
+}
+.prompt-app .prompt--cancel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    border-radius: 6px;
+
+    width: 200px;
+    height: 36px;
+}
+
+.prompt-app .prompt--text
+{
+    font-family: 'SF Pro Display', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.8);
+
+    text-align: center;
+
+    margin-top: 14px;
+    margin-bottom: 40px;
+}
+
+.prompt--cancel, .prompt--confirm {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 500;
+    font-size: 12px;
+    
+    cursor: pointer;
+}
+
+.prompt--cancel {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.prompt--cancel:hover {
+    background: linear-gradient(105.98deg, rgba(255, 255, 255, 0.15) 0.86%, rgba(0, 0, 0, 0.1035) 47.6%), rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(112, 112, 112, 0.45);
+    color: #fff;
+}
+
+.prompt--confirm {
+    color: rgba(255, 95, 95, 0.65);
+}
+
+.prompt--confirm:hover {
+    background: linear-gradient(105.98deg, rgba(255, 255, 255, 0.1) 0.86%, rgba(0, 0, 0, 0.069) 47.6%), rgba(255, 52, 52, 0.45);
+    border: 1px solid rgba(255, 52, 52, 0.15);
+
+    color: #FFE8E8;
+}
+
+.prompt--confirm:hover .icon > svg > path {
+    fill: #FFE8E8;
+    fill-opacity: 1.0;
+}
+
+.prompt--confirm .icon {
+    position: relative;
+    top: 1.5px;
+}
+
+.prompt--confirm .icon > svg > path {
+    fill: #FF5F5F;
+}

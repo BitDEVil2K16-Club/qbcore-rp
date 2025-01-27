@@ -1,0 +1,262 @@
+.app {    
+    padding: 10vh 2vh;
+    color: #fff;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pages {
+    /* height: 100%; */
+    height: 95%;
+}
+
+.keypad--page {
+    padding-block: 4vh;
+    padding-inline: 6vh;
+}
+
+.add--number--prompt {
+    color: lightskyblue;
+    text-align: center;
+    font-size: 2vh;
+    margin-block: 2vh;
+    margin-bottom: 6vh;
+}
+
+.number--display .number {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    align-items: center;
+    justify-items: center;
+    gap: 2vh;
+    width: fit-content;
+    margin: auto;
+}
+.hide--suffix::after {
+    color: transparent;
+}
+
+.prominent::after {
+    display: none!important;
+    font-size: 8vh!important;
+}
+
+.call--action {
+    width: 8.5vh;
+    background-color: lime;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-direction: column;
+    text-align: center;
+
+    aspect-ratio: 1;
+
+
+    grid-column: 2;
+}
+
+/* .cancel--action::before {
+    content: '';
+    display: block;
+    z-index: 1;
+    width: 2.5vh;
+    height: 2.5vh;
+    top: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-30%, 0);
+    position: absolute;
+    background: white;
+} */
+
+.cancel--action {
+    opacity: 0.56;
+    position: relative;
+
+    color: #989898;
+    width: 5vh;
+    height: 3vh;
+    grid-column: 3;
+
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
+}
+
+.cancel--action span {
+    position: absolute;
+    z-index: 2;
+}
+
+.dial--action::after {
+    content: 'ABC';
+    display: block;
+    width: 100%;
+    font-size: 1.25vh;
+    margin-left: 0.35vh;
+    text-align: center;
+    letter-spacing: 0.5vh;
+    line-height: 0.5vh;
+}
+
+.dial--action {
+    width: 8.5vh;
+    aspect-ratio: 1;
+    background: #98989866;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-direction: column;
+    text-align: center;
+}
+
+.contacts--list--page {
+    display: none;
+    height: 100%;
+}
+
+.contacts--list--page .top {
+    display: flex;
+    margin-bottom: 2vh;
+
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contacts--list--page .top .title {
+    font-weight: bold;
+}
+
+.contacts--list--page .top .add--contact span {
+    color: var(--sys-blue);
+    cursor: pointer;
+}
+.search--bar {
+    display: flex;
+    justify-content: stretch;
+}
+
+.search--bar input {
+    width: 100%;
+    padding: 1vh 1vh;
+    border-radius: 1vh;
+    
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    
+    outline: 0;
+    border: 0;
+    background: var(--sys-secondary-bg);
+    color: var(--placeholder-color);
+}
+
+.search--list {
+    margin-top: 2vh;
+    height: 80%;
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.search--bar span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding-left: 1vh;
+    border-top-left-radius: 1vh;
+    border-bottom-left-radius: 1vh;
+    
+    color: var(--placeholder-color);
+    background-color: var(--sys-secondary-bg);
+    font-size: 3vh;
+}
+
+.profile--card {
+    margin-block: 4vh;
+    display: flex;
+    gap: 2vh;
+}
+
+.profile--img {
+    width: 10vh;
+    height: 10vh;
+    background: red;
+    border-radius: 100%;
+}
+
+.profile--details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile--details h2 {
+    font-size: 3vh;
+}
+
+.profile--details p {
+    font-size: 2vh;
+    color: darkgrey;
+    margin-top: 0.5vh;
+}
+
+.contacts--list--page .contacts--list {
+    height: 100%;
+    width: 100%;
+}
+
+.nav--bar {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    font-size: 1.5vh;
+    font-weight: bold;
+    gap: 1vh;
+}
+
+.nav--item {
+    cursor: pointer;
+}
+
+.nav--item .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
+}
+
+.nav--item.selected {
+    color: var(--sys-blue);
+}
+
+
+.contact--category {
+    color: var(--placeholder-color);
+    border-bottom: 2px solid var(--placeholder-color);
+    margin-block: 1.5vh;
+}
+
+.search--list::-webkit-scrollbar{
+    display: none;
+}
+
+.contact--item {
+    color: #fff;
+    font-weight: bold;
+    margin-block: 1vh;
+}
