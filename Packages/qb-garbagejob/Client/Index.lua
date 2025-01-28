@@ -1,4 +1,6 @@
 local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
+local isHoldingBag = false
+local dumpster = nil
 
 -- Functions
 
@@ -22,31 +24,44 @@ Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
     setupPeds()
 end)
 
+HCharacter.Subscribe('ValueChange', function(self, key, value)
+    if self ~= Client.GetLocalPlayer():GetControlledCharacter() then return end
+
+    if key ~= 'isHoldingBag' then return end
+    isHoldingBag = value
+end)
+
 Events.SubscribeRemote('qb-garbagejob:client:addTargets', function(vehicle, nextStop)
-    AddTargetEntity(vehicle, {
-        options = {
-            {
-                label = 'Load Bag', -- Locale
-                icon = 'fas fa-truck-loading',
-                type = 'server',
-                event = 'qb-garbagejob:server:loadBag',
-                canInteract = function()
-                    return isHoldingBag
-                end,
+    if vehicle then
+        AddTargetEntity(vehicle, {
+            options = {
+                {
+                    label = 'Load Bag', -- Locale
+                    icon = 'fas fa-truck-loading',
+                    type = 'server',
+                    event = 'qb-garbagejob:server:loadBag',
+                    canInteract = function()
+                        return isHoldingBag
+                    end,
+                },
             },
-        },
-        distance = 5,
-    })
+            distance = 5,
+        })
+    end
+
+    if dumpster then
+        dumpster:Destroy()
+    end
 
     local dumpsterData = Config.Locations.Dumpsters[nextStop]
-    local dumpster = Prop(dumpsterData.coords, Rotator(0, dumpsterData.heading, 0), 'abcca-qbcore::SM_Dumpster')
+    dumpster = Prop(dumpsterData.coords, Rotator(0, dumpsterData.heading, 0), 'abcca-qbcore::SM_Dumpster')
     AddTargetEntity(dumpster, {
         options = {
             {
                 label = 'Pickup Bag', -- Locale
                 icon = 'fas fa-trash-alt',
                 type = 'server',
-                event = 'qb-garbage:server:pickupBag',
+                event = 'qb-garbage:server:grabBag',
             },
         },
         distance = 400,

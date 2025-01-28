@@ -4,6 +4,7 @@ Config = {
     MinStops = 3,
 
     MinBagsPerStop = 2,
+    MaxBagsPerStop = 5,
 
     BagLowerWorth = 300,
     BagUpperWorth = 1000,
@@ -13,7 +14,7 @@ Config = {
             {
                 label = 'West Garbage Depot',
                 pedSpawn = { coords = Vector(-257770.4, 35765.8, 184.7), heading = -4.25 },
-                vehicleSpawn = { coords = Vector(-257274.0, 35627.7, 154.7), heading = 5.48 },
+                vehicleSpawn = { coords = Vector(-256147.0, 35442.5, 164.5), heading = 98.48 },
             },
         },
 

@@ -44,20 +44,30 @@ QBCore.Functions.CreateCallback('qb-garbagejob:server:getPeds', function(_, cb)
 end)
 
 local function SetNextLocation(source)
-    local route = routes[source:GetID()]
+    local route = routes[source:GetID()] or {}
     local nextStop = route.currentStop and route.currentStop + 1 or 1
-    routes[source:GetID()] = {currentStop = nextStop, bagAmount = math.random(Config.MinBagsPerStop, Config.MaxBagsPerStop), bagsDone = 0, pay = route.pay or 0 }
+    routes[source:GetID()] = {currentStop = nextStop, bagAmount = math.random(Config.MinBagsPerStop, Config.MaxBagsPerStop), bagsDone = route.bagsDone or 0, pay = route.pay or 0 }
     return nextStop
+end
+
+local function CompleteJob(source)
+    local route = routes[source:GetID()]
+    if not route then return end
+
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+
+    Player.Functions.AddMoney('bank', route.pay, 'qb-garbagejob:completedJob')
+    routes[source:GetID()] = nil
 end
 
 -- Events
 
-Events.SubscribeRemote('qb-garbagejob:server:startJob', function(source, depotLocation)
+Events.SubscribeRemote('qb-garbagejob:server:startJob', function(source, args)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player or Player.PlayerData.job.name ~= 'garbage' then return end
-    if Routes[source:GetID()] then return Events.CallRemote('QBCore:Notify', source, 'You are already on a route, cancel the route to start a new one', 'error') end
-
-    local depot = Config.Locations.Depots[depotLocation]
+    if routes[source:GetID()] then return Events.CallRemote('QBCore:Notify', source, 'You are already on a route, cancel the route to start a new one', 'error') end -- Locale
+    local depot = Config.Locations.Depots[args.depot]
     if not depot then return end
     
     local vehicle = HSimpleVehicle(depot.vehicleSpawn.coords, Rotator(0, depot.vehicleSpawn.heading, 0), Config.Vehicle)
@@ -72,15 +82,45 @@ Events.SubscribeRemote('qb-garbagejob:server:cancelJob', function(source)
     if not Player or Player.PlayerData.job.name ~= 'garbage' then return end
 
     local route = routes[source:GetID()]
-    if not route then return Events.CallRemote('QBCore:Notify', source, 'You are not on a route', 'error') end
+    if not route then return Events.CallRemote('QBCore:Notify', source, 'You are not on a route', 'error') end -- Locale
 
-    -- Pay the player for the bags they've collected
+    CompleteJob(source)
 end)
 
-Events.SubscribeRemote('qb-garbagejob:server:loadBag', function()
+Events.SubscribeRemote('qb-garbagejob:server:grabBag', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player or Player.PlayerData.job.name ~= 'garbage' then return end
+    local ped = source:GetControlledCharacter()
+    if not ped then return end
+    
+    local garbageBag = Prop(ped:GetLocation(), ped:GetRotation(), 'abcca-qbcore::SM_Trash')
+    garbageBag:AttachTo(ped, AttachmentRule.KeepRelative, 'hand_r')
+    ped:SetValue('holdingBag', garbageBag, true)
+end)
+
+Events.SubscribeRemote('qb-garbagejob:server:loadBag', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player or Player.PlayerData.job.name ~= 'garbage' then return end
+
     local route = routes[source:GetID()]
     if not route then return end
 
-    local dumpsterCoords = Config.Locations.Dumpsters[route.currentStop].coords
-    if dumpsterCoords:Distance(source:GetControlledCharacter():GetLocation()) > 2000 then return end
+    local ped = source:GetControlledCharacter()
+    if not ped or not ped:GetValue('holdingBag', nil) then return end
+    if not ped:GetValue('holdingBag', nil):IsValid() then ped:SetValue('holdingBag', nil, true) return end -- bag is invalid prop
+
+    ped:GetValue('holdingBag', nil):Destroy()
+    ped:SetValue('holdingBag', nil, true)
+    routes[source:GetID()].bagsDone = routes[source:GetID()].bagsDone + 1
+    routes[source:GetID()].pay = routes[source:GetID()].pay + math.random(Config.BagLowerWorth, Config.BagUpperWorth)
+    if routes[source:GetID()].bagsDone < routes[source:GetID()].bagAmount then return end -- if more bags, keep going
+
+    if routes[source:GetID()].currentStop >= routes[source:GetID()].maxStops then -- if no more bags, and at last stop, complete
+        CompleteJob(source)
+        return
+    end
+
+    -- set next location
+    local nextStop = SetNextLocation(source)
+    Events.CallRemote('qb-garbagejob:client:addTargets', source, nil, nextStop)
 end)
