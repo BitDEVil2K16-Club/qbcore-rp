@@ -7,6 +7,20 @@ Events.SubscribeRemote('qb-emotemenu:server:playAnimation', function(source, ani
     local available_emotes = Config.Emotes
     local emote = available_emotes[animation]
     if not emote then return end
+    local currently_playing_animation = currently_playing[account_id]
+    if currently_playing_animation then
+        if currently_playing_animation == animation then
+            local current_emote = available_emotes[currently_playing_animation]
+            local current_animation_path = current_emote.animation_path
+            ped:StopAnimation(current_animation_path)
+            currently_playing[account_id] = nil
+            return
+        else
+            local current_emote = available_emotes[currently_playing_animation]
+            local current_animation_path = current_emote.animation_path
+            ped:StopAnimation(current_animation_path)
+        end
+    end
     local animation_path = emote.animation_path
     local slot_type = emote.slot_type
     local loop_indefinitely = emote.loop

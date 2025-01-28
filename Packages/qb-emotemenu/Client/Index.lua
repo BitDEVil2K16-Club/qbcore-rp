@@ -3,25 +3,9 @@ Input.Bind('Emote Menu', InputEvent.Pressed, function()
     if Input.IsMouseEnabled() then return end
     local emote_menu = ContextMenu.new()
     for emote, data in pairs(Config.Emotes) do
-        emote_menu:addDropdown(data.name, data.name, {
-            {
-                id = 'play-' .. emote,
-                label = 'Play',
-                type = 'button',
-                emote = emote,
-                callback = function()
-                    Events.CallRemote('qb-emotemenu:server:playAnimation', emote)
-                end
-            },
-            {
-                id = 'stop-' .. emote,
-                label = 'Stop',
-                type = 'button',
-                callback = function()
-                    Events.CallRemote('qb-emotemenu:server:stopAnimation')
-                end
-            }
-        })
+        emote_menu:addButton(data.name, data.name, function()
+            Events.CallRemote('qb-emotemenu:server:playAnimation', emote)
+        end)
     end
     emote_menu:SetHeader('Emote Menu', '')
     emote_menu:Open(false, true)
