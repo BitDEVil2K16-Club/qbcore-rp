@@ -1,5 +1,12 @@
 Config = {
-    Vehicle = 'BP_Garbage_Truck',
+    Vehicle = 'abcca-qbcore-veh::BP_Garbage_Truck',
+
+    MinStops = 3,
+
+    MinBagsPerStop = 2,
+
+    BagLowerWorth = 300,
+    BagUpperWorth = 1000,
 
     Locations = {
         ['Depots'] = {
@@ -12,6 +19,8 @@ Config = {
 
         ['Dumpsters'] = {
             { coords = Vector(-254486.1, 36299.2, 188.8), heading = -170.6 },
+            { coords = Vector(-254404.1, 35069.6, 182.8), heading = -174.0 },
+            { coords = Vector(-254292.9, 33696.5, 182.8), heading = -174.0 },
         },
     },
 }
