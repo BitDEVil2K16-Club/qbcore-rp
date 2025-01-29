@@ -101,8 +101,9 @@ Events.SubscribeRemote('qb-garbagejob:server:grabBag', function(source)
     local ped = source:GetControlledCharacter()
     if not ped then return end
     local garbageBag = Prop(ped:GetLocation(), ped:GetRotation(), 'abcca-qbcore::SM_Trash', CollisionType.NoCollision)
-    -- Rotate bag to be more realistic
     garbageBag:AttachTo(ped, AttachmentRule.KeepRelative, 'hand_r')
+    garbageBag:SetRotation(Rotator(0, 0, 0))
+    garbageBag:SetRelativeLocation(Vector(-80, 35, -15))
     ped:SetValue('holdingBag', garbageBag, true)
 
     Events.CallRemote('QBCore:Notify', source, Lang:t('info.load_bag'), 'info')
