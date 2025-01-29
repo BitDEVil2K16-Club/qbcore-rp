@@ -1,6 +1,15 @@
 Config = {
-    JobLocations = {
-        { coords = Vector(21505.2, 100641.9, 190.1), heading = -99 }
+    Vehicle = 'abcca-qbcore-veh::BP_Bus',
+
+    Locations = {
+        ['Depots'] = {
+            {
+                label = 'West Suburban Bus Depot',
+                pedSpawn = { coords = Vector(-257003.6, 39485.0, 182.8), heading = 7.57 },
+                vehicleSpawn = { coords = Vector(-256304.9, 39440.5, 183.2), heading = 95.7 },
+            },
+
+        }
     },
     NPCLocations = {
         Vector(-14758.1, 118048.5, 94.0),
