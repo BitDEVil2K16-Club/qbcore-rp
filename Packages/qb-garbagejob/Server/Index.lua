@@ -46,7 +46,7 @@ end)
 local function SetNextLocation(source)
     local route = routes[source:GetID()] or {}
     local nextStop = route.currentStop and route.currentStop + 1 or 1
-    routes[source:GetID()] = {currentStop = nextStop, bagAmount = math.random(Config.MinBagsPerStop, Config.MaxBagsPerStop), bagsDone = route.bagsDone or 0, maxStops = route.maxStops or math.random(Config.MinStops, #Config.Locations.Dumpsters), pay = route.pay or 0 }
+    routes[source:GetID()] = {currentStop = nextStop, bagAmount = math.random(Config.MinBagsPerStop, Config.MaxBagsPerStop), bagsDone = 0, maxStops = route.maxStops or math.random(Config.MinStops, #Config.Locations.Dumpsters), pay = route.pay or 0 }
     return nextStop
 end
 
