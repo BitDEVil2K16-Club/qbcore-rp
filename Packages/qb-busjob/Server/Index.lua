@@ -52,7 +52,6 @@ local function PayPlayer(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player or Player.PlayerData.job.name ~= 'bus' then return end
     local route = routes[source:GetID()]
-    if route.vehicle and route.vehicle:IsValid() then route.vehicle:Destroy() end
 
     local payment = route.currentStop * math.random(200, 400) -- Could be configurable
     Player.Functions.AddMoney('bank', payment, 'qb-busjob:completedJob')
