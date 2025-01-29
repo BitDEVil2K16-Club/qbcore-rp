@@ -2,6 +2,16 @@ local is_working = false
 local current_marker = nil
 local dropoff_Location = Vector(0, 0, 0)
 
+for k, depot in pairs(Config.Locations.Depots) do
+    Events.Call('Map:AddBlip', {
+        id = 'bus_depot' .. k,
+        name = depot.label,
+        coords = { x = v.pedSpawn.coords.X, y = v.pedSpawn.coords.Y, z = v.pedSpawn.coords.Z },
+        imgUrl = './media/map-icons/Marker.svg',
+        group = 'Bus Job',
+    })
+end
+
 -- Functions
 
 local function setupPeds()
@@ -18,10 +28,9 @@ local function getNextLocation()
         current_marker = nil
     end
     dropoff_Location = Config.Locations[math.random(#Config.Locations)]
-    print(dropoff_Location)
-    current_marker = Prop(dropoff_location, Rotator(0, 0, 0), 'pco-markers::SM_MarkerArrow')
-    current_marker:SetMaterialColorParameter('Color', Color(255, 0, 0, 1))
-    current_marker:SetScale(Vector(100, 100, 100))
+    -- current_marker = Prop(dropoff_location, Rotator(0, 0, 0), 'pco-markers::SM_MarkerArrow')
+    -- current_marker:SetMaterialColorParameter('Color', Color(255, 0, 0, 1))
+    -- current_marker:SetScale(Vector(100, 100, 100))
 end
 
 -- Event Handlers
