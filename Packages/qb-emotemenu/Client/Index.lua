@@ -31,7 +31,7 @@ Input.Register('Hands Up', 'X')
 Input.Bind('Hands Up', InputEvent.Pressed, function()
     if Input.IsMouseEnabled() then return end
     if not hands_up then
-        Events.CallRemote('qb-emotemenu:server:playAnimation', 'HandUp_Idle_01')
+        Events.CallRemote('qb-emotemenu:server:playAnimation', 'Roleplay', 'HandUp_Idle_01')
         hands_up = true
     end
 end)
@@ -39,7 +39,6 @@ end)
 Input.Bind('Hands Up', InputEvent.Released, function()
     if hands_up then
         hands_up = false
-        Events.CallRemote('qb-emotemenu:server:stopAnimation', 'HandUp_Idle_01')
-        Events.CallRemote('qb-emotemenu:server:playAnimation', 'HandDown_01')
+        Events.CallRemote('qb-emotemenu:server:playAnimation', 'Roleplay', 'HandUp_Idle_01')
     end
 end)
