@@ -77,7 +77,7 @@ Events.SubscribeRemote('pcrp-phone:ExecuteAnimation', function(player, animation
 	local character = player:GetControlledCharacter()
 	character:PlayAnimation(animation, slot_type, loop)
 
-	if animation == 'ffcce-phone-anims::ply_take_phone_out' then
+	if animation == 'rp-anims-k::ply_take_phone_out' then
 		local phoneProp = Prop(
 			character:GetLocation(),
 			character:GetRotation(),
@@ -91,7 +91,7 @@ Events.SubscribeRemote('pcrp-phone:ExecuteAnimation', function(player, animation
 		phoneProp:SetScale(Vector(1.0, 1.0, 1.0))
 		phoneProp:SetRelativeLocation(Vector(-9.7, 1.6, 0.9))
 		phoneProp:SetRelativeRotation(Rotator(30.0, 0.9, 9.4))
-	elseif animation == 'ffcce-phone-anims::ply_putting_phone_away' then
+	elseif animation == 'rp-anims-k::ply_putting_phone_away' then
 		print('Storing phone')
 		Timer.SetTimeout(function()
 			local attachedEntities = character:GetAttachedEntities()
