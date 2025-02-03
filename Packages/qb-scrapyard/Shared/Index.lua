@@ -1,7 +1,7 @@
 Config = {
     Locations = {
         {
-            ped = { coords = Vector(0, 0, 0), heading = 90.0 },
+            ped = { coords = Vector(-256273.1, 32648.5, 182.8), heading = 0.0 },
             scrap = { coords = Vector(0, 0, 0), heading = 90.0 },
         },
     },
