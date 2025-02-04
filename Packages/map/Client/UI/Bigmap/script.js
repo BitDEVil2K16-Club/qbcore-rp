@@ -53,6 +53,7 @@ let finalOrderedBlips = [];
 let allOriginalBlips = [];
 let playerBlipElements = {};
 let showPlayers = true;
+let pendingTeleportCoords = null;
 
 // Handle map movement
 $(document).on("mousedown", function (event) {
@@ -65,6 +66,9 @@ $(document).on("mousedown", function (event) {
         offsetX = parseFloat(mapWrapper.css("left"));
         offsetY = parseFloat(mapWrapper.css("bottom"));
         mapWrapper.css("transition", "none");
+    }
+    if ($(".search").is(":focus")) {
+        $(".search").blur();
     }
 });
 
@@ -86,6 +90,7 @@ $(document).on("mousemove", function (event) {
             left: newLeft,
             bottom: newTop,
         });
+        Events.Call("Map:Client:FixFocus");
     }
 });
 
@@ -190,6 +195,14 @@ $(document).on("keydown", function (e) {
     } else if (e.key === "Enter") {
         if (selectedBlip !== -1) {
             $(".teleport-confirm").removeClass("hidden");
+            let chosen = persistentBlips[selectedBlip];
+            if (chosen) {
+                let coords = chosen.coords;
+                Events.Call("Map:Client:RequestRoute", coords.x, coords.y, coords.z ?? 0);
+            }
+        } else {
+            $(".teleport-confirm").removeClass("hidden");
+            pendingTeleportCoords = getCenterMapCoords();
         }
     } else if (e.key === "O" || e.key === "o") {
         showPlayers = !showPlayers;
@@ -212,8 +225,8 @@ $(document).on("keydown", function (e) {
         let blip = $(`.map-blip[data-id="${blipId}"]`);
         if (!blip.length) throw new Error("Blip coords not found");
         let c = JSON.parse(blip.data("coords"));
-        c.y -= 10;
-        c.x -= 10;
+        c.y -= 12;
+        c.x -= 12;
         revertAllGroupNames();
         $(".blip").removeClass("active");
         $(".map-blip").removeClass("active");
@@ -235,14 +248,24 @@ $(document).on("keydown", function (e) {
 });
 
 $(".teleport-confirm .btn-yes").on("click", function () {
-    if (selectedBlip === -1) {
+    if (selectedBlip !== -1) {
+        let chosen = persistentBlips[selectedBlip];
+        if (!chosen) {
+            $(".teleport-confirm").addClass("hidden");
+            return;
+        }
+        Events.Call("Map:TeleportToBlip", selectedBlip);
         $(".teleport-confirm").addClass("hidden");
-        return;
+    } else {
+        if (!pendingTeleportCoords) {
+            $(".teleport-confirm").addClass("hidden");
+            return;
+        }
+        let tp = pendingTeleportCoords;
+        Events.Call("Map:TeleportToBlip", tp.x, tp.y);
+        $(".teleport-confirm").addClass("hidden");
+        pendingTeleportCoords = null;
     }
-    //let chosen = persistentBlips[selectedBlip];
-    //let parsedCoords = barycentricInterpolation(chosen.coords);
-    Events.Call("Map:TeleportToBlip", selectedBlip);
-    $(".teleport-confirm").addClass("hidden");
 });
 
 $(".teleport-confirm .btn-no").on("click", function () {
@@ -325,11 +348,17 @@ function setMapScale(s) {
     }
 
     let actualPlayerMarkerTransform = playerMarker.css("transform");
-    $(".map-blip").css("transform", "translate(-0%, -0%) scale(" + 1 / s + ")");
+    // $(".map-blip").css("transform", "translate(-0%, -0%) scale(" + (1 / s) + ")");
 
     mapContainer.css({
         transformOrigin: "center",
         transform: "translate(-50%, -50%) scale(" + s + ")",
+    });
+
+    $(".map-blip").each(function () {
+        let baseScale = 1 / s; //
+        let finalScale = $(this).hasClass("active") ? baseScale * 1.5 : baseScale;
+        $(this).css("transform", `translate(-50%, -50%) scale(${finalScale})`);
     });
 
     if (s > scale) {
@@ -427,6 +456,7 @@ function setBlips(allBlips) {
         `);
             div.data("groupData", ng);
             blipsContainer.append(div);
+
             div.on("click", function () {
                 let ids = $(this).attr("data-ids").split(",");
                 if (!ids.length) return;
@@ -434,10 +464,10 @@ function setBlips(allBlips) {
                 let newIndex = persistentBlips.findIndex((b) => b.id === firstId);
                 if (newIndex !== -1) {
                     selectedBlip = newIndex;
-                    // same highlight code as arrow keys
-                    $(this).get(0)?.scrollIntoView({ block: "nearest" });
+                    highlightBlipByIndex(newIndex);
                 }
             });
+
             // Place each item on the map
             ng.items.forEach((b) => {
                 let html = `<img data-id="${b.id}" src="${b.imgUrl}" class="map-blip ${b.name === "Waypoint" ? "waypoint-marker" : ""}">`;
@@ -473,6 +503,7 @@ function setBlips(allBlips) {
                 if (!isNaN(parsed)) finalOrderedBlips.push(parsed);
             });
         });
+    setMapScale(scale);
 }
 
 function selectNextGroup() {
@@ -589,6 +620,7 @@ function renderSubGroups() {
         }
         $(this).addClass("active");
         goToCoords(coords);
+        Events.Call("Map:Client:FixFocus");
     });
 }
 
@@ -621,8 +653,8 @@ function highlightBlipByIndex(index) {
     if (!blip.length) return; // or throw an error if you prefer
 
     let c = JSON.parse(blip.data("coords"));
-    c.y -= 10;
-    c.x -= 10;
+    c.y -= 12;
+    c.x -= 12;
 
     revertAllGroupNames();
     $(".blip").removeClass("active");
@@ -640,7 +672,14 @@ function highlightBlipByIndex(index) {
         }
     }
     blip.addClass("active");
+    setMapScale(scale);
     goToCoords(c);
+
+    let chosenBlip = persistentBlips[index];
+    if (chosenBlip) {
+        let coords = chosenBlip.coords;
+        Events.Call("Map:Client:BlipSelected", coords.x, coords.y, coords.z ?? 0);
+    }
 }
 
 // Recalculate blip opacity based on distance to center of the screen
@@ -713,6 +752,20 @@ function goToPlayerCoords() {
     goToCoords(playerCoords);
 }
 
+function getCenterMapCoords() {
+    let clickX = window.innerWidth / 2;
+    let clickY = window.innerHeight / 2;
+
+    let mapWrapperPos = mapWrapper.position();
+    let mapContainerPos = mapContainer.position();
+
+    let mapWrapperBottom = mapWrapperPos.top / scale + mapWrapper.height();
+    let mapX = (clickX - mapContainerPos.left) / scale - mapWrapperPos.left / scale;
+    let mapY = (clickY - mapContainerPos.top) / scale - mapWrapperBottom;
+
+    return reverseBarycentricInterpolation({ x: mapX, y: -mapY });
+}
+
 const hardcodedBlips = [];
 setBlips(hardcodedBlips);
 setMapScale(1);
@@ -760,8 +813,8 @@ Events.Subscribe("Map:UpdateView", () => {
         let blipId = persistentBlips[selectedBlip].id;
         let blip = $(`.map-blip[data-id="${blipId}"]`);
         let blipCoords = JSON.parse(blip.data("coords"));
-        blipCoords.y -= 10;
-        blipCoords.x -= 10;
+        blipCoords.y -= 12;
+        blipCoords.x -= 12;
         $('.blip[data-id="' + blipId + '"]')
             .addClass("active")
             .siblings()
@@ -794,4 +847,27 @@ Events.Subscribe("Map:UpdatePlayersPos", function (playerBlips) {
         blip.style.left = coords.x + "px";
         blip.style.bottom = coords.y + "px";
     });
+});
+
+Events.Subscribe("Map:DrawRoute", (routePositions) => {
+    $(".route-layer").empty();
+
+    if (!routePositions || routePositions.length < 2) return;
+
+    let pointsArray = [];
+    for (let i = 0; i < routePositions.length; i++) {
+        let node = routePositions[i];
+        let mapped = barycentricInterpolation({ x: node.x, y: node.y });
+        pointsArray.push(`${mapped.x},${mapped.y * -1}`);
+    }
+
+    let pointsStr = pointsArray.join(" ");
+
+    let polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", pointsStr);
+    polyline.setAttribute("stroke", "#00ff00");
+    polyline.setAttribute("stroke-width", "3");
+    polyline.setAttribute("fill", "none");
+
+    $(".route-layer").append(polyline);
 });

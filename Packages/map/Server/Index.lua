@@ -20,7 +20,7 @@ Events.SubscribeRemote('Map:Server:TeleportPlayer', function(source, coords)
     Timer.SetTimeout(function()
         local newChar = HCharacter(coords, Rotator(0, 0, 0), source)
         source:Possess(newChar)
-    end, 2000)
+    end, 5000)
 end)
 
 Events.SubscribeRemote('Map:Server:AddBlip', function(_, blipData)
@@ -43,7 +43,7 @@ Events.SubscribeRemote('Map:Server:RemoveBlip', function(_, blipId)
     Events.BroadcastRemote('Map:UpdateAllBlips', Config.MapBlips)
 end)
 
-Server.Subscribe('Tick', function()
+Server.Subscribe('Tick', function(_)
     local playerBlips = {}
     for _, p in pairs(Player.GetAll()) do
         local character = p:GetControlledCharacter()

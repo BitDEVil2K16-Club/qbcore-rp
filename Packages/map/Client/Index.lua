@@ -1,6 +1,13 @@
 Package.Require('../Shared/Index.lua')
+Package.Require('./Pathfinding.lua')
 
-local function GenerateBlipId()
+local g_selectedBlipCoords = nil
+local g_lastPlayerPosForRoute = nil
+local g_distanceThreshold = 300
+local g_currentRouteTarget = nil
+local g_hasActiveRoute = false
+
+function GenerateBlipId()
     local id = math.random(1, 1000)
     for _, blip in ipairs(Config.MapBlips) do
         if blip.id == id then
@@ -23,18 +30,29 @@ local function Minimap_RemoveBlip(blipId)
 end
 
 -- Update player position on the Minimap (each Tick)
-Client.Subscribe('Tick', function(delta_time)
+Client.Subscribe('Tick', function(dt)
     local player = Client.GetLocalPlayer()
-    if not player then return end
-    local camCoords  = player:GetCameraLocation()
-    local camRotator = player:GetCameraRotation()
-    minimapUI:CallEvent('UpdatePlayerPos',
-        camCoords.X,    -- player X
-        camCoords.Y,    -- player Y
-        camRotator.Yaw, -- heading
-        camRotator.Yaw
-    )
+    if player then
+        local camCoords  = player:GetCameraLocation()
+        local camRotator = player:GetCameraRotation()
+        minimapUI:CallEvent('UpdatePlayerPos', camCoords.X, camCoords.Y, camRotator.Yaw, camRotator.Yaw)
+    end
+
+    if g_hasActiveRoute and g_currentRouteTarget then
+        local char = player and player:GetControlledCharacter()
+        if char then
+            local currentPos = char:GetLocation()
+            if not g_lastPlayerPosForRoute then
+                g_lastPlayerPosForRoute = currentPos
+            end
+            local dist = Vector.DistanceSquared(currentPos, g_lastPlayerPosForRoute)
+            if dist > (g_distanceThreshold * g_distanceThreshold) then
+                CalculateAndDrawRouteTo(g_currentRouteTarget)
+            end
+        end
+    end
 end)
+
 
 -- Console command to toggle shape (circle or square)
 Console.RegisterCommand('ToggleMinimapShape', function(args)
@@ -64,6 +82,7 @@ end)
 local mapUI = WebUI('Bigmap', 'file://UI/Bigmap/index.html', WidgetVisibility.Hidden)
 
 -- Show / Hide the big map
+
 local function Bigmap_ToggleVisibility()
     local visibility = mapUI:GetVisibility()
     if visibility == WidgetVisibility.Hidden then
@@ -85,12 +104,9 @@ local function Bigmap_AddBlip(blipData)
     if not blipData.id then
         blipData.id = GenerateBlipId()
     end
-
     table.insert(Config.MapBlips, blipData)
     mapUI:CallEvent('SetBlips', Config.MapBlips)
-
-    Minimap_UpdateBlips(blipData)
-
+    Minimap_UpdateBlips()
     return blipData.id
 end
 
@@ -107,6 +123,28 @@ local function Bigmap_RemoveBlip(blipId)
     end
 end
 
+local function CalculateAndDrawRouteTo(targetCoords)
+    local player = Client.GetLocalPlayer()
+    if not player then return end
+    local char = player:GetControlledCharacter()
+    if not char then return end
+
+    local playerLoc = char:GetLocation()
+    local routeIDs = RecalculateRoute(playerLoc, Vector(targetCoords.x, targetCoords.y, targetCoords.z or 0))
+
+    if routeIDs then
+        local routePositions = GetRoutePositionsFromIDs(routeIDs)
+        -- Mandamos el array de posiciones al Bigmap
+        mapUI:CallEvent('Map:DrawRoute', routePositions)
+        g_lastPlayerPosForRoute = playerLoc
+        g_currentRouteTarget = targetCoords
+        g_hasActiveRoute = true
+    else
+        -- Si no hay ruta, limpiar (opcional)
+        mapUI:CallEvent('Map:DrawRoute', {})
+        g_hasActiveRoute = false
+    end
+end
 
 -- Send coords & blips to the Bigmap UI on load
 Package.Subscribe('Load', function()
@@ -115,7 +153,7 @@ Package.Subscribe('Load', function()
 end)
 
 -- Update player location on the Bigmap
-Client.Subscribe('Tick', function(delta_time)
+Client.Subscribe('Tick', function(_)
     local player = Client.GetLocalPlayer()
     if not player then return end
     local loc = player:GetCameraLocation()
@@ -143,7 +181,6 @@ end)
 
 -- Close the Bigmap
 mapUI:Subscribe('Map:ExitMap', function()
-    isMapVisible = false
     Bigmap_ToggleVisibility()
 end)
 
@@ -157,14 +194,29 @@ mapUI:Subscribe('Map:TogglePlayers', function(state)
     minimapUI:CallEvent('Map:TogglePlayers', state)
 end)
 
+mapUI:Subscribe('Map:Client:BlipSelected', function(x, y, z)
+    print('Blip seleccionado en bigmap => ', x, y, z)
+    g_selectedBlipCoords = { x = x, y = y, z = z or 0 }
+end)
+
+mapUI:Subscribe('Map:Client:RequestRoute', function(x, y, z)
+    print('JS pidió ruta a coords:', x, y, z)
+    if not x or not y then return end
+
+    g_selectedBlipCoords = { x = x, y = y, z = z or 0 }
+    CalculateAndDrawRouteTo(g_selectedBlipCoords)
+end)
+
+mapUI:Subscribe('Map:Client:FixFocus', function(x, y, z)
+    mapUI:SetFocus()
+end)
+
 -- Press M to toggle the Bigmap
 Input.Subscribe('KeyDown', function(key_name)
     if key_name == 'M' then
         Bigmap_ToggleVisibility()
     end
 end)
-
--- Unified remote event for adding blips
 
 Events.Subscribe('Map:AddBlip', function(blipData)
     return Bigmap_AddBlip(blipData)
@@ -173,8 +225,6 @@ end)
 Events.SubscribeRemote('Map:AddBlip', function(blipData)
     return Bigmap_AddBlip(blipData)
 end)
-
--- Unified remote event for removing blips
 
 Events.Subscribe('Map:RemoveBlip', function(blipId)
     Bigmap_RemoveBlip(blipId)

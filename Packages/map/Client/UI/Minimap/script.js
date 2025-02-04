@@ -101,8 +101,8 @@ const moveBlipToEdgeSquare = (blipX, blipY, cameraRotation) => {
     let edgeX = minimapSize.width / 2 + distanceToEdge * Math.cos(angle);
     let edgeY = minimapSize.height / 2 + distanceToEdge * Math.sin(angle);
 
-    edgeY -= 10;
-    edgeX += 10;
+    edgeY -= 20;
+    /*edgeX += 10; */
 
     return { x: edgeX, y: edgeY };
 };
@@ -267,7 +267,7 @@ Events.Subscribe("UpdatePlayerPos", (playerCoordsX, playerCoordsY, playerHeading
     cameraRotation = -cameraRotation - 90;
     let { x, y } = barycentricInterpolation(playerCoords);
     goToCoords({ x, y }, cameraRotation);
-    setBlips(persistentBlips, cameraRotation);
+    // setBlips(persistentBlips, cameraRotation);
 });
 
 // Set known game and image coordinates
@@ -325,31 +325,12 @@ Events.Subscribe("Map:TogglePlayers", (state) => {
 });
 
 Events.Subscribe("Map:UpdatePlayersPos", function (playerBlips) {
-    if (!showPlayers) return;
-    let updatedIds = new Set();
-    for (let id in minimapPlayerBlipElements) {
-        if (!updatedIds.has(Number(id))) {
-            minimapPlayerBlipElements[id].remove();
-            delete minimapPlayerBlipElements[id];
+    for (let p of playerBlips) {
+        let existing = minimapPlayerBlipElements[p.id];
+        if (existing) {
+            let coords = barycentricInterpolation({ x: p.x, y: p.y });
+            existing.style.left = coords.x - existing.offsetWidth / 2 + "px";
+            existing.style.bottom = coords.y - existing.offsetHeight / 2 + "px";
         }
     }
-    playerBlips.forEach((p) => {
-        updatedIds.add(p.id);
-        let blip = minimapPlayerBlipElements[p.id];
-        if (!blip) {
-            blip = document.createElement("div");
-            blip.className = "player-blip";
-            blip.dataset.id = p.id;
-            $(".minimap .rotator-container>div:not(.player-indicator)").append(blip);
-            minimapPlayerBlipElements[p.id] = blip;
-        }
-        let coords = barycentricInterpolation({ x: p.x, y: p.y });
-        let blipWidth = blip.offsetWidth || 15;
-        let blipHeight = blip.offsetHeight || 15;
-        let posX = coords.x - blipWidth / 2;
-        let posY = coords.y - blipHeight / 2;
-        blip.style.position = "absolute";
-        blip.style.left = posX + "px";
-        blip.style.bottom = posY + "px";
-    });
 });

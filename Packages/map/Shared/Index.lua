@@ -176,7 +176,64 @@ Config = {
         { name = 'Retail',            coords = { x = -38844, y = 169224, z = 98 },      imgUrl = './media/map-icons/Clothing-icon.svg',    group = 'clothing' },
         { name = 'Barbershop',        coords = { x = -61812, y = 30224, z = 101 },      imgUrl = './media/map-icons/Clothing-icon.svg',    group = 'barber' },
         { name = 'Barbershop',        coords = { x = 100468, y = 122767, z = 83 },      imgUrl = './media/map-icons/Clothing-icon.svg',    group = 'barber' },
+    },
+
+    RoadsData = {
+        nodes = {
+            { id = 1,  x = -115000, y = -81000,  z = 50 },
+            { id = 2,  x = -113000, y = -82000,  z = 48 },
+            { id = 3,  x = -110500, y = -85000,  z = 45 },
+            { id = 4,  x = -108000, y = -87000,  z = 42 },
+            { id = 5,  x = 120000,  y = -175000, z = 55 },
+            { id = 6,  x = 122500,  y = -177000, z = 57 },
+            { id = 7,  x = 124500,  y = -179500, z = 58 },
+            { id = 8,  x = 125500,  y = -181000, z = 60 },
+            { id = 9,  x = -30000,  y = 215000,  z = 62 },
+            { id = 10, x = -25000,  y = 217000,  z = 64 },
+            { id = 11, x = -20000,  y = 218500,  z = 65 },
+            { id = 12, x = -15000,  y = 219500,  z = 67 },
+            { id = 13, x = -90000,  y = -70000,  z = 50 },
+            { id = 14, x = -85000,  y = -65000,  z = 52 },
+            { id = 15, x = -80000,  y = -60000,  z = 55 },
+            { id = 16, x = -50000,  y = 200000,  z = 60 },
+            { id = 17, x = -45000,  y = 202000,  z = 62 },
+            { id = 18, x = -40000,  y = 205000,  z = 64 },
+            { id = 19, x = 123500,  y = -178000, z = 58 },
+            { id = 20, x = -110000, y = -80000,  z = 48 }
+        },
+        connections = {
+            { from = 1,  to = 2,  direction = 'bidirectional' },
+            { from = 2,  to = 3,  direction = 'bidirectional' },
+            { from = 3,  to = 4,  direction = 'bidirectional' },
+            { from = 4,  to = 20, direction = 'bidirectional' },
+            { from = 20, to = 1,  direction = 'bidirectional' },
+
+            { from = 5,  to = 6,  direction = 'bidirectional' },
+            { from = 6,  to = 7,  direction = 'bidirectional' },
+            { from = 7,  to = 8,  direction = 'bidirectional' },
+            { from = 8,  to = 19, direction = 'bidirectional' },
+            { from = 19, to = 5,  direction = 'bidirectional' },
+
+            { from = 9,  to = 10, direction = 'bidirectional' },
+            { from = 10, to = 11, direction = 'bidirectional' },
+            { from = 11, to = 12, direction = 'bidirectional' },
+
+            { from = 16, to = 17, direction = 'bidirectional' },
+            { from = 17, to = 18, direction = 'bidirectional' },
+            { from = 18, to = 9,  direction = 'bidirectional' },
+
+            { from = 4,  to = 13, direction = 'bidirectional' },
+            { from = 13, to = 14, direction = 'bidirectional' },
+            { from = 14, to = 15, direction = 'bidirectional' },
+            { from = 15, to = 5,  direction = 'bidirectional' },
+
+            { from = 12, to = 16, direction = 'bidirectional' },
+            { from = 8,  to = 19, direction = 'bidirectional' },
+            { from = 19, to = 7,  direction = 'bidirectional' },
+            { from = 7,  to = 6,  direction = 'bidirectional' }
+        }
     }
 }
+
 
 return Config
