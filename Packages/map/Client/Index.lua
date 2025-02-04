@@ -1,13 +1,14 @@
 Package.Require('../Shared/Index.lua')
 Package.Require('./Pathfinding.lua')
-
+local minimapUI = WebUI('Minimap', 'file:///UI/Minimap/index.html')
+local mapUI = WebUI('Bigmap', 'file://UI/Bigmap/index.html', WidgetVisibility.Hidden)
 local g_selectedBlipCoords = nil
 local g_lastPlayerPosForRoute = nil
 local g_distanceThreshold = 300
 local g_currentRouteTarget = nil
 local g_hasActiveRoute = false
 
-function GenerateBlipId()
+local function GenerateBlipId()
     local id = math.random(1, 1000)
     for _, blip in ipairs(Config.MapBlips) do
         if blip.id == id then
@@ -16,8 +17,6 @@ function GenerateBlipId()
     end
     return id
 end
-
-local minimapUI = WebUI('Minimap', 'file:///UI/Minimap/index.html')
 
 -- Add a blip to the Minimap
 local function Minimap_UpdateBlips()
@@ -28,58 +27,6 @@ end
 local function Minimap_RemoveBlip(blipId)
     minimapUI:CallEvent('RemoveBlip', blipId)
 end
-
--- Update player position on the Minimap (each Tick)
-Client.Subscribe('Tick', function(dt)
-    local player = Client.GetLocalPlayer()
-    if player then
-        local camCoords  = player:GetCameraLocation()
-        local camRotator = player:GetCameraRotation()
-        minimapUI:CallEvent('UpdatePlayerPos', camCoords.X, camCoords.Y, camRotator.Yaw, camRotator.Yaw)
-    end
-
-    if g_hasActiveRoute and g_currentRouteTarget then
-        local char = player and player:GetControlledCharacter()
-        if char then
-            local currentPos = char:GetLocation()
-            if not g_lastPlayerPosForRoute then
-                g_lastPlayerPosForRoute = currentPos
-            end
-            local dist = Vector.DistanceSquared(currentPos, g_lastPlayerPosForRoute)
-            if dist > (g_distanceThreshold * g_distanceThreshold) then
-                CalculateAndDrawRouteTo(g_currentRouteTarget)
-            end
-        end
-    end
-end)
-
-
--- Console command to toggle shape (circle or square)
-Console.RegisterCommand('ToggleMinimapShape', function(args)
-    if Config.Shape == 'circle' then
-        Config.Shape = 'square'
-    else
-        Config.Shape = 'circle'
-    end
-    minimapUI:CallEvent('SetMinimapShape', Config.Shape)
-end, '', {})
-
--- Initial Minimap config on package load
-Package.Subscribe('Load', function()
-    minimapUI:CallEvent(
-        'InitMinimapData',
-        Config.KnownGameCoords,
-        Config.KnownImageCoords,
-        Config.MaxMinimapBlipsCount
-    )
-    minimapUI:CallEvent('SetMinimapShape', Config.Shape)
-    minimapUI:CallEvent('SetBlips', Config.MapBlips)
-    minimapUI:CallEvent('SetPosition', Config.ScreenPosition)
-end)
-
--- BIGMAP
-
-local mapUI = WebUI('Bigmap', 'file://UI/Bigmap/index.html', WidgetVisibility.Hidden)
 
 -- Show / Hide the big map
 
@@ -145,21 +92,6 @@ local function CalculateAndDrawRouteTo(targetCoords)
         g_hasActiveRoute = false
     end
 end
-
--- Send coords & blips to the Bigmap UI on load
-Package.Subscribe('Load', function()
-    mapUI:CallEvent('Map:SetKnownCoords', Config.KnownGameCoords, Config.KnownImageCoords)
-    mapUI:CallEvent('SetBlips', Config.MapBlips)
-end)
-
--- Update player location on the Bigmap
-Client.Subscribe('Tick', function(_)
-    local player = Client.GetLocalPlayer()
-    if not player then return end
-    local loc = player:GetCameraLocation()
-    local heading = player:GetCameraRotation().Yaw
-    mapUI:CallEvent('Map:UpdatePlayerPos', loc.X, loc.Y, heading)
-end)
 
 -- Bigmap UI subscriptions
 mapUI:Subscribe('Map:AddWaypointBlip', function(x, y)
@@ -266,4 +198,66 @@ Package.Subscribe('Load', function()
     -- Then proceed to set them on the UI...
     minimapUI:CallEvent('SetBlips', Config.MapBlips)
     mapUI:CallEvent('SetBlips', Config.MapBlips)
+end)
+
+-- Initial Minimap config on package load
+Package.Subscribe('Load', function()
+    minimapUI:CallEvent(
+        'InitMinimapData',
+        Config.KnownGameCoords,
+        Config.KnownImageCoords,
+        Config.MaxMinimapBlipsCount
+    )
+    minimapUI:CallEvent('SetMinimapShape', Config.Shape)
+    minimapUI:CallEvent('SetBlips', Config.MapBlips)
+    minimapUI:CallEvent('SetPosition', Config.ScreenPosition)
+end)
+
+-- Send coords & blips to the Bigmap UI on load
+Package.Subscribe('Load', function()
+    mapUI:CallEvent('Map:SetKnownCoords', Config.KnownGameCoords, Config.KnownImageCoords)
+    mapUI:CallEvent('SetBlips', Config.MapBlips)
+end)
+
+-- Console command to toggle shape (circle or square)
+Console.RegisterCommand('ToggleMinimapShape', function()
+    if Config.Shape == 'circle' then
+        Config.Shape = 'square'
+    else
+        Config.Shape = 'circle'
+    end
+    minimapUI:CallEvent('SetMinimapShape', Config.Shape)
+end, '', {})
+
+-- Update player location on the Bigmap
+Client.Subscribe('Tick', function()
+    local player = Client.GetLocalPlayer()
+    if not player then return end
+    local loc = player:GetCameraLocation()
+    local heading = player:GetCameraRotation().Yaw
+    mapUI:CallEvent('Map:UpdatePlayerPos', loc.X, loc.Y, heading)
+end)
+
+-- Update player position on the Minimap (each Tick)
+Client.Subscribe('Tick', function()
+    local player = Client.GetLocalPlayer()
+    if player then
+        local camCoords  = player:GetCameraLocation()
+        local camRotator = player:GetCameraRotation()
+        minimapUI:CallEvent('UpdatePlayerPos', camCoords.X, camCoords.Y, camRotator.Yaw, camRotator.Yaw)
+    end
+
+    if g_hasActiveRoute and g_currentRouteTarget then
+        local char = player and player:GetControlledCharacter()
+        if char then
+            local currentPos = char:GetLocation()
+            if not g_lastPlayerPosForRoute then
+                g_lastPlayerPosForRoute = currentPos
+            end
+            local dist = Vector.DistanceSquared(currentPos, g_lastPlayerPosForRoute)
+            if dist > (g_distanceThreshold * g_distanceThreshold) then
+                CalculateAndDrawRouteTo(g_currentRouteTarget)
+            end
+        end
+    end
 end)
