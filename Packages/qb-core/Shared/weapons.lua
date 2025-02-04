@@ -39,8 +39,8 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_ACM_Mag', relative_location = Vector(15, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_ACM_Stock', relative_location = Vector(-3, 0, 11), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_ACM_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_ACM_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_austro = {
@@ -81,7 +81,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Austro_Mag', relative_location = Vector(-14, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Austro_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_banshee = {
@@ -164,9 +164,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Bison_Mag', relative_location = Vector(15, 0, 8.2), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Bison_RearGrip', relative_location = Vector(0, 0, 5), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Bison_Stock', relative_location = Vector(-3, 0, 6), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Bison_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Bison_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Bison_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_condor = {
@@ -207,9 +207,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Condor_MagFull', relative_location = Vector(9, 0, 10), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_Condor_IronSight', relative_location = Vector(-4.4, 0, 16), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Condor_RearGrip', relative_location = Vector(-6.5, 0, 10), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Condor_MagFull', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_Condor_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Condor_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_convert = {
@@ -292,7 +292,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_CS-446_Mag', relative_location = Vector(25, 0, 5), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_CS-446_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_db12 = {
@@ -373,7 +373,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_DMC-68_Mag', relative_location = Vector(17.3, 0, -2), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_DMC-68_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_fang = {
@@ -414,9 +414,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Fang_Mag', relative_location = Vector(17, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Fang_RearGrip', relative_location = Vector(4, 0, 11), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Fang_Stock', relative_location = Vector(2, 0, 17.3), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Fang_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Fang_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Fang_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_fierro = {
@@ -578,7 +578,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_DesertEagle_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Tee',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Gaston_Mag', relative_location = Vector(-0.5, 0, -5), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Gaston_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_kal = {
@@ -619,9 +619,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_KAL_Mag', relative_location = Vector(-3, 0, 7), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_KAL_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
             reargrip = { asset_name = 'helix::SM_KAL_RearGrip' },
-            stock = { asset_name = 'helix::SM_KAL_Stock', relative_location = Vector(16, 0, 0), relative_rotation = Rotator(0, 0, 0) }
+            stock = { asset_name = 'helix::SM_KAL_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) }
         }
     },
     weapon_kfs = {
@@ -662,11 +662,11 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_KFS_Mag', relative_location = Vector(9, 0, 2), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_KFS_RearGrip', relative_location = Vector(-7, 0, 2), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_KFS_Stock', relative_location = Vector(-12, 0, 4.6), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_KFS_IronSight', relative_location = Vector(83, 0, 6.5), relative_rotation = Rotator(0, 0, 0) },
-            muzzle = { asset_name = 'helix::SM_KFS_Muzzle', relative_location = Vector(86.5, 0, 7.5), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_KFS_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_KFS_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_KFS_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_KFS_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            muzzle = { asset_name = 'helix::SM_KFS_Muzzle', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_ktk = {
@@ -746,10 +746,10 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Krink_Mag', relative_location = Vector(16, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_Krink_IronSight', relative_location = Vector(15, 0, 11), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Krink_RearGrip', relative_location = Vector(1.5, 0, 5), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Krink_Stock', relative_location = Vector(-3, 0, 7), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Krink_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_Krink_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Krink_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Krink_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_lws32 = {
@@ -790,9 +790,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_LWS-32_Mag', relative_location = Vector(16, 0, 3), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_LWS-32_IronSight', relative_location = Vector(43, 0, 15), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_LWS-32_Stock', relative_location = Vector(-8.3, 0, 13), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_LWS-32_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_LWS-32_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_LWS-32_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_m77 = {
@@ -833,9 +833,9 @@ QBShared.Weapons = {
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
             mag = { asset_name = 'helix::SM_M77_Mag_X', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_M77_IronSight', relative_location = Vector(13, 0, 10.7), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_M77_Stock', relative_location = Vector(-8, 0, 5), relative_rotation = Rotator(0, 0, 0) },
-            belt = { asset_name = 'helix::SM_M77_Belt', relative_location = Vector(15, 0, 5), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_M77_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_M77_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            belt = { asset_name = 'helix::SM_M77_Belt', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_mirage = {
@@ -918,9 +918,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_MK4_Mag', relative_location = Vector(14, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_MK4_IronSight', relative_location = Vector(14, 0, 13), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_MK4_Stock', relative_location = Vector(0, 0, 10.6), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_MK4_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_MK4_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_MK4_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_mouflan = {
@@ -961,9 +961,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Mouflan_Mag', relative_location = Vector(26, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_Mouflan_IronSight', relative_location = Vector(13, 0, 9.6), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Mouflan_Stock', relative_location = Vector(0, 0, 5.7), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Mouflan_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_Mouflan_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Mouflan_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_orion = {
@@ -1004,11 +1004,11 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Orion_Mag', relative_location = Vector(6.5, 0, 8), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_Orion_IronSight', relative_location = Vector(3, 0, 17), relative_rotation = Rotator(0, 0, 0) },
-            muzzle = { asset_name = 'helix::SM_Orion_Muzzle', relative_location = Vector(26, 0, 13.7), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Orion_Stock', relative_location = Vector(-12, 0, 15), relative_rotation = Rotator(0, 0, 0) },
-            stockSocket = { asset_name = 'helix::SM_Orion_StockSocket', relative_location = Vector(-10, 0, 15), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Orion_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_Orion_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            muzzle = { asset_name = 'helix::SM_Orion_Muzzle', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Orion_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stockSocket = { asset_name = 'helix::SM_Orion_StockSocket', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_patriot = {
@@ -1049,7 +1049,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Patriot_Mag', relative_location = Vector(15, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Patriot_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
             stock = { asset_name = 'helix::SM_Patriot_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
             reargrip = { asset_name = 'helix::SM_Patriot_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) }
         }
@@ -1092,10 +1092,10 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Pit_Viper_Mag', relative_location = Vector(5, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_Pit_Viper_IronSight', relative_location = Vector(30, 0, 6), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Pit_Viper_RearGrip', relative_location = Vector(-10, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Pit_Viper_Stock', relative_location = Vector(-14, 0, 2), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Pit_Viper_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_Pit_Viper_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Pit_Viper_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Pit_Viper_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_pm99 = {
@@ -1136,9 +1136,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_PM-99_Mag', relative_location = Vector(5, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_PM-99_IronSight', relative_location = Vector(-6.2, 0, 16), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_PM-99_Stock', relative_location = Vector(-10, 0, 13), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_PM-99_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_PM-99_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_PM-99_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_ppy = {
@@ -1178,10 +1178,10 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            sight = { asset_name = 'helix::SM_PP-Y_IronSight', relative_location = Vector(-2, 0, 10.9), relative_rotation = Rotator(0, 0, 0) },
-            mag = { asset_name = 'helix::SM_PP-Y_Mag', relative_location = Vector(11, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_PP-Y_RearGrip', relative_location = Vector(1, 0, 5), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_PP-Y_Stock', relative_location = Vector(-4, 0, 9), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_PP-Y_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_PP-Y_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_PP-Y_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_PP-Y_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_queen80 = {
@@ -1222,8 +1222,8 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_Queen-80_MagEmpty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Queen-80_Mag', relative_location = Vector(-0.5, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Queen-80_RearGrip', relative_location = Vector(-11.5, 0, 0), relative_rotation = Rotator(0, 0, 0) }
+            mag = { asset_name = 'helix::SM_Queen-80_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Queen-80_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) }
         }
     },
     weapon_remi = {
@@ -1347,7 +1347,7 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Ronin-777_Mag', relative_location = Vector(15, 1.5, 7), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Ronin-777_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_roma12 = {
@@ -1430,9 +1430,9 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular_X',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Sabra_Mag', relative_location = Vector(1.5, 0, 6), relative_rotation = Rotator(0, 0, 0) },
-            reargrip = { asset_name = 'helix::SM_Sabra_RearGrip', relative_location = Vector(-12.5, 1.6, 4), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Sabra_Stock', relative_location = Vector(-23, 1.6, 11), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Sabra_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            reargrip = { asset_name = 'helix::SM_Sabra_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Sabra_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_sovwhisper = {
@@ -1473,10 +1473,10 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_SovWhisper_Mag', relative_location = Vector(16, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_SovWhisper_IronSight', relative_location = Vector(61, 0, 10), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_SovWhisper_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_SovWhisper_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
             reargrip = { asset_name = 'helix::SM_SovWhisper_RearGrip', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_SovWhisper_Stock', relative_location = Vector(-2, 0, 8), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_SovWhisper_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
     weapon_vulcan = {
@@ -1517,8 +1517,8 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AP5_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Submachine',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_Vulcan_Mag', relative_location = Vector(15, 0, -7), relative_rotation = Rotator(0, 0, 0) },
-            stock = { asset_name = 'helix::SM_Vulcan_Stock', relative_location = Vector(-3, 0, 7.3), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_Vulcan_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            stock = { asset_name = 'helix::SM_Vulcan_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     }
 }
