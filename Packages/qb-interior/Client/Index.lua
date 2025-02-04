@@ -27,7 +27,7 @@ local function CreateShell(spawn, exitXYZH, model)
 			spawn.Z + POIOffsets.exit.z,
 			POIOffsets.exit.h
 		)
-	end, 2500)
+	end, 5000)
 	return { objects, POIOffsets }
 end
 
