@@ -918,8 +918,8 @@ QBShared.Weapons = {
         magazine_mesh = 'helix::SM_AK47_Mag_Empty',
         crosshair_material = 'helix::MI_Crosshair_Regular',
         default_attachments = {
-            mag = { asset_name = 'helix::SM_MK4_Mag', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
-            sight = { asset_name = 'helix::SM_MK4_IronSight', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            mag = { asset_name = 'helix::SM_MK4_Mag', relative_location = Vector(14, 0, 0), relative_rotation = Rotator(0, 0, 0) },
+            sight = { asset_name = 'helix::SM_MK4_IronSight', relative_location = Vector(14, 0, 13), relative_rotation = Rotator(0, 0, 0) },
             stock = { asset_name = 'helix::SM_MK4_Stock', relative_location = Vector(0, 0, 0), relative_rotation = Rotator(0, 0, 0) },
         }
     },
