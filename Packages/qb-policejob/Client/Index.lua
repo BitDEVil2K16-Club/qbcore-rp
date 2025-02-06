@@ -85,16 +85,16 @@ AddGlobalPlayer({
         --         return entity:GetPlayer()
         --     end
         -- },
-        -- {
-        --     type = 'server',
-        --     event = 'qb-policejob:server:handcuff',
-        --     label = 'Handcuff',
-        --     icon = 'fas fa-hand',
-        --     jobType = 'leo',
-        --     canInteract = function(entity)
-        --         return entity:GetPlayer()
-        --     end
-        -- }
+        {
+            type = 'server',
+            event = 'qb-policejob:server:handcuff',
+            label = 'Handcuff',
+            icon = 'fas fa-hand',
+            jobType = 'leo',
+            canInteract = function(entity)
+                return entity:GetPlayer()
+            end
+        }
     },
     distance = 500
 })

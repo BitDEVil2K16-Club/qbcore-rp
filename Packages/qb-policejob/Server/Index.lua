@@ -223,7 +223,11 @@ Events.SubscribeRemote('qb-policejob:server:handcuff', function(source, data)
     if Player.PlayerData.job.type ~= 'leo' then return end
     local closest_player, distance = QBCore.Functions.GetClosestPlayer(source)
     if not closest_player or distance > 500 then return end
-    Events.CallRemote('qb-policejob:client:handcuff', closest_player)
+    local ped = source:GetControlledCharacter()
+    local targetPed = closest_player:GetControlledCharacter()
+    ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Att', AnimationSlotType.FullBody, false, 0.5, 0.5)
+    closest_player:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Vic', AnimationSlotType.FullBody, false, 0.5, 0.5)
+    closest_player:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic', AnimationSlotType.FullBody, true, 0.5, 0.5)
 end)
 
 Events.SubscribeRemote('qb-policejob:server:vehicle', function(source)
