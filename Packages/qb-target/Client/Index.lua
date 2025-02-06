@@ -1,6 +1,7 @@
 local my_webui = WebUI('Target', 'file://html/index.html')
-local player_data = QBCore.Functions.GetPlayerData()
-local target_active, target_entity, raycast_timer, player_ped = false, nil, nil, nil
+local player_data = {}
+local player_ped
+local target_active, target_entity, raycast_timer = false, nil, nil
 local active_sprites, nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}, {}
 
 -- Handlers
@@ -126,7 +127,7 @@ local function handleEntity(trace_result, start_location)
 	end
 	local entity_has_options = Entities[trace_result.Entity]
 	local type_has_options = Types[tostring(trace_result.ActorName)]
-	if not entity_has_options or not type_has_options then
+	if not entity_has_options and not type_has_options then
 		clearTarget()
 		return
 	end
