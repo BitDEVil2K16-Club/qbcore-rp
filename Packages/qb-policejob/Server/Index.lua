@@ -220,14 +220,32 @@ end)
 Events.SubscribeRemote('qb-policejob:server:handcuff', function(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
-    if Player.PlayerData.job.type ~= 'leo' then return end
-    local closest_player, distance = QBCore.Functions.GetClosestPlayer(source)
-    if not closest_player or distance > 500 then return end
+    if Player.PlayerData.job.type ~= 'leo' and not Player.PlayerData.job.onduty then
+        Events.CallRemote('QBCore:Notify', source, Lang:t('error.on_duty_police_only'), 'error')
+        return
+    end
     local ped = source:GetControlledCharacter()
-    local targetPed = closest_player:GetControlledCharacter()
+    local ped_coords = ped:GetLocation()
+    local target_ped = data.entity
+    local target_coords = target_ped:GetLocation()
+    if ped_coords:Distance(target_coords) > 500 then return end
+
     ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Att', AnimationSlotType.FullBody, false, 0.5, 0.5)
-    closest_player:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Vic', AnimationSlotType.FullBody, false, 0.5, 0.5)
-    closest_player:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic', AnimationSlotType.FullBody, true, 0.5, 0.5)
+    target_ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Vic', AnimationSlotType.FullBody, false, 0.5, 0.5)
+
+    Timer.SetTimeout(function()
+        if targetPed:GetValue('is_cuffed', false) then
+            target_ped:GetValue('handcuffs'):Destroy()
+            target_ped:StopAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic')
+            target_ped:SetValue('is_cuffed', false, true)
+        else
+            local handcuffs = StaticMesh(target_coords, Rotator(), 'abcca-qbcore::SM_Handcuffs', CollisionType.NoCollision)
+            handcuffs:AttachTo(target_ped, AttachmentRule.SnapToTarget, 'hand_r', 0, true)
+            target_ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic', AnimationSlotType.UpperBody, true, 0.5, 0.5)
+            target_ped:SetValue('is_cuffed', true, true)
+            target_ped:SetValue('handcuffs', handcuffs, true)
+        end
+    end, 5000)
 end)
 
 Events.SubscribeRemote('qb-policejob:server:vehicle', function(source)
@@ -341,9 +359,36 @@ end)
 
 -- Items
 
+local function handcuff(source)
+    local closest_player, distance = QBCore.Functions.GetClosestPlayer(source)
+    if not closest_player or distance > 500 then return end
+    local ped = source:GetControlledCharacter()
+    local target_ped = closest_player:GetControlledCharacter()
+    local target_coords = target_ped:GetLocation()
+    ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Att', AnimationSlotType.FullBody, false, 0.5, 0.5)
+    target_ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Start_Vic', AnimationSlotType.FullBody, false, 0.5, 0.5)
+
+    Timer.SetTimeout(function()
+        if target_ped:GetValue('is_cuffed', false) then
+            target_ped:GetValue('handcuffs'):Destroy()
+            target_ped:StopAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic')
+            target_ped:SetValue('is_cuffed', false, true)
+        else
+            local handcuffs = StaticMesh(target_coords, Rotator(), 'abcca-qbcore::SM_Handcuffs', CollisionType.NoCollision)
+            handcuffs:AttachTo(target_ped, AttachmentRule.SnapToTarget, 'hand_r', 0, true)
+            target_ped:PlayAnimation('rp-anims-k::Paired_HandcuffHostage_Loop_Vic', AnimationSlotType.UpperBody, true, 0.5, 0.5)
+            target_ped:SetValue('is_cuffed', true, true)
+            target_ped:SetValue('handcuffs', handcuffs, true)
+        end
+    end, 5000)
+end
+
 QBCore.Functions.CreateUseableItem('handcuffs', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
-    if not Player.Functions.GetItemByName('handcuffs') then return end
-    Events.CallRemote('police:client:CuffPlayerSoft', source)
+    if Player.PlayerData.job.type ~= 'leo' and not Player.PlayerData.job.onduty then
+        Events.CallRemote('QBCore:Notify', source, Lang:t('error.on_duty_police_only'), 'error')
+        return
+    end
+    handcuff(source)
 end)

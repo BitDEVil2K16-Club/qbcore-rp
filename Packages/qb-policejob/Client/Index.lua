@@ -67,14 +67,24 @@ AddGlobalPlayer({
         },
         {
             type = 'server',
-            event = 'qb-policejob:server:putvehicle',
-            label = 'Put In Vehicle',
-            icon = 'fas fa-car',
+            event = 'qb-policejob:server:handcuff',
+            label = 'Handcuff',
+            icon = 'fas fa-handcuffs',
             jobType = 'leo',
             canInteract = function(entity)
-                return entity:GetPlayer() and entity:GetValue('escorted', false)
+                return entity:GetPlayer()
             end
         },
+--         {
+--             type = 'server',
+--             event = 'qb-policejob:server:putvehicle',
+--             label = 'Put In Vehicle',
+--             icon = 'fas fa-car',
+--             jobType = 'leo',
+--             canInteract = function(entity)
+--                 return entity:GetPlayer() and entity:GetValue('escorted', false)
+--             end
+--         },
         -- {
         --     type = 'server',
         --     event = 'qb-policejob:server:takevehicle',
@@ -85,16 +95,6 @@ AddGlobalPlayer({
         --         return entity:GetPlayer()
         --     end
         -- },
-        {
-            type = 'server',
-            event = 'qb-policejob:server:handcuff',
-            label = 'Handcuff',
-            icon = 'fas fa-hand',
-            jobType = 'leo',
-            canInteract = function(entity)
-                return entity:GetPlayer()
-            end
-        }
     },
     distance = 500
 })
