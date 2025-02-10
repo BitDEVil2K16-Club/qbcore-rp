@@ -157,10 +157,17 @@ local function openAdmin()
 	admin_menu:Open(false, false)
 end
 
-Input.Register('Admin Menu', 'F9')
-Input.Bind('Admin Menu', InputEvent.Pressed, function()
-	if Input.IsMouseEnabled() then return end
-	openAdmin()
+-- Input.Register('Admin Menu', 'F9')
+-- Input.Bind('Admin Menu', InputEvent.Pressed, function()
+-- 	if Input.IsMouseEnabled() then return end
+-- 	openAdmin()
+-- end)
+
+Input.Subscribe('KeyPress', function(key_name) -- for gameplay vid
+	if key_name == 'Nine' then
+		if Input.IsMouseEnabled() then return end
+		openAdmin()
+	end
 end)
 
 Events.SubscribeRemote('qb-adminmenu:client:openMenu', function()
