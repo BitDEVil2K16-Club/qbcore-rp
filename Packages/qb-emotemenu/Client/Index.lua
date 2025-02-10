@@ -60,3 +60,25 @@ Input.Subscribe('KeyPress', function(key_name) -- for gameplay vid
         Events.CallRemote('qb-emotemenu:server:playAnimation', 'FearNFrights', 'Hostage2')
     end
 end)
+
+-- Radio anim for gameplay video
+
+local radio_anim = false
+
+Input.Subscribe('KeyDown', function(key_name)
+    if key_name == 'Y' then
+        if not radio_anim then
+            Events.CallRemote('qb-emotemenu:server:playAnimation', 'Roleplay', 'talking_radio_Idle')
+            radio_anim = true
+        end
+    end
+end)
+
+Input.Subscribe('KeyUp', function(key_name)
+    if key_name == 'Y' then
+        if radio_anim then
+            Events.CallRemote('qb-emotemenu:server:playAnimation', 'Roleplay', 'talking_radio_Idle')
+            radio_anim = false
+        end
+    end
+end)
