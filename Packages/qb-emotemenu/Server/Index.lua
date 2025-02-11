@@ -58,3 +58,82 @@ Events.SubscribeRemote('qb-emotemenu:server:spawnWeapon', function(source) -- fo
     if not weapon then return end
     ped:PickUp(weapon)
 end)
+
+QBCore.Commands.Add('bankpeds', 'Spawns bank peds', {}, false, function()
+    local peds = {
+        {
+            coords = Vector(-55597.1, -2611.2, 391.9),
+            heading = Rotator(0.0, -80.58, 0.0),
+            animation = 'rp-anims-k::AS_Supplication',
+            outfit = {
+                body = '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body',
+                head = 'helix::SK_Male_Head',
+                hair = 'abcca-clhabc::Male_Hairstyle_02',
+                chest = 'abcca-clhabc::SK_Man_T_Shirts_4',
+                legs = 'abcca-clhabc::SK_MAN_Saggy_Pants',
+                feet = 'abcca-default-wearables::SK_M_Shoes_Tennis'
+            }
+        },
+        {
+            coords = Vector(-55355.5, -3422.2, 391.9),
+            heading = Rotator(0.0, 148.63209533691, 0.0),
+            animation = 'rp-anims-k::AS_Supplication2',
+            outfit = {
+                body = '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Female/Mesh/Female_Full_Body_v05',
+                head = '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Female_Head',
+                hair = 'abcca-clhabc::Female_Hairstyle_SK_16_1',
+                chest = 'abcca-clhabc::SK_W_Striped_Blouse',
+                legs = 'abcca-default-wearables::SK_W_Bottom_Trousers',
+                feet = 'abcca-default-wearables::SK_M_Shoes_Tennis'
+            }
+        },
+        {
+            coords = Vector(-56144.8, -3435.6, 391.9),
+            heading = Rotator(0.0, 22.237899780273, 0.0),
+            animation = 'rp-anims-k::AS_Supplication',
+            outfit = {
+                body = '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body',
+                head = 'helix::SK_Male_Head',
+                hair = 'abcca-clhabc::Male_Hairstyle_SK_06_1',
+                chest = 'abcca-clhabc::SK_Man_Jacket_style_3_3_1',
+                legs = 'abcca-clhabc::SK_Male_Pants_14_1',
+                feet = 'abcca-default-wearables::SK_M_Shoes_Tennis'
+            }
+        },
+        {
+            coords = Vector(-56146.3, -3025.6, 391.9),
+            heading = Rotator(0.0, -3.53, 0.0),
+            animation = 'rp-anims-k::AS_Supplication2',
+            outfit = {
+                body = '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Female/Mesh/Female_Full_Body_v05',
+                head = '/CharacterCreator/CharacterAssets/Avatar_FBX/Head/Female_Head',
+                hair = 'abcca-clhabc::Female_hair_styile_01',
+                chest = 'abcca-default-wearables::SK_W_Top_Crop',
+                legs = 'abcca-default-wearables::SK_W_Bottom_Skirt',
+                feet = 'abcca-default-wearables::SK_M_Shoes_Tennis'
+            }
+        }
+    }
+
+    for i = 1, #peds do
+        local ped_data = peds[i]
+        local outfit_data = peds[i].outfit
+        local ped = HCharacter(ped_data.coords, ped_data.heading, outfit_data.body)
+        ped:AddSkeletalMeshAttached('head', outfit_data.head)
+        ped:AddSkeletalMeshAttached('hair', outfit_data.hair)
+        ped:AddSkeletalMeshAttached('chest', outfit_data.chest)
+        ped:AddSkeletalMeshAttached('legs', outfit_data.legs)
+        ped:AddSkeletalMeshAttached('feet', outfit_data.feet)
+        ped:AddSkeletalMeshAttached('eyebrows', '/CharacterCreator/CharacterAssets/Avatar_FBX/OtherMeshes/Male/EyeBrow_/Male_Eyebrows_T01')
+        ped:AddSkeletalMeshAttached('eyelashes', '/CharacterCreator/CharacterAssets/Avatar_FBX/OtherMeshes/Male/EyeLashes_/Eyelashes_Male')
+
+        ped:PlayAnimation(
+            ped_data.animation,
+            AnimationSlotType.FullBody,
+            true,
+            0.5, -- blend_in_time
+            0.5, -- blend_out_time
+            0.8  -- play_rate
+        )
+    end
+end, 'user')
