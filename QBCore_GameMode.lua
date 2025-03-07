@@ -9,6 +9,12 @@
 ---@type QBCore_GameMode_C
 local M = UnLua.Class()
 
+function M:K2_PostLogin(NewPlayerController)
+    self.Overridden.K2_PostLogin(self, NewPlayerController)
+
+    QBCore.Player.Login(NewPlayerController, 'qwertyCitizenId')
+end
+
 -- function M:Initialize(Initializer)
 -- end
 
