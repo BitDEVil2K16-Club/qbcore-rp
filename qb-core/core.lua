@@ -41,6 +41,7 @@ end
 require('QBCore/qb-core/loader')
 require('QBCore/qb-core/locale')
 require('QBCore/qb-core/functions')
+require('QBCore/qb-core/player')
 
 return {
     GetCoreObject = GetCoreObject
