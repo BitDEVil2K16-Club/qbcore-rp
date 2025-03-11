@@ -5,7 +5,7 @@ local resourceName = 'qb-core'
 local function CreatePlayer(PlayerController, existingData)
     local self = {}
     self.Functions = {}
-    local playerState = source.PlayerState
+    local playerState = PlayerController.PlayerState
 
     playerState.source = PlayerController
     playerState.license = UE.UKismetGuidLibrary:NewGuid():ToString()         -- HELIX account id -- Get unique id from player state
