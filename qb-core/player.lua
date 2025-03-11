@@ -2,14 +2,14 @@ local rapidjson = require('rapidjson')
 local json = { encode = rapidjson.encode, decode = rapidjson.decode }
 local resourceName = 'qb-core'
 
-local function CreatePlayer(PlayerController, existingData)
+local function CreatePlayer(source, existingData)
     local self = {}
     self.Functions = {}
-    local playerState = PlayerController.PlayerState
+    local playerState = source.PlayerState
 
-    playerState.source = PlayerController
-    playerState.license = UE.UKismetGuidLibrary:NewGuid():ToString()         -- HELIX account id -- Get unique id from player state
-    playerState.name = playerState.name or GetPlayerName(playerState.source) -- Can get PlayerState:GetPlayerName() currently
+    playerState.source = source
+    playerState.license = UE.UKismetGuidLibrary:NewGuid():ToString()
+    playerState.name = playerState:GetPlayerName()
 
     if existingData then
         playerState.money = json.decode(existingData.money)
@@ -42,7 +42,7 @@ local function CreatePlayer(PlayerController, existingData)
 end
 
 function QBCore.Player.Login(source, citizenid)
-    if not source or source == '' then -- Source is now APlayerController
+    if not source or source == '' then
         QBCore.ShowError(resourceName, 'ERROR QBCORE.PLAYER.LOGIN - NO SOURCE GIVEN!')
         return false
     end
@@ -55,7 +55,7 @@ function QBCore.Player.Login(source, citizenid)
         local result = DB:Select('SELECT * FROM players WHERE citizenid = ?', { citizenid })
         CreatePlayer(source, result) -- existing player
     else
-        CreatePlayer(source)         -- new player
+        CreatePlayer(source) -- new player
     end
     return true
 end
