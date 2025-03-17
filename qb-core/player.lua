@@ -1,6 +1,4 @@
 local rapidjson = require('rapidjson')
-local json = { encode = rapidjson.encode, decode = rapidjson.decode }
-local resourceName = 'qb-core'
 
 local function CreatePlayer(source, existingData, newData)
     local self = {}
@@ -12,12 +10,12 @@ local function CreatePlayer(source, existingData, newData)
     playerState.name = playerState:GetPlayerName()
 
     if existingData then
-        playerState.money = json.decode(existingData.money)
-        playerState.job = json.decode(existingData.job)
-        playerState.gang = json.decode(existingData.gang)
-        playerState.position = json.decode(existingData.position)
-        playerState.metadata = json.decode(existingData.metadata)
-        playerState.charinfo = json.decode(existingData.charinfo)
+        playerState.money = rapidjson.decode(existingData.money)
+        playerState.job = rapidjson.decode(existingData.job)
+        playerState.gang = rapidjson.decode(existingData.gang)
+        playerState.position = rapidjson.decode(existingData.position)
+        playerState.metadata = rapidjson.decode(existingData.metadata)
+        playerState.charinfo = rapidjson.decode(existingData.charinfo)
     else
         playerState.cid = newData.CID
         playerState.charinfo = newData.CharInfo
@@ -55,7 +53,7 @@ function QBCore.Player.Login(source, citizenid, newData)
         local DB = DatabaseSubsystem:GetDatabase()
         local result = DB:Select('SELECT * FROM players WHERE citizenid = ?', { citizenid })
         if not result then return error('[QBCore] Couldn\'t load PlayerData for ' .. citizenid) end
-        CreatePlayer(source, result) -- existing player
+        CreatePlayer(source, result)         -- existing player
     else
         CreatePlayer(source, false, newData) -- new player
     end
@@ -81,30 +79,28 @@ function QBCore.Player.Save(source, new)
                 playerState.cid,
                 playerState.license,
                 playerState.name,
-                json.encode(playerState:GetPlayerData('money')),
-                json.encode(playerState:GetPlayerData('charinfo')),
-                json.encode(playerState:GetPlayerData('job')),
-                json.encode(playerState:GetPlayerData('gang')),
-                json.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
-                json.encode(playerState:GetPlayerData('metadata'))
+                rapidjson.encode(playerState:GetPlayerData('money')),
+                rapidjson.encode(playerState:GetPlayerData('charinfo')),
+                rapidjson.encode(playerState:GetPlayerData('job')),
+                rapidjson.encode(playerState:GetPlayerData('gang')),
+                rapidjson.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
+                rapidjson.encode(playerState:GetPlayerData('metadata'))
             ), {})
             if not Success then error('[QBCore] ERROR QBCORE.PLAYER.SAVE - FAILED TO INSERT NEW PLAYER!') end
         else
             DB:Execute(string.format('UPDATE players SET money = \'%s\', charinfo = \'%s\', job = \'%s\', gang = \'%s\', position = \'%s\', metadata = \'%s\' WHERE citizenid = \'%s\'',
-                json.encode(playerState:GetPlayerData('money')),
-                json.encode(playerState:GetPlayerData('charinfo')),
-                json.encode(playerState:GetPlayerData('job')),
-                json.encode(playerState:GetPlayerData('gang')),
-                json.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
-                json.encode(playerState:GetPlayerData('metadata')),
-                playerState.citizenid), -- Needs changing to prepared statements
-            {})
+                    rapidjson.encode(playerState:GetPlayerData('money')),
+                    rapidjson.encode(playerState:GetPlayerData('charinfo')),
+                    rapidjson.encode(playerState:GetPlayerData('job')),
+                    rapidjson.encode(playerState:GetPlayerData('gang')),
+                    rapidjson.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
+                    rapidjson.encode(playerState:GetPlayerData('metadata')),
+                    playerState.citizenid), -- Needs changing to prepared statements
+                {})
         end
         print('[QBCore] ' .. playerState.citizenid .. ' PLAYER SAVED!')
-        --QBCore.Shared.ShowSuccess(resourceName, playerState.name .. ' PLAYER SAVED!')
     else
         error('[QBCore] ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
-        --QBCore.Shared.ShowError(resourceName, 'ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
     end
 end
 

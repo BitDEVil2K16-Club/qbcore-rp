@@ -1,13 +1,21 @@
 ---@type QBCore_PlayerController_C
 local M = UnLua.Class()
 
--- function M:ReceiveBeginPlay()
---     if self:HasAuthority() then
---         --QBCore.Player.Login(self)
---         print("call what we need to from server")
---         return
---     end
--- end
+function M:ReceiveBeginPlay()
+    if self:HasAuthority() then
+        local DatabaseSubsystem = UE.USubsystemBlueprintLibrary.GetGameInstanceSubsystem(self, UE.UClass.Load('/QBCore/B_DatabaseSubsystem.B_DatabaseSubsystem_C'))
+        local DB = DatabaseSubsystem:GetDatabase()
+        local result = DB:Select('SELECT * FROM players WHERE license = "license:qwerty" ORDER BY cid')
+        if not result then return error('[QBCore] Couldn\'t load PlayerData for ' .. citizenid) end
+        self:ShowMulticharacter(result)
+    end
+end
+
+function M:ShowMulticharacter(playerData)
+    local WidgetClass = UE.UClass.Load('/QBCore/Multicharacter/multicharacter.multicharacter_C')
+    local Widget = UE.UWidgetBlueprintLibrary.Create(self, WidgetClass, self)
+    Widget:AddToViewport(0)
+end
 
 function M:Login_Server_RPC(CitizenID)
     if CitizenID then

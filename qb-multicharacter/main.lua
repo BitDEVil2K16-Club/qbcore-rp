@@ -1,15 +1,14 @@
-local MultiCharacter = UnLua.Class()
+local M = UnLua.Class()
 
--- function MultiCharacter:ReceiveBeginPlay()
---     if not self:HasAuthority() then return end
+-- function M:ReceiveBeginPlay()
 -- end
 
-function MultiCharacter:HandlePlay(CitizenID)
+function M:HandlePlay(CitizenID)
     self:GetOwningPlayer():Login_Server(CitizenID)
 end
 
-function MultiCharacter:HandleNewChar(CharInfoStruct, CID)
+function M:HandleNewChar(CharInfoStruct, CID)
     self:GetOwningPlayer():NewCharacter_Server(CharInfoStruct, CID)
 end
 
-return MultiCharacter
+return M
