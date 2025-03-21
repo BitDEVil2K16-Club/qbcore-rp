@@ -1,3 +1,4 @@
+_G.json = require('rapidjson')
 ---@type QBCore_GameState_C
 local M = UnLua.Class()
 
