@@ -1,5 +1,22 @@
 local rapidjson = require('rapidjson')
 
+-- Recursive function to apply player data to state
+local function ApplyPlayerState(source, data, key)
+    for k, v in pairs(data) do
+        --print(string.format('Setting State: state[%s%s] = %s', key and key .. ':' or '', k, v)) Debug print
+        if type(v) == 'table' then
+            source.playerState[k] = {}
+            ApplyPlayerState(source, v, k)
+        else
+            if key then
+                source.playerState[key][k] = v
+            else
+                source.playerState[k] = v
+            end
+        end
+    end
+end
+
 local function CreatePlayer(source, existingData, newData)
     local self = {}
     self.Functions = {}
@@ -10,15 +27,22 @@ local function CreatePlayer(source, existingData, newData)
     playerState.name = playerState:GetPlayerName()
 
     if existingData then
-        playerState.money = rapidjson.decode(existingData.money)
-        playerState.job = rapidjson.decode(existingData.job)
-        playerState.gang = rapidjson.decode(existingData.gang)
-        playerState.position = rapidjson.decode(existingData.position)
-        playerState.metadata = rapidjson.decode(existingData.metadata)
-        playerState.charinfo = rapidjson.decode(existingData.charinfo)
+        for column, data in pairs(existingData) do
+            if playerState[column] then
+                local decodedData = rapidjson.decode(data)
+                if decodedData then
+                    ApplyPlayerState(source, decodedData, column)
+                else
+                    playerState[column] = data
+                end
+            end
+        end
     else
         playerState.cid = newData.CID
-        playerState.charinfo = newData.CharInfo
+        -- Hacky solution for writing json/table to struct via KVP
+        for k, v in pairs(newData.CharInfo) do
+            playerState.charinfo[k] = v
+        end
         playerState.citizenid = QBCore.Functions.CreateCitizenId()
         playerState.charinfo.phone = QBCore.Functions.CreatePhoneNumber()
         playerState.charinfo.account = QBCore.Functions.CreateAccountNumber()
