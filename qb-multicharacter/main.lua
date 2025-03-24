@@ -24,6 +24,12 @@ function M:OnRep_CurrentChar()
     end
 end
 
+-- Character Button Released Handler
+M['BndEvt__WB_CharButton_Button_65_K2Node_ComponentBoundEvent_0_OnButtonReleasedEvent__DelegateSignature'] = function(self)
+    self.Parent.CurrentChar = self.ButtonID
+    self.Parent:OnRep_CurrentChar()
+end
+
 function M:PopulateCharData(CharactersJSON)
     local MyController = GetPlayerController()
     local WidgetClass = UE.UClass.Load('/QBCore/MultiCharacter/multicharacter.multicharacter_C')
@@ -152,7 +158,6 @@ M['BndEvt__multicharacter_DeleteChar_K2Node_ComponentBoundEvent_6_OnButtonReleas
         TriggerServerEvent('qb-multicharacter:server:DeleteCharacter', CharacterButtons[self.CurrentChar].CitizenID)
     end
     self.DeleteConfBorder:SetVisibility(UE.ESlateVisibility.Hidden)
-    TriggerServerEvent('qb-multicharacter:server:ShowMulticharacter')
 end
 
 return M
