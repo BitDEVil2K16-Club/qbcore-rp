@@ -15,15 +15,18 @@ function M:ReceiveBeginPlay()
         _G.GetPlayerController = function() return self end
 
         RegisterClientEvent('qb-multicharacter:client:ShowMulticharacter', function(CharactersJSON)
-            UE.UKismetSystemLibrary.Delay(self, 1.0)
-            local Widget = UE.UWidgetBlueprintLibrary.Create(self, UE.UClass.Load("/QBCore/MultiCharacter/multicharacter.multicharacter_C"), self)
-            if not Widget then
-                print('[QBCore] Error: Couldn\'t create multicharacter widget')
-                return
-            end
-            Widget:AddToViewport(0)
+            coroutine.resume(coroutine.create(function(PC, Duration)
+                UE.UKismetSystemLibrary.Delay(self, 1.0)
 
-            Widget:PopulateCharData(CharactersJSON)
+                local Widget = UE.UWidgetBlueprintLibrary.Create(self, UE.UClass.Load("/QBCore/MultiCharacter/multicharacter.multicharacter_C"), self)
+                if not Widget then
+                    print('[QBCore] Error: Couldn\'t create multicharacter widget')
+                    return
+                end
+                Widget:AddToViewport(0)
+    
+                Widget:PopulateCharData(CharactersJSON)
+            end), self, 1.0)
         end)
     else
         -- Server alternative for opening multicharacter
