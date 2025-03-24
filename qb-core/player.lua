@@ -1,5 +1,3 @@
-local rapidjson = require('rapidjson')
-
 -- Recursive function to apply player data to state
 local function ApplyPlayerState(source, data, key)
     for k, v in pairs(data) do
@@ -29,7 +27,7 @@ local function CreatePlayer(source, existingData, newData)
     if existingData then
         for column, data in pairs(existingData) do
             if playerState[column] then
-                local decodedData = rapidjson.decode(data)
+                local decodedData = json.decode(data)
                 if decodedData then
                     ApplyPlayerState(source, decodedData, column)
                 else
@@ -84,7 +82,7 @@ function QBCore.Player.Login(source, citizenid, newData)
         local DB = DatabaseSubsystem:GetDatabase()
         local result = DB:Select('SELECT * FROM players WHERE citizenid = ?', { citizenid })
         if not result then return error('[QBCore] Couldn\'t load PlayerData for ' .. citizenid) end
-        CreatePlayer(source, rapidjson.decode(result)[1])         -- existing player
+        CreatePlayer(source, json.decode(result)[1])         -- existing player
     else
         CreatePlayer(source, false, newData) -- new player
     end
@@ -114,7 +112,7 @@ function QBCore.Player.Save(source, new)
                 playerState:GetPlayerData('charinfo'),
                 playerState:GetPlayerData('job'),
                 playerState:GetPlayerData('gang'),
-                rapidjson.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
+                json.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
                 playerState:GetPlayerData('metadata')
             ), {})
             if not Success then error('[QBCore] ERROR QBCORE.PLAYER.SAVE - FAILED TO INSERT NEW PLAYER!') end
@@ -124,7 +122,7 @@ function QBCore.Player.Save(source, new)
                 playerState:GetPlayerData('charinfo'),
                 playerState:GetPlayerData('job'),
                 playerState:GetPlayerData('gang'),
-                rapidjson.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
+                json.encode({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
                 playerState:GetPlayerData('metadata'),
                 playerState.citizenid), -- Needs changing to prepared statements
             {})
@@ -142,9 +140,9 @@ local function GetPlayerTables(source)
     local tables = {}
 
     local MasterTableResults = DB:Select('SELECT name FROM sqlite_master WHERE type = "table"', {})
-    for _, row in ipairs(rapidjson.decode(MasterTableResults)) do
+    for _, row in ipairs(json.decode(MasterTableResults)) do
         local TableInformation = DB:Select(string.format('PRAGMA table_info("%s")', row.name ), {})
-        for _, ColumnResult in pairs(rapidjson.decode(TableInformation)) do
+        for _, ColumnResult in pairs(json.decode(TableInformation)) do
             if ColumnResult.name == 'citizenid' then
                 tables[#tables + 1] = row.name
                 break
@@ -161,7 +159,7 @@ function QBCore.Player.DeleteCharacter(source, citizenid)
 
     local license = source.playerState.license or 'license:qwerty'                             -- Needs changing to Helix ID
     local result = DB:Select('SELECT license FROM players WHERE citizenid = ?', { citizenid }) -- Database solution is changing
-    if license == rapidjson.decode(result)[1].license then
+    if license == json.decode(result)[1].license then
         local tables = GetPlayerTables(source)
 
         -- Transactions aren't supported currently
