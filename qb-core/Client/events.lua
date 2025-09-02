@@ -76,8 +76,8 @@ end)
 
 -- Commands
 
-RegisterClientEvent('QBCore:Console:RegisterCommand', function(name, help, paramList)
-    Console.RegisterCommand(name, function(...)
+RegisterClientEvent('QBCore:Console:RegisterCommand', function(name, help)
+    RegisterConsoleCommand(name, function(...)
         local args = { ... }
         local argsString = ''
         if #args > 0 then
@@ -86,7 +86,7 @@ RegisterClientEvent('QBCore:Console:RegisterCommand', function(name, help, param
             end
         end
         TriggerServerEvent('QBCore:Console:CallCommand', name, argsString)
-    end, help, paramList)
+    end, help)
 end)
 
 -- Listen to Shared being updated
