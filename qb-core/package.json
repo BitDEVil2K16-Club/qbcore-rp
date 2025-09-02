@@ -1,0 +1,28 @@
+{
+    "shared": [
+        "Shared/Index.lua",
+        "Shared/locales/en.lua",
+        "Shared/main.lua",
+        "Shared/config.lua",
+        "Shared/gangs.lua",
+        "Shared/items.lua",
+        "Shared/jobs.lua",
+        "Shared/vehicles.lua",
+        "Shared/weapons.lua"
+    ],
+    "client": [
+        "Client/Index.lua",
+        "Client/drawtext.lua",
+        "Client/events.lua",
+        "Client/functions.lua",
+        "Client/loops.lua"
+    ],
+    "server": [
+        "Server/Index.lua",
+        "Server/database.lua",
+        "Server/functions.lua",
+        "Server/player.lua",
+        "Server/commands.lua",
+        "Server/events.lua"
+    ]
+}
