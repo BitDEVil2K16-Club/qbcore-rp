@@ -1,7 +1,7 @@
 -- Callback Events --
 
 -- Client Callback
-Events.SubscribeRemote('QBCore:Server:TriggerClientCallback', function(_, name, ...)
+RegisterServerEvent('QBCore:Server:TriggerClientCallback', function(_, name, ...)
     if QBCore.ClientCallbacks[name] then
         QBCore.ClientCallbacks[name](...)
         QBCore.ClientCallbacks[name] = nil
@@ -9,7 +9,7 @@ Events.SubscribeRemote('QBCore:Server:TriggerClientCallback', function(_, name, 
 end)
 
 -- Server Callback
-Events.SubscribeRemote('QBCore:Server:TriggerCallback', function(source, name, ...)
+RegisterServerEvent('QBCore:Server:TriggerCallback', function(source, name, ...)
     QBCore.Functions.TriggerCallback(name, source, function(...)
         TriggerClientEvent('QBCore:Client:TriggerCallback', source, name, ...)
     end, ...)
@@ -17,7 +17,7 @@ end)
 
 -- Events
 
-Events.SubscribeRemote('QBCore:UpdatePlayer', function(source)
+RegisterServerEvent('QBCore:UpdatePlayer', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     local newHunger = Player.PlayerData.metadata['hunger'] - QBConfig.Player.HungerRate
@@ -30,7 +30,7 @@ Events.SubscribeRemote('QBCore:UpdatePlayer', function(source)
     Player.Functions.Save()
 end)
 
-Events.SubscribeRemote('QBCore:ToggleDuty', function(source)
+RegisterServerEvent('QBCore:ToggleDuty', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     if Player.PlayerData.job.onduty then

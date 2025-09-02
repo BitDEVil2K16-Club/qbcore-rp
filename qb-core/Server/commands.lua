@@ -17,7 +17,7 @@ end)
 
 -- Register & Refresh Commands
 
-Events.Subscribe('QBCore:Console:CallCommand', function(source, name, argsString)
+RegisterServerEvent('QBCore:Console:CallCommand', function(source, name, argsString)
 	local command = QBCore.Commands.List[name]
 	if not command then
 		return
@@ -56,7 +56,7 @@ Events.Subscribe('QBCore:Console:CallCommand', function(source, name, argsString
 	command.callback(source, args)
 end)
 
-Events.SubscribeRemote('QBCore:Console:CallCommand', function(source, name, argsString)
+RegisterServerEvent('QBCore:Console:CallCommand', function(source, name, argsString)
 	local command = QBCore.Commands.List[name]
 	if not command then
 		return

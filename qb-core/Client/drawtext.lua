@@ -19,39 +19,39 @@ local function keyPressed()
     hideText()
 end
 
-Events.Subscribe('qb-core:client:DrawText', function(text, position)
+RegisterClientEvent('qb-core:client:DrawText', function(text, position)
     drawText(text, position)
 end)
 
-Events.SubscribeRemote('qb-core:client:DrawText', function(text, position)
+RegisterClientEvent('qb-core:client:DrawText', function(text, position)
     drawText(text, position)
 end)
 
-Events.Subscribe('qb-core:client:ChangeText', function(text, position)
+RegisterClientEvent('qb-core:client:ChangeText', function(text, position)
     changeText(text, position)
 end)
 
-Events.SubscribeRemote('qb-core:client:ChangeText', function(text, position)
+RegisterClientEvent('qb-core:client:ChangeText', function(text, position)
     changeText(text, position)
 end)
 
-Events.Subscribe('qb-core:client:HideText', function()
+RegisterClientEvent('qb-core:client:HideText', function()
     hideText()
 end)
 
-Events.SubscribeRemote('qb-core:client:HideText', function()
+RegisterClientEvent('qb-core:client:HideText', function()
     hideText()
 end)
 
-Events.Subscribe('qb-core:client:KeyPressed', function()
+RegisterClientEvent('qb-core:client:KeyPressed', function()
     keyPressed()
 end)
 
-Events.SubscribeRemote('qb-core:client:KeyPressed', function()
+RegisterClientEvent('qb-core:client:KeyPressed', function()
     keyPressed()
 end)
 
-Package.Export('DrawText', drawText)
-Package.Export('ChangeText', changeText)
-Package.Export('HideText', hideText)
-Package.Export('KeyPressed', keyPressed)
+-- Package.Export('DrawText', drawText)
+-- Package.Export('ChangeText', changeText)
+-- Package.Export('HideText', hideText)
+-- Package.Export('KeyPressed', keyPressed)

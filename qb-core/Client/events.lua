@@ -1,36 +1,36 @@
 -- Handlers
 
-Events.Subscribe('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     Client.SetValue('isLoggedIn', true)
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     Client.SetValue('isLoggedIn', true)
 end)
 
-Events.Subscribe('QBCore:Client:OnPlayerUnload', function()
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
     Client.SetValue('isLoggedIn', false)
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
     Client.SetValue('isLoggedIn', false)
 end)
 
 -- Events
 
-Events.SubscribeRemote('QBCore:Player:SetPlayerData', function(val)
+RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
     QBCore.PlayerData = val
 end)
 
-Events.SubscribeRemote('QBCore:Player:UpdatePlayerData', function()
+RegisterClientEvent('QBCore:Player:UpdatePlayerData', function()
     TriggerServerEvent('QBCore:UpdatePlayer')
 end)
 
-Events.Subscribe('QBCore:Notify', function(text, type, length, icon)
+RegisterClientEvent('QBCore:Notify', function(text, type, length, icon)
     QBCore.Functions.Notify(text, type, length, icon)
 end)
 
-Events.SubscribeRemote('QBCore:Notify', function(text, type, length, icon)
+RegisterClientEvent('QBCore:Notify', function(text, type, length, icon)
     QBCore.Functions.Notify(text, type, length, icon)
 end)
 
@@ -42,16 +42,16 @@ Input.Bind('Toggle Chat', InputEvent.Pressed, function()
     Chat.SetVisibility(isVisible)
 end)
 
-Events.SubscribeRemote('QBCore:Client:ClearChat', function()
+RegisterClientEvent('QBCore:Client:ClearChat', function()
     Chat.Clear()
 end)
 
-Events.SubscribeRemote('QBCore:Client:CopyToClipboard', function(text)
+RegisterClientEvent('QBCore:Client:CopyToClipboard', function(text)
     Client.CopyToClipboard(text)
     QBCore.Functions.Notify('Copied to clipboard', 'success')
 end)
 
-Events.SubscribeRemote('QBCore:Client:SetChatLayout', function(layout)
+RegisterClientEvent('QBCore:Client:SetChatLayout', function(layout)
     local screen_size = Viewport.GetViewportSize()
     local chatConfigurations = {
         bottom_left = Vector2D(0, 0),
@@ -72,14 +72,14 @@ end)
 -- Callback Events --
 
 -- Client Callback
-Events.SubscribeRemote('QBCore:Client:TriggerClientCallback', function(name, ...)
+RegisterClientEvent('QBCore:Client:TriggerClientCallback', function(name, ...)
     QBCore.Functions.TriggerClientCallback(name, function(...)
         TriggerServerEvent('QBCore:Server:TriggerClientCallback', name, ...)
     end, ...)
 end)
 
 -- Server Callback
-Events.SubscribeRemote('QBCore:Client:TriggerCallback', function(name, ...)
+RegisterClientEvent('QBCore:Client:TriggerCallback', function(name, ...)
     if QBCore.ServerCallbacks[name] then
         QBCore.ServerCallbacks[name](...)
         QBCore.ServerCallbacks[name] = nil
@@ -88,7 +88,7 @@ end)
 
 -- Commands
 
-Events.SubscribeRemote('QBCore:Console:RegisterCommand', function(name, help, paramList)
+RegisterClientEvent('QBCore:Console:RegisterCommand', function(name, help, paramList)
     Console.RegisterCommand(name, function(...)
         local args = { ... }
         local argsString = ''
@@ -103,18 +103,18 @@ end)
 
 -- Listen to Shared being updated
 
-Events.SubscribeRemote('QBCore:Client:OnSharedUpdate', function(tableName, key, value)
+RegisterClientEvent('QBCore:Client:OnSharedUpdate', function(tableName, key, value)
     QBShared[tableName][key] = value
     Events.Call('QBCore:Client:UpdateObject')
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnSharedUpdateMultiple', function(tableName, values)
+RegisterClientEvent('QBCore:Client:OnSharedUpdateMultiple', function(tableName, values)
     for key, value in pairs(values) do
         QBShared[tableName][key] = value
     end
     Events.Call('QBCore:Client:UpdateObject')
 end)
 
-Events.SubscribeRemote('QBCore:Client:SharedUpdate', function(table)
+RegisterClientEvent('QBCore:Client:SharedUpdate', function(table)
     QBShared = table
 end)
