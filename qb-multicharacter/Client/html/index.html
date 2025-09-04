@@ -188,11 +188,11 @@
                     this.selectedCharacter = idx;
 
                     if (this.characters[idx] !== undefined) {
-                        Events.Call("cDataPed", {
+                        hEvent("cDataPed", {
                             cData: this.characters[idx],
                         });
                     } else {
-                        Events.Call("cDataPed", {});
+                        hEvent("cDataPed", {});
                     }
                 },
 
@@ -203,7 +203,7 @@
                 delete_character: function () {
                     if (this.show.delete == true) {
                         this.show.delete = false;
-                        Events.Call("removeCharacter", {
+                        hEvent("removeCharacter", {
                             citizenid: this.characters[this.selectedCharacter].citizenid,
                         });
                     } else {
@@ -219,7 +219,7 @@
                         var data = this.characters[this.selectedCharacter];
 
                         if (data !== undefined) {
-                            Events.Call("selectCharacter", {
+                            hEvent("selectCharacter", {
                                 cData: data,
                             });
                             setTimeout(function () {
@@ -245,7 +245,7 @@
                     if (profanityTest && registerData.firstname !== undefined && registerData.firstname !== "" && registerData.lastname !== undefined && registerData.lastname !== "" && registerData.gender !== undefined && registerData.nationality !== undefined && registerData.nationality !== "" && registerData.date !== undefined) {
                         this.show.register = false;
 
-                        Events.Call("createNewCharacter", {
+                        hEvent("createNewCharacter", {
                             firstname: registerData.firstname,
                             lastname: registerData.lastname,
                             nationality: registerData.nationality,
@@ -285,7 +285,7 @@
                 var loadingProgress = 0;
                 var loadingDots = 0;
 
-                Events.Subscribe("qb-multicharacter:ui", (customNationality, toggle, nChar, enableDeleteButton, translations) => {
+                openUI = (customNationality, toggle, nChar, enableDeleteButton, translations) => {
                     viewmodel.customNationality = customNationality;
                     viewmodel.translations = translations;
                     viewmodel.characterAmount = nChar;
@@ -317,7 +317,7 @@
                         }, 500);
 
                         setTimeout(function () {
-                            Events.Call("setupCharacters");
+                            hEvent("setupCharacters");
                             setTimeout(function () {
                                 clearInterval(DotsInterval);
                                 loadingProgress = 0;
@@ -327,19 +327,19 @@
                             }, 2000);
                         }, 2000);
                     }
-                });
+                };
 
-                Events.Subscribe("qb-multicharacter:setupCharacters", (characters) => {
+                setupCharacters = (characters) => {
                     var newChars = [];
                     for (var i = 0; i < characters.length; i++) {
                         newChars[characters[i].cid] = characters[i];
                     }
                     viewmodel.characters = newChars;
-                });
+                };
 
-                Events.Subscribe("setupCharInfo", (chardata) => {
+                setupCharInfo = (chardata) => {
                     viewmodel.chardata = chardata;
-                });
+                };
             },
         });
     </script>

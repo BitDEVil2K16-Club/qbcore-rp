@@ -1,5 +1,5 @@
 local Lang = require('../Shared/locales/' .. QBConfig.Language .. '.lua')
-local my_webui = WebUI('Multicharacter', 'file://html/index.html')
+local my_webui = WebUI('Multicharacter', 'qb-multicharacter/Client/html/index.html')
 
 -- Functions
 
@@ -17,7 +17,7 @@ local function openCharMenu(bool)
         my_webui:BringToFront()
         Input.SetMouseEnabled(bool)
         Input.SetInputEnabled(false)
-        my_webui:CallEvent('qb-multicharacter:ui', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)
+        my_webui:CallFunction('openUI', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)
     end)
 end
 
@@ -58,23 +58,23 @@ end)
 
 -- NUI Events
 
-my_webui:Subscribe('selectCharacter', function(data)
+my_webui:RegisterEventHandler('selectCharacter', function(data)
     local cData = data.cData
     TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
     openCharMenu(false)
 end)
 
-my_webui:Subscribe('setupCharacters', function()
+my_webui:RegisterEventHandler('setupCharacters', function()
     QBCore.Functions.TriggerCallback('qb-multicharacter:server:setupCharacters', function(result)
-        my_webui:CallEvent('qb-multicharacter:setupCharacters', result)
+        my_webui:CallFunction('qb-multicharacter:setupCharacters', result)
     end)
 end)
 
-my_webui:Subscribe('RemoveBlur', function()
+my_webui:RegisterEventHandler('RemoveBlur', function()
     SetTimecycleModifier('default')
 end)
 
-my_webui:Subscribe('createNewCharacter', function(data)
+my_webui:RegisterEventHandler('createNewCharacter', function(data)
     local cData = data
     if cData.gender == Lang:t('ui.male') then
         cData.gender = 0
@@ -84,6 +84,6 @@ my_webui:Subscribe('createNewCharacter', function(data)
     TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
 end)
 
-my_webui:Subscribe('removeCharacter', function(data)
+my_webui:RegisterEventHandler('removeCharacter', function(data)
     TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
 end)
