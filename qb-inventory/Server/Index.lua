@@ -39,7 +39,7 @@ end)
 
 -- Events
 
-Events.SubscribeRemote('qb-inventory:server:openInventory', function(source)
+RegisterServerEvent('qb-inventory:server:openInventory', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
     local player_ped = source:GetControlledCharacter()
@@ -62,7 +62,7 @@ Events.SubscribeRemote('qb-inventory:server:openInventory', function(source)
     -- end)
 end)
 
-Events.SubscribeRemote('qb-inventory:server:toggleHotbar', function(source)
+RegisterServerEvent('qb-inventory:server:toggleHotbar', function(source)
     if source:GetValue('inv_busy', false) then return end
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
@@ -73,10 +73,10 @@ Events.SubscribeRemote('qb-inventory:server:toggleHotbar', function(source)
         Player.PlayerData.items[4],
         Player.PlayerData.items[5],
     }
-    Events.CallRemote('qb-inventory:client:hotbar', source, hotbarItems)
+    TriggerClientEvent('qb-inventory:client:hotbar', source, hotbarItems)
 end)
 
-Events.SubscribeRemote('qb-inventory:server:openVending', function(source)
+RegisterServerEvent('qb-inventory:server:openVending', function(source)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     CreateShop({
@@ -89,7 +89,7 @@ Events.SubscribeRemote('qb-inventory:server:openVending', function(source)
     OpenShop(source, 'vending')
 end)
 
-Events.SubscribeRemote('qb-inventory:server:closeInventory', function(source, inventory)
+RegisterServerEvent('qb-inventory:server:closeInventory', function(source, inventory)
     local QBPlayer = QBCore.Functions.GetPlayer(source)
     if not QBPlayer then return end
     local player_ped = source:GetControlledCharacter()
@@ -114,22 +114,22 @@ Events.SubscribeRemote('qb-inventory:server:closeInventory', function(source, in
     MySQL.prepare('INSERT INTO inventories (identifier, items) VALUES (?, ?) ON DUPLICATE KEY UPDATE items = ?', { inventory, JSON.stringify(Inventories[inventory].items), JSON.stringify(Inventories[inventory].items) })
 end)
 
-Events.SubscribeRemote('qb-inventory:server:useItem', function(source, item)
+RegisterServerEvent('qb-inventory:server:useItem', function(source, item)
     local itemData = GetItemBySlot(source, item.slot)
     if not itemData then return end
     local itemInfo = QBShared.Items[itemData.name]
     if itemInfo.type == 'weapon' then
         Events.Call('qb-weapons:server:equipWeapon', source, itemData)
-        Events.CallRemote('qb-inventory:client:ItemBox', source, itemInfo, 'use')
-        Events.CallRemote('qb-inventory:client:useItem', source, true, itemData)
+        TriggerClientEvent('qb-inventory:client:ItemBox', source, itemInfo, 'use')
+        TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
     else
         UseItem(itemData.name, source, itemData)
-        Events.CallRemote('qb-inventory:client:ItemBox', source, itemInfo, 'use')
-        Events.CallRemote('qb-inventory:client:useItem', source, true, itemData)
+        TriggerClientEvent('qb-inventory:client:ItemBox', source, itemInfo, 'use')
+        TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
     end
 end)
 
-Events.SubscribeRemote('qb-inventory:server:openDrop', function(source, dropId)
+RegisterServerEvent('qb-inventory:server:openDrop', function(source, dropId)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
     local playerPed = GetPlayerPed(source)
@@ -147,23 +147,23 @@ Events.SubscribeRemote('qb-inventory:server:openDrop', function(source, dropId)
         inventory = drop.items
     }
     drop.isOpen = true
-    Events.CallRemote('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
+    TriggerClientEvent('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
 end)
 
-Events.SubscribeRemote('qb-inventory:server:pickUpDrop', function(source, bagObject)
+RegisterServerEvent('qb-inventory:server:pickUpDrop', function(source, bagObject)
     local playerPed = source:GetControlledCharacter()
     bagObject:SetAttachmentSettings(Vector(0, 0, 0), Rotator(0, 0, 0), 'hand_r_socket')
     playerPed:PickUp(bagObject)
 end)
 
-Events.SubscribeRemote('qb-inventory:server:updateDrop', function(source, bagObject, dropId)
+RegisterServerEvent('qb-inventory:server:updateDrop', function(source, bagObject, dropId)
     local playerPed = source:GetControlledCharacter()
     local playerCoords = playerPed:GetLocation()
     playerPed:Detach()
     Drops[dropId].coords = playerCoords
 end)
 
-Events.SubscribeRemote('qb-inventory:server:snowball', function(source, action)
+RegisterServerEvent('qb-inventory:server:snowball', function(source, action)
     if action == 'add' then
         AddItem(source, 'weapon_snowball')
     elseif action == 'remove' then
@@ -228,7 +228,7 @@ QBCore.Functions.CreateCallback('qb-inventory:server:attemptPurchase', function(
         return
     end
     if not CanAddItem(source, itemInfo.name, amount) then
-        Events.CallRemote('QBCore:Notify', source, 'Cannot hold item', 'error')
+        TriggerClientEvent('QBCore:Notify', source, 'Cannot hold item', 'error')
         cb(false)
         return
     end
@@ -239,7 +239,7 @@ QBCore.Functions.CreateCallback('qb-inventory:server:attemptPurchase', function(
         Events.Call('qb-shops:server:UpdateShopItems', shop, itemInfo, amount)
         cb(true)
     else
-        Events.CallRemote('QBCore:Notify', source, 'You do not have enough money', 'error')
+        TriggerClientEvent('QBCore:Notify', source, 'You do not have enough money', 'error')
         cb(false)
     end
 end)
@@ -342,7 +342,7 @@ local function getIdentifier(inventoryId, src)
     end
 end
 
-Events.SubscribeRemote('qb-inventory:server:SetInventoryData', function(source, fromInventory, toInventory, fromSlot, toSlot, fromAmount, toAmount)
+RegisterServerEvent('qb-inventory:server:SetInventoryData', function(source, fromInventory, toInventory, fromSlot, toSlot, fromAmount, toAmount)
     if not fromInventory or not toInventory or not fromSlot or not toSlot or not fromAmount or not toAmount then return end
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end

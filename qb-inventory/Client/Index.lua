@@ -8,7 +8,7 @@ Package.Require('vehicles.lua')
 
 -- Handlers
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
 	--LocalPlayer.state:set('inv_busy', false, true)
 	Player_data = QBCore.Functions.GetPlayerData()
 	QBCore.Functions.TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
@@ -16,12 +16,12 @@ Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
 	end)
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
 	-- LocalPlayer.state:set('inv_busy', true, true)
 	Player_data = {}
 end)
 
-Events.SubscribeRemote('QBCore:Player:SetPlayerData', function(val)
+RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
 	Player_data = val
 end)
 
@@ -71,7 +71,7 @@ Events.Subscribe('qb-inventory:client:requiredItems', function(items, bool)
 	my_webui:CallFunction('requiredItem', { items = itemTable, toggle = bool })
 end)
 
-Events.SubscribeRemote('qb-inventory:client:hotbar', function(items)
+RegisterClientEvent('qb-inventory:client:hotbar', function(items)
 	hotbarShown = not hotbarShown
 	my_webui:CallFunction('toggleHotbar', { open = hotbarShown, items = items })
 end)
@@ -88,15 +88,15 @@ Events.Subscribe('qb-inventory:client:ItemBox', function(itemData, type, amount)
 	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
 end)
 
-Events.SubscribeRemote('qb-inventory:client:ItemBox', function(itemData, type, amount)
+RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
 	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
 end)
 
-Events.SubscribeRemote('qb-inventory:client:useItem', function(bool, itemData)
+RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
 	my_webui:CallFunction('UseItemResponse', bool, itemData)
 end)
 
-Events.SubscribeRemote('qb-inventory:client:openInventory', function(items, other)
+RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 	my_webui:CallFunction(
 		'openInventory',
 		{ inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other }
@@ -108,7 +108,7 @@ end)
 -- NUI Calls
 
 my_webui:RegisterEventHandler('SetInventoryData', function(data)
-	Events.CallRemote(
+	TriggerServerEvent(
 		'qb-inventory:server:SetInventoryData',
 		data.fromInventory,
 		data.toInventory,
@@ -123,12 +123,12 @@ my_webui:RegisterEventHandler('CloseInventory', function(name)
 	Input.SetMouseEnabled(false)
 	Input.SetInputEnabled(true)
 	if name then
-		Events.CallRemote('qb-inventory:server:closeInventory', name)
+		TriggerServerEvent('qb-inventory:server:closeInventory', name)
 	elseif CurrentDrop then
-		Events.CallRemote('qb-inventory:server:closeInventory', CurrentDrop)
+		TriggerServerEvent('qb-inventory:server:closeInventory', CurrentDrop)
 		CurrentDrop = nil
 	else
-		Events.CallRemote('qb-inventory:server:closeInventory')
+		TriggerServerEvent('qb-inventory:server:closeInventory')
 	end
 end)
 
@@ -141,7 +141,7 @@ my_webui:RegisterEventHandler('Notify', function(data)
 end)
 
 my_webui:RegisterEventHandler('UseItem', function(data)
-	Events.CallRemote('qb-inventory:server:useItem', data.item)
+	TriggerServerEvent('qb-inventory:server:useItem', data.item)
 end)
 
 my_webui:RegisterEventHandler('DropItem', function(item)
@@ -220,13 +220,13 @@ Input.Register('Inventory', Config.Keybinds.Open)
 Input.Register('Hotbar', Config.Keybinds.Hotbar)
 
 Input.Bind('Inventory', InputEvent.Pressed, function()
-	Events.CallRemote('qb-inventory:server:openInventory')
+	TriggerServerEvent('qb-inventory:server:openInventory')
 	Input.SetInputEnabled(false)
 end)
 
 Input.Bind('Hotbar', InputEvent.Pressed, function()
 	if Input.IsMouseEnabled() then return end
-	Events.CallRemote('qb-inventory:server:toggleHotbar')
+	TriggerServerEvent('qb-inventory:server:toggleHotbar')
 end)
 
 Input.Subscribe('KeyPress', function(key_name)
@@ -250,6 +250,6 @@ Input.Subscribe('KeyPress', function(key_name)
 			return false
 		end
 		Events.Call('qb-inventory:client:closeInv')
-		Events.CallRemote('qb-inventory:server:useItem', itemData)
+		TriggerServerEvent('qb-inventory:server:useItem', itemData)
 	end
 end)

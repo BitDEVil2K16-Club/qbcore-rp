@@ -12,23 +12,23 @@ Package.Subscribe('Load', function()
 	if player then player_ped = player:GetControlledCharacter() end
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
 	player_data = QBCore.Functions.GetPlayerData()
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
 	player_data = {}
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnJobUpdate', function(JobInfo)
+RegisterClientEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
 	player_data.job = JobInfo
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnGangUpdate', function(GangInfo)
+RegisterClientEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
 	player_data.gang = GangInfo
 end)
 
-Events.SubscribeRemote('QBCore:Player:SetPlayerData', function(val)
+RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
 	player_data = val
 end)
 
@@ -286,9 +286,9 @@ my_webui:RegisterEventHandler('selectTarget', function(option)
 			if data.action then data.action = nil end
 			local networked_entity = data.entity:IsNetworkDistributed()
 			if not networked_entity then data.entity = nil end
-			Events.CallRemote(data.event, data)
+			TriggerServerEvent(data.event, data)
 		elseif data.type == 'command' then
-			Events.CallRemote('QBCore:CallCommand', data.event, data)
+			TriggerServerEvent('QBCore:CallCommand', data.event, data)
 		else
 			Events.Call(data.event, data)
 		end

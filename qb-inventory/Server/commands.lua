@@ -41,7 +41,7 @@ QBCore.Commands.Add('giveitem', 'Give An Item (Admin Only)', { { name = 'id', he
 
     if AddItem(id, itemData['name'], amount, false, info, 'give item command') then
         QBCore.Functions.Notify(source, Lang:t('notify.yhg') .. player.PlayerData.name .. ' ' .. amount .. ' ' .. itemData['name'] .. '', 'success')
-        Events.CallRemote('qb-inventory:client:ItemBox', player.PlayerData.source, itemData, 'add', amount)
+        TriggerClientEvent('qb-inventory:client:ItemBox', player.PlayerData.source, itemData, 'add', amount)
         --if Player(id).state.inv_busy then TriggerClientEvent('qb-inventory:client:updateInventory', id) end
     else
         QBCore.Functions.Notify(source, Lang:t('notify.cgitem'), 'error')
@@ -73,7 +73,7 @@ QBCore.Commands.Add('randomitems', 'Receive random items', {}, false, function(s
         end
         if emptySlot then
             if AddItem(source, randitem.name, amount, emptySlot, false, 'random items command') then
-                Events.CallRemote('qb-inventory:client:ItemBox', source, QBShared.Items[randitem.name], 'add')
+                TriggerClientEvent('qb-inventory:client:ItemBox', source, QBShared.Items[randitem.name], 'add')
                 player = QBCore.Functions.GetPlayer(source)
                 if not player then return end
                 playerInventory = player.PlayerData.items

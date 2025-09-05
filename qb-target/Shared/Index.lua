@@ -18,7 +18,7 @@ Config = {
 				action = function(entity)
 					local ped = Client.GetLocalPlayer():GetControlledCharacter()
 					if not ped then return end
-					Events.CallRemote('qb-target:server:startEngine', entity)
+					TriggerServerEvent('qb-target:server:startEngine', entity)
 				end,
 			},
 		},
@@ -37,7 +37,7 @@ Config = {
 				action = function(entity)
 					local ped = Client.GetLocalPlayer():GetControlledCharacter()
 					if not ped then return end
-					Events.CallRemote('qb-target:server:enterVehicle', entity)
+					TriggerServerEvent('qb-target:server:enterVehicle', entity)
 				end,
 			},
 		},

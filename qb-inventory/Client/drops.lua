@@ -17,7 +17,7 @@ function GetDrops()
 							icon = "fas fa-backpack",
 							label = Lang:t("menu.o_bag"),
 							action = function()
-								Events.CallRemote("qb-inventory:server:openDrop", k)
+								TriggerServerEvent("qb-inventory:server:openDrop", k)
 								CurrentDrop = dropId
 							end,
 						},
@@ -31,7 +31,7 @@ end
 
 -- Events
 
-Events.SubscribeRemote("qb-inventory:client:setupDropTarget", function(bag)
+RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
 	local dropId = bag:GetID()
 	local newDropId = "drop-" .. dropId
 	AddTargetEntity(bag, {
@@ -40,7 +40,7 @@ Events.SubscribeRemote("qb-inventory:client:setupDropTarget", function(bag)
 				icon = "fas fa-backpack",
 				label = Lang:t("menu.o_bag"),
 				action = function()
-					Events.CallRemote("qb-inventory:server:openDrop", newDropId)
+					TriggerServerEvent("qb-inventory:server:openDrop", newDropId)
 					CurrentDrop = newDropId
 				end,
 			},
@@ -48,7 +48,7 @@ Events.SubscribeRemote("qb-inventory:client:setupDropTarget", function(bag)
 				icon = "fas fa-hand-pointer",
 				label = "Pick up bag",
 				action = function()
-					Events.CallRemote("qb-inventory:server:pickUpDrop", bag)
+					TriggerServerEvent("qb-inventory:server:pickUpDrop", bag)
 					bagObject = bag
 					holdingDrop = true
 					heldDrop = newDropId
@@ -65,7 +65,7 @@ end)
 Input.Subscribe("KeyPress", function(key_name)
 	if key_name == "G" and holdingDrop then
 		HideText()
-		Events.CallRemote("qb-inventory:server:updateDrop", bagObject, heldDrop)
+		TriggerServerEvent("qb-inventory:server:updateDrop", bagObject, heldDrop)
 		holdingDrop = false
 		bagObject = nil
 		heldDrop = nil

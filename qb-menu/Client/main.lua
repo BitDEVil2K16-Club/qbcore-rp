@@ -1,6 +1,6 @@
 --local QBCore = exports['qb-core']:GetCoreObject()
 local my_webui = WebUI('Menu', 'qb-menu/Client/html/index.html')
-RegisterNetEvent('QBCore:Client:UpdateObject', function() QBCore = exports['qb-core']:GetCoreObject() end)
+RegisterClientEvent('QBCore:Client:UpdateObject', function() QBCore = exports['qb-core']:GetCoreObject() end)
 
 local headerShown = false
 local sendData = nil
@@ -50,11 +50,11 @@ end
 
 -- Events
 
-RegisterNetEvent('qb-menu:client:openMenu', function(data, sort, skipFirst)
+RegisterClientEvent('qb-menu:client:openMenu', function(data, sort, skipFirst)
     openMenu(data, sort, skipFirst)
 end)
 
-RegisterNetEvent('qb-menu:client:closeMenu', function()
+RegisterClientEvent('qb-menu:client:closeMenu', function()
     closeMenu()
 end)
 

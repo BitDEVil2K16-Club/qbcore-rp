@@ -29,22 +29,22 @@ end
 
 -- Event Handlers
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     player_data = QBCore.Functions.GetPlayerData()
     --updateVoiceLevel()
 end)
 
-Events.SubscribeRemote('QBCore:Client:OnPlayerUnload', function()
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
     player_data = {}
 end)
 
-Events.SubscribeRemote('QBCore:Player:SetPlayerData', function(val)
+RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
     player_data = val
 end)
 
 -- Money HUD
 
-Events.SubscribeRemote('qb-hud:client:ShowAccounts', function(type, amount)
+RegisterClientEvent('qb-hud:client:ShowAccounts', function(type, amount)
     if type == 'cash' then
         my_webui:CallFunction('ShowCashAmount', round(amount))
     else
@@ -52,7 +52,7 @@ Events.SubscribeRemote('qb-hud:client:ShowAccounts', function(type, amount)
     end
 end)
 
-Events.SubscribeRemote('qb-hud:client:OnMoneyChange', function(type, amount, isMinus)
+RegisterClientEvent('qb-hud:client:OnMoneyChange', function(type, amount, isMinus)
     local cashAmount = player_data.money['cash']
     local bankAmount = player_data.money['bank']
     my_webui:CallFunction('UpdateMoney', Round(cashAmount), Round(bankAmount), Round(amount), isMinus, type)
@@ -170,9 +170,9 @@ HCharacter.Subscribe('ValueChange', function(self, state, value)
     end
 end)
 
-Events.SubscribeRemote('qb-hud:client:fixVehicle', function()
+RegisterClientEvent('qb-hud:client:fixVehicle', function()
     if in_vehicle and current_vehicle then
-        Events.CallRemote('qb-hud:server:fixVehicle', current_vehicle)
+        TriggerServerEvent('qb-hud:server:fixVehicle', current_vehicle)
     end
 end)
 
@@ -184,11 +184,11 @@ Input.Subscribe('KeyPress', function(key_name)
                 local current_passengers = vehicle:NumOfCurrentPassanger()
                 local allowed_passengers = vehicle:NumOfAllowedPassanger()
                 if current_passengers >= allowed_passengers then return end
-                Events.CallRemote('qb-hud:server:enterVehicle', vehicle)
+                TriggerServerEvent('qb-hud:server:enterVehicle', vehicle)
             end
         else
             if current_vehicle and current_vehicle:IsValid() then
-                Events.CallRemote('qb-hud:server:leaveVehicle', current_vehicle)
+                TriggerServerEvent('qb-hud:server:leaveVehicle', current_vehicle)
             end
         end
     end

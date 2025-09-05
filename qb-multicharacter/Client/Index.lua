@@ -14,7 +14,7 @@ local function openCharMenu(bool)
                 translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
             end
         end
-        my_webui:BringToFront()
+        my_webui:BringToFront() -- Unused
         Input.SetMouseEnabled(bool)
         Input.SetInputEnabled(false)
         my_webui:CallFunction('openUI', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)

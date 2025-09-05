@@ -50,22 +50,24 @@ const keyPressed = () => {
     addClass(textElement, "pressed");
 };
 
-Events.Subscribe("DRAW_TEXT", (text, position) => {
+
+// UI Events
+const DRAW_TEXT = (text, position) => {
     if (typeof text === "string" && typeof position === "string") {
         drawText(text, position);
     }
-});
+}
 
-Events.Subscribe("CHANGE_TEXT", (text, position) => {
+const CHANGE_TEXT = (text, position) => {
     if (typeof text === "string" && typeof position === "string") {
         changeText(text, position);
     }
-});
+}
 
-Events.Subscribe("HIDE_TEXT", () => {
+const HIDE_TEXT = () => {
     hideText();
-});
+}
 
-Events.Subscribe("KEY_PRESSED", () => {
+const KEY_PRESSED = () => {
     keyPressed();
-});
+}

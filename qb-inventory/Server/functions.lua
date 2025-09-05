@@ -275,7 +275,7 @@ function CloseInventory(source, identifier)
     if identifier and Inventories[identifier] then
         Inventories[identifier].isOpen = false
     end
-    Events.CallRemote('qb-inventory:client:closeInv', source)
+    TriggerClientEvent('qb-inventory:client:closeInv', source)
 end
 
 Package.Export('CloseInventory', CloseInventory)
@@ -293,7 +293,7 @@ function OpenInventoryById(source, targetId)
         slots = Config.MaxSlots,
         inventory = targetItems
     }
-    Events.CallRemote('qb-inventory:client:openInventory', source, playerItems, formattedInventory)
+    TriggerClientEvent('qb-inventory:client:openInventory', source, playerItems, formattedInventory)
 end
 
 Package.Export('OpenInventoryById', OpenInventoryById)
@@ -350,7 +350,7 @@ local function OpenShop(source, name)
         slots = #RegisteredShops[name].items,
         inventory = RegisteredShops[name].items
     }
-    Events.CallRemote('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
+    TriggerClientEvent('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
 end
 
 Package.Export('OpenShop', OpenShop)
@@ -361,7 +361,7 @@ function OpenInventory(source, identifier, data)
     local player_ped = source:GetControlledCharacter()
 
     if not identifier then
-        Events.CallRemote('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items)
+        TriggerClientEvent('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items)
         player_ped:SetInputEnabled(false)
         source:SetValue('inv_busy', true, true)
         return
@@ -375,7 +375,7 @@ function OpenInventory(source, identifier, data)
     local inventory = Inventories[identifier]
 
     if inventory and inventory.isOpen then
-        Events.CallRemote('QBCore:Notify', source, 'This inventory is currently in use', 'error')
+        TriggerClientEvent('QBCore:Notify', source, 'This inventory is currently in use', 'error')
         return
     end
 
@@ -394,7 +394,7 @@ function OpenInventory(source, identifier, data)
     }
     player_ped:SetInputEnabled(false)
     source:SetValue('inv_busy', true, true)
-    Events.CallRemote('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items, formattedInventory)
+    TriggerClientEvent('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items, formattedInventory)
 end
 
 Package.Export('OpenInventory', OpenInventory)
