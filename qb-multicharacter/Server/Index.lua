@@ -14,7 +14,7 @@ end)
 -- Functions
 
 local function GiveStarterItems(source)
-	local Player = QBCore.Functions.GetPlayer(source)
+	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
 	for _, v in pairs(QBShared.StarterItems) do
 		local info = {}
@@ -38,7 +38,7 @@ end
 -- Commands
 
 QBCore.Commands.Add('logout', Lang:t('commands.logout_description'), {}, false, function(source)
-	local Player = QBCore.Functions.GetPlayer(source)
+	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
 	local inside_meta = Player.PlayerData.metadata.inside
 	if inside_meta.apartment.apartmentId then
@@ -85,7 +85,7 @@ RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cD
 						TriggerClientEvent('qb-spawn:client:openUI', source, true)
 					end
 				end
-				--Events.Call('qb-log:server:CreateLog', 'joinleave', 'Loaded', 'green', '**' .. source:GetAccountName() .. '** (<@' .. (QBCore.Functions.GetIdentifier(source, 'discord'):gsub('discord:', '') or 'unknown') .. '> |  ||' .. (QBCore.Functions.GetIdentifier(source, 'ip') or 'undefined') .. '|| | ' .. (QBCore.Functions.GetIdentifier(source, 'license') or 'undefined') .. ' | ' .. cData.citizenid .. ' | ' .. source .. ') loaded..')
+				--Events.Call('qb-log:server:CreateLog', 'joinleave', 'Loaded', 'green', '**' .. source:GetAccountName() .. '** (<@' .. (exports['qb-core']:GetIdentifier(source, 'discord'):gsub('discord:', '') or 'unknown') .. '> |  ||' .. (exports['qb-core']:GetIdentifier(source, 'ip') or 'undefined') .. '|| | ' .. (exports['qb-core']:GetIdentifier(source, 'license') or 'undefined') .. ' | ' .. cData.citizenid .. ' | ' .. source .. ') loaded..')
 				Timer.ClearInterval(CheckUserInterval)
 			end
 		end, 10)
@@ -101,7 +101,7 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
 			if hasDonePreloading[source] then
 				if Apartments.Starting then
 					local randbucket = (math.random(1, 999))
-					QBCore.Functions.SetPlayerBucket(source, randbucket)
+					exports['qb-core']:SetPlayerBucket(source, randbucket)
 					print('^2[qb-core]^7 ' .. source:GetAccountName() .. ' has successfully loaded!')
 					QBCore.Commands.Refresh(source)
 					--loadHouseData(source)
@@ -135,7 +135,7 @@ end)
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-multicharacter:server:GetNumberOfCharacters', function(source, cb)
+exports['qb-core']:CreateCallback('qb-multicharacter:server:GetNumberOfCharacters', function(source, cb)
 	local license = source:GetAccountID()
 	local numOfChars = 0
 	if next(Config.PlayersNumberOfCharacters) then
@@ -153,7 +153,7 @@ QBCore.Functions.CreateCallback('qb-multicharacter:server:GetNumberOfCharacters'
 	cb(numOfChars)
 end)
 
-QBCore.Functions.CreateCallback('qb-multicharacter:server:setupCharacters', function(source, cb)
+exports['qb-core']:CreateCallback('qb-multicharacter:server:setupCharacters', function(source, cb)
 	local license = source:GetAccountID()
 	local plyChars = {}
 	MySQL.query('SELECT * FROM players WHERE license = ?', { license }, function(result)

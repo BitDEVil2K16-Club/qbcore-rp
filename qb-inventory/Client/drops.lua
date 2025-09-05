@@ -7,7 +7,7 @@ CurrentDrop = nil
 -- Functions
 
 function GetDrops()
-	QBCore.Functions.TriggerCallback("qb-inventory:server:GetCurrentDrops", function(drops)
+	exports['qb-core']:TriggerCallback("qb-inventory:server:GetCurrentDrops", function(drops)
 		if drops then
 			for k, v in pairs(drops) do
 				local bag = v.entityId

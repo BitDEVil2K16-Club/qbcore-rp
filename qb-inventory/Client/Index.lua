@@ -1,6 +1,6 @@
 local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
 local my_webui = WebUI('Inventory', 'qb-inventory/Client/html/index.html')
-Player_data = QBCore.Functions.GetPlayerData()
+Player_data = exports['qb-core']:GetPlayerData()
 local hotbarShown = false
 
 Package.Require('drops.lua')
@@ -10,8 +10,8 @@ Package.Require('vehicles.lua')
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
 	--LocalPlayer.state:set('inv_busy', false, true)
-	Player_data = QBCore.Functions.GetPlayerData()
-	QBCore.Functions.TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
+	Player_data = exports['qb-core']:GetPlayerData()
+	exports['qb-core']:TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
 		Drops = theDrops
 	end)
 end)
@@ -137,7 +137,7 @@ my_webui:RegisterEventHandler('PlayDropFail', function()
 end)
 
 my_webui:RegisterEventHandler('Notify', function(data)
-	QBCore.Functions.Notify(data.message, data.type)
+	exports['qb-core']:Notify(data.message, data.type)
 end)
 
 my_webui:RegisterEventHandler('UseItem', function(data)
@@ -145,7 +145,7 @@ my_webui:RegisterEventHandler('UseItem', function(data)
 end)
 
 my_webui:RegisterEventHandler('DropItem', function(item)
-	QBCore.Functions.TriggerCallback('qb-inventory:server:createDrop', function(dropId)
+	exports['qb-core']:TriggerCallback('qb-inventory:server:createDrop', function(dropId)
 		if dropId then
 			local newDropId = 'drop-' .. dropId
 			my_webui:CallFunction('DropItemResponse', newDropId, item)
@@ -154,20 +154,20 @@ my_webui:RegisterEventHandler('DropItem', function(item)
 end)
 
 my_webui:RegisterEventHandler('AttemptPurchase', function(data)
-	QBCore.Functions.TriggerCallback('qb-inventory:server:attemptPurchase', function(canPurchase)
+	exports['qb-core']:TriggerCallback('qb-inventory:server:attemptPurchase', function(canPurchase)
 		my_webui:CallFunction('AttemptPurchaseResponse', canPurchase, data)
 	end, data)
 end)
 
 my_webui:RegisterEventHandler('GiveItem', function(data)
-	local player, distance = QBCore.Functions.GetClosestPlayer()
+	local player, distance = exports['qb-core']:GetClosestPlayer()
 	if player and distance < 500 then
 		local playerId = player:GetID()
-		QBCore.Functions.TriggerCallback('qb-inventory:server:giveItem', function(success)
+		exports['qb-core']:TriggerCallback('qb-inventory:server:giveItem', function(success)
 			my_webui:CallFunction('GiveItemResponse', success, data)
 		end, playerId, data.item.name)
 	else
-		QBCore.Functions.Notify(Lang:t('notify.nonb'), 'error')
+		exports['qb-core']:Notify(Lang:t('notify.nonb'), 'error')
 	end
 end)
 
@@ -186,7 +186,7 @@ my_webui:RegisterEventHandler('RemoveAttachment', function(data)
 	local WeaponData = data.WeaponData
 	local allAttachments = getConfigWeaponAttachments()
 	local Attachment = allAttachments[data.AttachmentData.attachment][WeaponData.name]
-	QBCore.Functions.TriggerCallback('weapons:server:RemoveAttachment', function(NewAttachments)
+	exports['qb-core']:TriggerCallback('weapons:server:RemoveAttachment', function(NewAttachments)
 		if NewAttachments ~= false then
 			local Attachies = {}
 			RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))

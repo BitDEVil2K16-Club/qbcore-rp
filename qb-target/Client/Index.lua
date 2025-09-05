@@ -7,13 +7,13 @@ local active_sprites, nui_data, send_data, Entities, Types, Zones = {}, {}, {}, 
 -- Handlers
 
 Package.Subscribe('Load', function()
-	player_data = QBCore.Functions.GetPlayerData()
+	player_data = exports['qb-core']:GetPlayerData()
 	local player = Client.GetLocalPlayer()
 	if player then player_ped = player:GetControlledCharacter() end
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
-	player_data = QBCore.Functions.GetPlayerData()
+	player_data = exports['qb-core']:GetPlayerData()
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()

@@ -76,13 +76,13 @@ end
 Package.Export('GetFirstSlotByItem', GetFirstSlotByItem)
 
 function GetItemBySlot(source, slot)
-    return QBCore.Functions.GetPlayer(source).PlayerData.items[tonumber(slot)]
+    return exports['qb-core']:GetPlayer(source).PlayerData.items[tonumber(slot)]
 end
 
 Package.Export('GetItemBySlot', GetItemBySlot)
 
 function GetItemByName(source, item)
-    local PlayerItems = QBCore.Functions.GetPlayer(source).PlayerData.items
+    local PlayerItems = exports['qb-core']:GetPlayer(source).PlayerData.items
     local slot = GetFirstSlotByItem(PlayerItems, tostring(item):lower())
     return PlayerItems[slot]
 end
@@ -90,7 +90,7 @@ end
 Package.Export('GetItemByName', GetItemByName)
 
 function GetItemsByName(source, item)
-    local PlayerItems = QBCore.Functions.GetPlayer(source).PlayerData.items
+    local PlayerItems = exports['qb-core']:GetPlayer(source).PlayerData.items
     item = tostring(item):lower()
     local items = {}
 
@@ -106,7 +106,7 @@ end
 Package.Export('GetItemsByName', GetItemsByName)
 
 function GetItemCount(source, items)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local isTable = type(items) == 'table'
     local itemsSet = isTable and {} or nil
@@ -138,7 +138,7 @@ end
 Package.Export('GetTotalWeight', GetTotalWeight)
 
 function CanAddItem(source, item, amount)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return false end
     local itemData = QBShared.Items[item:lower()]
     if not itemData then return false end
@@ -162,7 +162,7 @@ end
 Package.Export('CanAddItem', CanAddItem)
 
 function ClearInventory(source, filterItems)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local savedItemData = {}
     if filterItems then
@@ -188,7 +188,7 @@ end
 Package.Export('ClearInventory', ClearInventory)
 
 function SetInventory(source, items)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     Player.Functions.SetPlayerData('items', items)
     if not Player.Offline then
@@ -201,7 +201,7 @@ Package.Export('SetInventory', SetInventory)
 
 function SetItemData(source, itemName, key, val)
     if not itemName or not key then return false end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local item = GetItemByName(source, itemName)
     if not item then return false end
@@ -214,7 +214,7 @@ end
 Package.Export('SetItemData', SetItemData)
 
 function HasItem(source, items, amount)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return false end
     local isTable = type(items) == 'table'
     local isArray = isTable and table.type(items) == 'array' or false
@@ -248,13 +248,13 @@ end
 Package.Export('HasItem', HasItem)
 
 function CreateUsableItem(itemName, data)
-    QBCore.Functions.CreateUseableItem(itemName, data)
+    exports['qb-core']:CreateUseableItem(itemName, data)
 end
 
 Package.Export('CreateUsableItem', CreateUsableItem)
 
 function GetUsableItem(itemName)
-    return QBCore.Functions.CanUseItem(itemName)
+    return exports['qb-core']:CanUseItem(itemName)
 end
 
 Package.Export('GetUsableItem', GetUsableItem)
@@ -281,8 +281,8 @@ end
 Package.Export('CloseInventory', CloseInventory)
 
 function OpenInventoryById(source, targetId)
-    local Player = QBCore.Functions.GetPlayer(source)
-    local TargetPlayer = QBCore.Functions.GetPlayer(targetId)
+    local Player = exports['qb-core']:GetPlayer(source)
+    local TargetPlayer = exports['qb-core']:GetPlayer(targetId)
     if not Player or not TargetPlayer then return end
     local playerItems = Player.PlayerData.items
     local targetItems = TargetPlayer.PlayerData.items
@@ -331,7 +331,7 @@ Package.Export('CreateShop', CreateShop)
 
 local function OpenShop(source, name)
     if not name then return end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     if not RegisteredShops[name] then return end
     local player = source:GetControlledCharacter()
@@ -356,7 +356,7 @@ end
 Package.Export('OpenShop', OpenShop)
 
 function OpenInventory(source, identifier, data)
-    local QBPlayer = QBCore.Functions.GetPlayer(source)
+    local QBPlayer = exports['qb-core']:GetPlayer(source)
     if not QBPlayer then return end
     local player_ped = source:GetControlledCharacter()
 
@@ -406,7 +406,7 @@ function AddItem(identifier, item, amount, slot, info, reason)
         return false
     end
     local inventory, inventoryWeight, inventorySlots
-    local player = QBCore.Functions.GetPlayer(identifier)
+    local player = exports['qb-core']:GetPlayer(identifier)
 
     if player then
         inventory = player.PlayerData.items
@@ -508,7 +508,7 @@ function RemoveItem(identifier, item, amount, slot, reason)
         return false
     end
     local inventory
-    local player = QBCore.Functions.GetPlayer(identifier)
+    local player = exports['qb-core']:GetPlayer(identifier)
 
     if player then
         inventory = player.PlayerData.items

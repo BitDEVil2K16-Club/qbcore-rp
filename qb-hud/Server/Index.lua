@@ -1,12 +1,12 @@
 QBCore.Commands.Add('cash', 'Check Cash Balance', {}, false, function(source)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local cashamount = Player.PlayerData.money.cash
     TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'cash', cashamount)
 end, 'user')
 
 QBCore.Commands.Add('bank', 'Check Bank Balance', {}, false, function(source)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local bankamount = Player.PlayerData.money.bank
     TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'bank', bankamount)
@@ -89,7 +89,7 @@ end)
 
 Events.Subscribe('qb-hud:server:GainStress', function(source, amount)
     if Config.DisableStress then return end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local Job = Player.PlayerData.job.name
     local JobType = Player.PlayerData.job.type
@@ -114,7 +114,7 @@ end)
 
 Events.Subscribe('qb-hud:server:RelieveStress', function(source, amount)
     if Config.DisableStress then return end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local newStress
     if not ResetStress then

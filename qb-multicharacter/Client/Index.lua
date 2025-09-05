@@ -7,7 +7,7 @@ local function openCharMenu(bool)
     local player = Client.GetLocalPlayer()
     player:SetCameraLocation(Config.CamCoords)
     player:SetCameraRotation(Config.CamRotation)
-    QBCore.Functions.TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
+    exports['qb-core']:TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
         local translations = {}
         for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
             if k:sub(0, ('ui.'):len()) then
@@ -41,10 +41,10 @@ RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()
 end)
 
 RegisterClientEvent('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
-    QBCore.Functions.TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
+    exports['qb-core']:TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
         if result then
             --Events.Call('qb-apartments:client:SetHomeBlip', result.type)
-            local PlayerData = QBCore.Functions.GetPlayerData()
+            local PlayerData = exports['qb-core']:GetPlayerData()
             local insideMeta = PlayerData.metadata['inside']
             if insideMeta.house then
                 Events.Call('qb-houses:client:LastLocationHouse', insideMeta.house)
@@ -65,7 +65,7 @@ my_webui:RegisterEventHandler('selectCharacter', function(data)
 end)
 
 my_webui:RegisterEventHandler('setupCharacters', function()
-    QBCore.Functions.TriggerCallback('qb-multicharacter:server:setupCharacters', function(result)
+    exports['qb-core']:TriggerCallback('qb-multicharacter:server:setupCharacters', function(result)
         my_webui:CallFunction('qb-multicharacter:setupCharacters', result)
     end)
 end)

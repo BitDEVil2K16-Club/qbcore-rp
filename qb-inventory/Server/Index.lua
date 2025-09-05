@@ -8,31 +8,31 @@ Package.Require('commands.lua')
 -- Handlers
 
 Events.Subscribe('QBCore:Server:PlayerLoaded', function(Player)
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'AddItem', function(item, amount, slot, info)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'AddItem', function(item, amount, slot, info)
         return AddItem(Player.PlayerData.source, item, amount, slot, info)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'RemoveItem', function(item, amount, slot)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'RemoveItem', function(item, amount, slot)
         return RemoveItem(Player.PlayerData.source, item, amount, slot)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'GetItemBySlot', function(slot)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'GetItemBySlot', function(slot)
         return GetItemBySlot(Player.PlayerData.source, slot)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'GetItemByName', function(item)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'GetItemByName', function(item)
         return GetItemByName(Player.PlayerData.source, item)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'GetItemsByName', function(item)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'GetItemsByName', function(item)
         return GetItemsByName(Player.PlayerData.source, item)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'ClearInventory', function(filterItems)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'ClearInventory', function(filterItems)
         ClearInventory(Player.PlayerData.source, filterItems)
     end)
 
-    QBCore.Functions.AddPlayerMethod(Player.PlayerData.source, 'SetInventory', function(items)
+    exports['qb-core']:AddPlayerMethod(Player.PlayerData.source, 'SetInventory', function(items)
         SetInventory(Player.PlayerData.source, items)
     end)
 end)
@@ -40,7 +40,7 @@ end)
 -- Events
 
 RegisterServerEvent('qb-inventory:server:openInventory', function(source)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
     local player_ped = source:GetControlledCharacter()
     if not player_ped then return end
@@ -51,7 +51,7 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
         return
     end
     OpenInventory(source)
-    -- QBCore.Functions.TriggerClientCallback('qb-inventory:client:vehicleCheck', source, function(netId, class)
+    -- exports['qb-core']:TriggerClientCallback('qb-inventory:client:vehicleCheck', source, function(netId, class)
     --     if netId then
     --         local vehicle = NetworkGetEntityFromNetworkId(netId)
     --         local plate = GetVehicleNumberPlateText(vehicle)
@@ -64,7 +64,7 @@ end)
 
 RegisterServerEvent('qb-inventory:server:toggleHotbar', function(source)
     if source:GetValue('inv_busy', false) then return end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
     local hotbarItems = {
         Player.PlayerData.items[1],
@@ -77,7 +77,7 @@ RegisterServerEvent('qb-inventory:server:toggleHotbar', function(source)
 end)
 
 RegisterServerEvent('qb-inventory:server:openVending', function(source)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     CreateShop({
         name = 'vending',
@@ -90,7 +90,7 @@ RegisterServerEvent('qb-inventory:server:openVending', function(source)
 end)
 
 RegisterServerEvent('qb-inventory:server:closeInventory', function(source, inventory)
-    local QBPlayer = QBCore.Functions.GetPlayer(source)
+    local QBPlayer = exports['qb-core']:GetPlayer(source)
     if not QBPlayer then return end
     local player_ped = source:GetControlledCharacter()
     player_ped:SetInputEnabled(true)
@@ -130,7 +130,7 @@ RegisterServerEvent('qb-inventory:server:useItem', function(source, item)
 end)
 
 RegisterServerEvent('qb-inventory:server:openDrop', function(source, dropId)
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     local playerPed = GetPlayerPed(source)
     local playerCoords = GetEntityCoords(playerPed)
@@ -173,12 +173,12 @@ end)
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-inventory:server:GetCurrentDrops', function(_, cb)
+exports['qb-core']:CreateCallback('qb-inventory:server:GetCurrentDrops', function(_, cb)
     cb(Drops)
 end)
 
-QBCore.Functions.CreateCallback('qb-inventory:server:createDrop', function(source, cb, item)
-    local Player = QBCore.Functions.GetPlayer(source)
+exports['qb-core']:CreateCallback('qb-inventory:server:createDrop', function(source, cb, item)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then
         cb(false)
         return
@@ -217,12 +217,12 @@ QBCore.Functions.CreateCallback('qb-inventory:server:createDrop', function(sourc
     end
 end)
 
-QBCore.Functions.CreateCallback('qb-inventory:server:attemptPurchase', function(source, cb, data)
+exports['qb-core']:CreateCallback('qb-inventory:server:attemptPurchase', function(source, cb, data)
     local itemInfo = data.item
     local amount = data.amount
     local shop = string.gsub(data.shop, 'shop%-', '')
     local price = itemInfo.price * amount
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then
         cb(false)
         return
@@ -244,15 +244,15 @@ QBCore.Functions.CreateCallback('qb-inventory:server:attemptPurchase', function(
     end
 end)
 
-QBCore.Functions.CreateCallback('qb-inventory:server:giveItem', function(source, cb, target, item, amount)
-    local player = QBCore.Functions.GetPlayer(source)
+exports['qb-core']:CreateCallback('qb-inventory:server:giveItem', function(source, cb, target, item, amount)
+    local player = exports['qb-core']:GetPlayer(source)
     if not player or player.PlayerData.metadata['isdead'] or player.PlayerData.metadata['inlaststand'] or player.PlayerData.metadata['ishandcuffed'] then
         cb(false)
         return
     end
     local playerPed = source:GetControlledCharacter()
 
-    local Target = QBCore.Functions.GetPlayer(target)
+    local Target = exports['qb-core']:GetPlayer(target)
     if not Target or Target.PlayerData.metadata['isdead'] or Target.PlayerData.metadata['inlaststand'] or Target.PlayerData.metadata['ishandcuffed'] then
         cb(false)
         return
@@ -316,11 +316,11 @@ end)
 local function getItem(inventoryId, src, slot)
     local item
     if inventoryId == 'player' then
-        local Player = QBCore.Functions.GetPlayer(src)
+        local Player = exports['qb-core']:GetPlayer(src)
         item = Player.PlayerData.items[slot]
     elseif inventoryId:find('otherplayer-') then
         local targetId = tonumber(inventoryId:match('otherplayer%-(.+)'))
-        local targetPlayer = QBCore.Functions.GetPlayer(targetId)
+        local targetPlayer = exports['qb-core']:GetPlayer(targetId)
         if targetPlayer then
             item = targetPlayer.PlayerData.items[slot]
         end
@@ -344,7 +344,7 @@ end
 
 RegisterServerEvent('qb-inventory:server:SetInventoryData', function(source, fromInventory, toInventory, fromSlot, toSlot, fromAmount, toAmount)
     if not fromInventory or not toInventory or not fromSlot or not toSlot or not fromAmount or not toAmount then return end
-    local Player = QBCore.Functions.GetPlayer(source)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     fromSlot, toSlot, fromAmount, toAmount = tonumber(fromSlot), tonumber(toSlot), tonumber(fromAmount), tonumber(toAmount)
     local fromItem = getItem(fromInventory, source, fromSlot)

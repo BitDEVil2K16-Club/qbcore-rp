@@ -1,5 +1,5 @@
 local my_webui = WebUI('HUD', 'qb-inventory/Client/html/index.html')
-local player_data = QBCore.Functions.GetPlayerData()
+local player_data = exports['qb-core']:GetPlayerData()
 local in_vehicle, current_vehicle = false, nil
 local has_weapon, current_weapon = false, nil
 local round = math.floor
@@ -30,7 +30,7 @@ end
 -- Event Handlers
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
-    player_data = QBCore.Functions.GetPlayerData()
+    player_data = exports['qb-core']:GetPlayerData()
     --updateVoiceLevel()
 end)
 
@@ -179,7 +179,7 @@ end)
 Input.Subscribe('KeyPress', function(key_name)
     if key_name == 'E' then
         if not in_vehicle then
-            local vehicle, distance = QBCore.Functions.GetClosestHVehicle()
+            local vehicle, distance = exports['qb-core']:GetClosestHVehicle()
             if vehicle and distance < 300 then
                 local current_passengers = vehicle:NumOfCurrentPassanger()
                 local allowed_passengers = vehicle:NumOfAllowedPassanger()
