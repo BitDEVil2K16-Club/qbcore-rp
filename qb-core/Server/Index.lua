@@ -4,6 +4,6 @@ QBCore.Shared = QBShared
 QBCore.ClientCallbacks = {}
 QBCore.ServerCallbacks = {}
 
--- Package.Export('QBShared', QBShared)
--- Package.Export('QBConfig', QBConfig)
--- Package.Export('QBCore', QBCore)
+exports('qb-core', 'GetCoreObject', function()
+    return QBCore
+end)

@@ -3,9 +3,9 @@ QBCore.Player = {}
 
 -- Logout
 
-Player.Subscribe('Destroy', function(source)
-    QBCore.Player.Logout(source)
-end)
+-- Player.Subscribe('Destroy', function(source)
+--     QBCore.Player.Logout(source)
+-- end)
 
 function QBCore.Player.Logout(source)
     local playerId = source:GetID()
