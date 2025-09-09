@@ -1,24 +1,25 @@
---local Lang = require('../Shared/locales/' .. QBConfig.Language .. '.lua')
+local Lang = require('Shared/locales/en')
 local my_webui = WebUI('Multicharacter', 'qb-multicharacter/Client/html/index.html')
 
 -- Functions
 
 local function openCharMenu(bool)
-    local player = Client.GetLocalPlayer()
-    player:SetCameraLocation(Config.CamCoords)
-    player:SetCameraRotation(Config.CamRotation)
-    exports['qb-core']:TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
+    local player = HPlayer
+    --player:SetCameraLocation(Config.CamCoords)
+    --player:SetCameraRotation(Config.CamRotation)
+    --QBCore.Functions.TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
         local translations = {}
         for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
             if k:sub(0, ('ui.'):len()) then
                 translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
             end
         end
-        my_webui:BringToFront() -- Unused
-        Input.SetMouseEnabled(bool)
-        Input.SetInputEnabled(false)
-        my_webui:CallFunction('openUI', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)
-    end)
+        --my_webui:BringToFront() -- Unused
+        --Input.SetMouseEnabled(bool)
+        --Input.SetInputEnabled(false)
+        --my_webui:CallFunction('openUI', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)
+        my_webui:CallFunction('openUI', Config.customNationality, true, 5, Config.EnableDeleteButton, translations)
+    --end)
 end
 
 -- Events
@@ -28,7 +29,9 @@ RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
 end)
 
 RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
-    openCharMenu(true)
+    Timer.SetTimeout(function()
+        openCharMenu(true)
+    end, 4000)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()

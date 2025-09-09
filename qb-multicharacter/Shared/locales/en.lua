@@ -1,3 +1,5 @@
+require('/qb-core/shared/index')
+
 local Translations = {
     notifications = {
         ['char_deleted'] = 'Character deleted!',
