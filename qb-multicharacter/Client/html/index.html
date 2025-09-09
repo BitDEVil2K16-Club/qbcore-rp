@@ -285,7 +285,7 @@
                 var loadingProgress = 0;
                 var loadingDots = 0;
 
-                openUI = (customNationality, toggle, nChar, enableDeleteButton, translations) => {
+                function openUI(customNationality, toggle, nChar, enableDeleteButton, translations) {
                     viewmodel.customNationality = customNationality;
                     viewmodel.translations = translations;
                     viewmodel.characterAmount = nChar;
@@ -329,7 +329,7 @@
                     }
                 };
 
-                setupCharacters = (characters) => {
+                function setupCharacters(characters) {
                     var newChars = [];
                     for (var i = 0; i < characters.length; i++) {
                         newChars[characters[i].cid] = characters[i];
@@ -337,7 +337,7 @@
                     viewmodel.characters = newChars;
                 };
 
-                setupCharInfo = (chardata) => {
+                function setupCharInfo(chardata) {
                     viewmodel.chardata = chardata;
                 };
             },
