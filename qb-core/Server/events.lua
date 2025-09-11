@@ -11,7 +11,7 @@ end)
 -- Server Callback
 RegisterServerEvent('QBCore:Server:TriggerCallback', function(source, name, ...)
     QBCore.Functions.TriggerCallback(name, source, function(...)
-        TriggerClientEvent('QBCore:Client:TriggerCallback', source, name, ...)
+        TriggerClientEvent(source, 'QBCore:Client:TriggerCallback', name, ...)
     end, ...)
 end)
 
