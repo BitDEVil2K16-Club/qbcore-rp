@@ -375,11 +375,12 @@ end
 
 function QBCore.Player.Save(source)
     local pcoords = QBConfig.DefaultSpawn
-    local ped = source:GetControlledCharacter()
-    if ped then pcoords = ped:GetLocation() end
-    local PlayerData = QBCore.Players[source:GetID()].PlayerData
+    local ped = source:K2_GetPawn()
+    if ped then pcoords = ped:K2_GetActorLocation() end
+    local PlayerState = source:GetLyraPlayerState()
+    local PlayerData = QBCore.Players[PlayerState:GetPlayerId()].PlayerData
     if not PlayerData then
-        Console.Log('ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
+        print('ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
         return
     end
 
