@@ -69,7 +69,7 @@ end)
 
 my_webui:RegisterEventHandler('setupCharacters', function()
     exports['qb-core']:TriggerCallback('qb-multicharacter:server:setupCharacters', function(result)
-        my_webui:CallFunction('qb-multicharacter:setupCharacters', result)
+        my_webui:CallFunction('setupCharacters', result)
     end)
 end)
 
