@@ -60,7 +60,9 @@ RegisterServerEvent('qb-multicharacter:server:disconnect', function(source)
 end)
 
 RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cData) -- TO DO ADD APARTMENTS SUPPORT
-    if exports['qb-core']:Login(source, cData.citizenid) then
+    local ObjectRef = UE.FSoftObjectPtr(source)
+    ObjectRef:Set(source)
+    if exports['qb-core']:Login(tostring(ObjectRef), cData.citizenid) then
         CheckUserInterval = Timer.SetInterval(function()
             if hasDonePreloading[source] then
                 local PlayerState = source:GetLyraPlayerState()
