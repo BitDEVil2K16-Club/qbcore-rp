@@ -60,115 +60,115 @@ end)
 
 -- Voice
 
-Player.Subscribe('VOIP', function(self, is_talking)
-    if self ~= Client.GetLocalPlayer() then return end
-    print('VOIP', is_talking)
-    my_webui:CallFunction('IsTalking', is_talking)
-end)
+-- Player.Subscribe('VOIP', function(self, is_talking)
+--     if self ~= Client.GetLocalPlayer() then return end
+--     print('VOIP', is_talking)
+--     my_webui:CallFunction('IsTalking', is_talking)
+-- end)
 
-Input.Register('Voice Level', 'Q')
-Input.Bind('Voice Level', InputEvent.Pressed, function() -- whisper, normal, shout
-    if Input.IsMouseEnabled() then return end
-    voice_level = voice_level % #voiceLevels + 1
-    updateVoiceLevel()
-end)
+-- Input.Register('Voice Level', 'Q')
+-- Input.Bind('Voice Level', InputEvent.Pressed, function() -- whisper, normal, shout
+--     if Input.IsMouseEnabled() then return end
+--     voice_level = voice_level % #voiceLevels + 1
+--     updateVoiceLevel()
+-- end)
 
 -- HUD Thread
 
-Timer.SetInterval(function()
-    if Client.GetValue('isLoggedIn', false) then
-        local player = Client.GetLocalPlayer()
-        local ped = player:GetControlledCharacter()
-        if not ped then return end
-        local health     = ped:GetHealth()
-        local armor      = player_data.metadata['armor']
-        local hunger     = player_data.metadata['hunger']
-        local thirst     = player_data.metadata['thirst']
-        local stress     = player_data.metadata['stress']
-        local playerDead = player_data.metadata['inlaststand'] or player_data.metadata['isdead'] or false
-        if in_vehicle and current_vehicle and current_vehicle:IsValid() then
-            local vehicle_health = current_vehicle:GetHealth()
-            local vehicle_max_health = current_vehicle:GetMaxHealth()
-            local vehicle_speed = current_vehicle:GetVehicleSpeed()
-            local vehicle_acceleration = current_vehicle:GetVehicleAcceleration()
-            local vehicle_rpm = current_vehicle:GetVehicleRPM()
-            local vehicle_gear = current_vehicle:GetVehicleGear()
-            if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
-            if vehicle_speed < 0 then
-                vehicle_speed = 0
-                vehicle_gear = 'R'
-            end
-            local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
-            my_webui:CallFunction('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health, vehicle_acceleration, vehicle_rpm, vehicle_gear)
-        end
-        if has_weapon and current_weapon then
-            local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)
-            my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
-        end
-        my_webui:CallFunction('UpdateHUD', health, armor, hunger, thirst, stress, playerDead)
-    end
-end, 100)
+-- Timer.SetInterval(function()
+--     if Client.GetValue('isLoggedIn', false) then
+--         local player = Client.GetLocalPlayer()
+--         local ped = player:GetControlledCharacter()
+--         if not ped then return end
+--         local health     = ped:GetHealth()
+--         local armor      = player_data.metadata['armor']
+--         local hunger     = player_data.metadata['hunger']
+--         local thirst     = player_data.metadata['thirst']
+--         local stress     = player_data.metadata['stress']
+--         local playerDead = player_data.metadata['inlaststand'] or player_data.metadata['isdead'] or false
+--         if in_vehicle and current_vehicle and current_vehicle:IsValid() then
+--             local vehicle_health = current_vehicle:GetHealth()
+--             local vehicle_max_health = current_vehicle:GetMaxHealth()
+--             local vehicle_speed = current_vehicle:GetVehicleSpeed()
+--             local vehicle_acceleration = current_vehicle:GetVehicleAcceleration()
+--             local vehicle_rpm = current_vehicle:GetVehicleRPM()
+--             local vehicle_gear = current_vehicle:GetVehicleGear()
+--             if Config.UseMPH then vehicle_speed = vehicle_speed * 0.621371 end
+--             if vehicle_speed < 0 then
+--                 vehicle_speed = 0
+--                 vehicle_gear = 'R'
+--             end
+--             local vehicle_fuel = current_vehicle:GetValue('fuel', 100)
+--             my_webui:CallFunction('UpdateVehicleStats', vehicle_speed, vehicle_fuel, vehicle_health, vehicle_max_health, vehicle_acceleration, vehicle_rpm, vehicle_gear)
+--         end
+--         if has_weapon and current_weapon then
+--             local ammo_clip, ammo_bag = GetWeaponAmmo(current_weapon)
+--             my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+--         end
+--         my_webui:CallFunction('UpdateHUD', health, armor, hunger, thirst, stress, playerDead)
+--     end
+-- end, 100)
 
 -- Weapons
 
-HCharacter.Subscribe('Reload', function(self, weapon)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
-    my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
-end)
+-- HCharacter.Subscribe('Reload', function(self, weapon)
+--     local player = Client.GetLocalPlayer()
+--     local ped = player:GetControlledCharacter()
+--     if ped ~= self then return end
+--     local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
+--     my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+-- end)
 
-HCharacter.Subscribe('PickUp', function(self, object)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    if object:IsA(Weapon) then
-        has_weapon = true
-        current_weapon = object
-        my_webui:CallFunction('ShowWeapon', true)
-        local ammo_clip, ammo_bag = GetWeaponAmmo(object)
-        my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
-    end
-end)
+-- HCharacter.Subscribe('PickUp', function(self, object)
+--     local player = Client.GetLocalPlayer()
+--     local ped = player:GetControlledCharacter()
+--     if ped ~= self then return end
+--     if object:IsA(Weapon) then
+--         has_weapon = true
+--         current_weapon = object
+--         my_webui:CallFunction('ShowWeapon', true)
+--         local ammo_clip, ammo_bag = GetWeaponAmmo(object)
+--         my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+--     end
+-- end)
 
-HCharacter.Subscribe('Drop', function(self, object)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    if object:IsA(Weapon) then
-        has_weapon = false
-        current_weapon = nil
-        my_webui:CallFunction('ShowWeapon', false)
-    end
-end)
+-- HCharacter.Subscribe('Drop', function(self, object)
+--     local player = Client.GetLocalPlayer()
+--     local ped = player:GetControlledCharacter()
+--     if ped ~= self then return end
+--     if object:IsA(Weapon) then
+--         has_weapon = false
+--         current_weapon = nil
+--         my_webui:CallFunction('ShowWeapon', false)
+--     end
+-- end)
 
-HCharacter.Subscribe('Fire', function(self, weapon)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
-    my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
-end)
+-- HCharacter.Subscribe('Fire', function(self, weapon)
+--     local player = Client.GetLocalPlayer()
+--     local ped = player:GetControlledCharacter()
+--     if ped ~= self then return end
+--     local ammo_clip, ammo_bag = GetWeaponAmmo(weapon)
+--     my_webui:CallFunction('UpdateWeaponAmmo', ammo_clip, ammo_bag)
+-- end)
 
 -- Vehicles
 
-HCharacter.Subscribe('ValueChange', function(self, state, value)
-    local player = Client.GetLocalPlayer()
-    local ped = player:GetControlledCharacter()
-    if ped ~= self then return end
-    if state == 'in_vehicle' then
-        in_vehicle = value
-        if value then
-            my_webui:CallFunction('ShowSpeedometer', true)
-        else
-            my_webui:CallFunction('ShowSpeedometer', false)
-        end
-    end
-    if state == 'current_vehicle' then
-        current_vehicle = value
-    end
-end)
+-- HCharacter.Subscribe('ValueChange', function(self, state, value)
+--     local player = Client.GetLocalPlayer()
+--     local ped = player:GetControlledCharacter()
+--     if ped ~= self then return end
+--     if state == 'in_vehicle' then
+--         in_vehicle = value
+--         if value then
+--             my_webui:CallFunction('ShowSpeedometer', true)
+--         else
+--             my_webui:CallFunction('ShowSpeedometer', false)
+--         end
+--     end
+--     if state == 'current_vehicle' then
+--         current_vehicle = value
+--     end
+-- end)
 
 RegisterClientEvent('qb-hud:client:fixVehicle', function()
     if in_vehicle and current_vehicle then
@@ -176,20 +176,20 @@ RegisterClientEvent('qb-hud:client:fixVehicle', function()
     end
 end)
 
-Input.Subscribe('KeyPress', function(key_name)
-    if key_name == 'E' then
-        if not in_vehicle then
-            local vehicle, distance = exports['qb-core']:GetClosestHVehicle()
-            if vehicle and distance < 300 then
-                local current_passengers = vehicle:NumOfCurrentPassanger()
-                local allowed_passengers = vehicle:NumOfAllowedPassanger()
-                if current_passengers >= allowed_passengers then return end
-                TriggerServerEvent('qb-hud:server:enterVehicle', vehicle)
-            end
-        else
-            if current_vehicle and current_vehicle:IsValid() then
-                TriggerServerEvent('qb-hud:server:leaveVehicle', current_vehicle)
-            end
-        end
-    end
-end)
+-- Input.Subscribe('KeyPress', function(key_name)
+--     if key_name == 'E' then
+--         if not in_vehicle then
+--             local vehicle, distance = exports['qb-core']:GetClosestHVehicle()
+--             if vehicle and distance < 300 then
+--                 local current_passengers = vehicle:NumOfCurrentPassanger()
+--                 local allowed_passengers = vehicle:NumOfAllowedPassanger()
+--                 if current_passengers >= allowed_passengers then return end
+--                 TriggerServerEvent('qb-hud:server:enterVehicle', vehicle)
+--             end
+--         else
+--             if current_vehicle and current_vehicle:IsValid() then
+--                 TriggerServerEvent('qb-hud:server:leaveVehicle', current_vehicle)
+--             end
+--         end
+--     end
+-- end)

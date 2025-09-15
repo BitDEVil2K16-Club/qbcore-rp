@@ -1,39 +1,39 @@
-QBCore.Commands.Add('cash', 'Check Cash Balance', {}, false, function(source)
-    local Player = exports['qb-core']:GetPlayer(source)
-    if not Player then return end
-    local cashamount = Player.PlayerData.money.cash
-    TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'cash', cashamount)
-end, 'user')
+-- QBCore.Commands.Add('cash', 'Check Cash Balance', {}, false, function(source)
+--     local Player = exports['qb-core']:GetPlayer(source)
+--     if not Player then return end
+--     local cashamount = Player.PlayerData.money.cash
+--     TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'cash', cashamount)
+-- end, 'user')
 
-QBCore.Commands.Add('bank', 'Check Bank Balance', {}, false, function(source)
-    local Player = exports['qb-core']:GetPlayer(source)
-    if not Player then return end
-    local bankamount = Player.PlayerData.money.bank
-    TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'bank', bankamount)
-end, 'user')
+-- QBCore.Commands.Add('bank', 'Check Bank Balance', {}, false, function(source)
+--     local Player = exports['qb-core']:GetPlayer(source)
+--     if not Player then return end
+--     local bankamount = Player.PlayerData.money.bank
+--     TriggerClientEvent('qb-hud:client:ShowAccounts', source, 'bank', bankamount)
+-- end, 'user')
 
-QBCore.Commands.Add('fix', 'Fix Vehicle', {}, false, function(source)
-    TriggerClientEvent('qb-hud:client:fixVehicle', source)
-end, 'admin')
+-- QBCore.Commands.Add('fix', 'Fix Vehicle', {}, false, function(source)
+--     TriggerClientEvent('qb-hud:client:fixVehicle', source)
+-- end, 'admin')
 
-Player.Subscribe('Ready', function(self)
-    self:AddVOIPChannel(1)
-end)
+-- Player.Subscribe('Ready', function(self)
+--     self:AddVOIPChannel(1)
+-- end)
 
-HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
-    self:SetValue('in_vehicle', true, true)
-    self:SetValue('current_vehicle', vehicle, true)
-    self:SetValue('current_seat', seat_index, true)
-    vehicle:SetValue('seat_taken_' .. seat_index, true, true)
-end)
+-- HCharacter.Subscribe('EnterVehicle', function(self, vehicle, seat_index)
+--     self:SetValue('in_vehicle', true, true)
+--     self:SetValue('current_vehicle', vehicle, true)
+--     self:SetValue('current_seat', seat_index, true)
+--     vehicle:SetValue('seat_taken_' .. seat_index, true, true)
+-- end)
 
-HCharacter.Subscribe('LeaveVehicle', function(self, vehicle)
-    local seat_index = self:GetValue('current_seat')
-    self:SetValue('in_vehicle', false, true)
-    self:SetValue('current_vehicle', nil, true)
-    self:SetValue('current_seat', nil, true)
-    vehicle:SetValue('seat_taken_' .. seat_index, false, true)
-end)
+-- HCharacter.Subscribe('LeaveVehicle', function(self, vehicle)
+--     local seat_index = self:GetValue('current_seat')
+--     self:SetValue('in_vehicle', false, true)
+--     self:SetValue('current_vehicle', nil, true)
+--     self:SetValue('current_seat', nil, true)
+--     vehicle:SetValue('seat_taken_' .. seat_index, false, true)
+-- end)
 
 -- Events
 
@@ -58,7 +58,7 @@ local function closestSeat(ped, vehicle)
 end
 
 RegisterServerEvent('qb-hud:server:enterVehicle', function(source, vehicle)
-    local ped = source:GetControlledCharacter()
+    local ped = source:K2_GetPawn()
     if not ped then return end
     local seat_index = closestSeat(ped, vehicle)
     print('seat index', seat_index)
@@ -68,7 +68,7 @@ RegisterServerEvent('qb-hud:server:enterVehicle', function(source, vehicle)
 end)
 
 RegisterServerEvent('qb-hud:server:leaveVehicle', function(source, vehicle)
-    local ped = source:GetControlledCharacter()
+    local ped = source:K2_GetPawn()
     if not ped then return end
     if not vehicle then return end
     ped:LeaveVehicle()
@@ -87,7 +87,7 @@ RegisterServerEvent('qb-hud:server:fixVehicle', function(_, vehicle)
     end
 end)
 
-Events.Subscribe('qb-hud:server:GainStress', function(source, amount)
+RegisterServerEvent('qb-hud:server:GainStress', function(source, amount)
     if Config.DisableStress then return end
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
@@ -108,11 +108,11 @@ Events.Subscribe('qb-hud:server:GainStress', function(source, amount)
         newStress = 100
     end
     Player.Functions.SetMetaData('stress', newStress)
-    TriggerClientEvent('qb-hud:client:UpdateStress', source, newStress)
-    TriggerClientEvent('QBCore:Notify', source, Lang:t('notify.stress_gain'), 'error', 1500)
+    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
+    TriggerClientEvent(source, 'QBCore:Notify', Lang:t('notify.stress_gain'), 'error', 1500)
 end)
 
-Events.Subscribe('qb-hud:server:RelieveStress', function(source, amount)
+RegisterServerEvent('qb-hud:server:RelieveStress', function(source, amount)
     if Config.DisableStress then return end
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
@@ -130,6 +130,6 @@ Events.Subscribe('qb-hud:server:RelieveStress', function(source, amount)
         newStress = 100
     end
     Player.Functions.SetMetaData('stress', newStress)
-    TriggerClientEvent('qb-hud:client:UpdateStress', source, newStress)
-    TriggerClientEvent('QBCore:Notify', source, Lang:t('notify.stress_removed'))
+    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
+    TriggerClientEvent(source, 'QBCore:Notify', Lang:t('notify.stress_removed'))
 end)
