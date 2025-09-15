@@ -6,11 +6,11 @@ local active_sprites, nui_data, send_data, Entities, Types, Zones = {}, {}, {}, 
 
 -- Handlers
 
-Package.Subscribe('Load', function()
-	player_data = exports['qb-core']:GetPlayerData()
-	local player = Client.GetLocalPlayer()
-	if player then player_ped = player:GetControlledCharacter() end
-end)
+-- Package.Subscribe('Load', function()
+-- 	player_data = exports['qb-core']:GetPlayerData()
+-- 	local player = Client.GetLocalPlayer()
+-- 	if player then player_ped = player:GetControlledCharacter() end
+-- end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
 	player_data = exports['qb-core']:GetPlayerData()
@@ -32,12 +32,12 @@ RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
 	player_data = val
 end)
 
-Player.Subscribe('Possess', function(self, character)
-	local player = Client.GetLocalPlayer()
-	if self == player then
-		player_ped = character
-	end
-end)
+-- Player.Subscribe('Possess', function(self, character)
+-- 	local player = Client.GetLocalPlayer()
+-- 	if self == player then
+-- 		player_ped = character
+-- 	end
+-- end)
 
 -- Functions
 
@@ -234,12 +234,12 @@ local function AddTargetEntity(entities, parameters)
 	if not Entities[entities] then Entities[entities] = {} end
 	SetOptions(Entities[entities], distance, options)
 end
-Package.Export('AddTargetEntity', AddTargetEntity)
+exports('qb-target', 'AddTargetEntity', AddTargetEntity)
 
 local function RemoveTargetEntity(entities)
 	Entities[entities] = nil
 end
-Package.Export('RemoveTargetEntity', RemoveTargetEntity)
+exports('qb-target', 'RemoveTargetEntity', RemoveTargetEntity)
 
 local function AddBoxZone(name, center, length, width, zoneOptions, targetoptions)
 	if not name or not center or not length or not width or not targetoptions then return end
@@ -250,7 +250,7 @@ local function AddBoxZone(name, center, length, width, zoneOptions, targetoption
 	Zones[name] = box_entity
 	AddTargetEntity(box_entity, targetoptions)
 end
-Package.Export('AddBoxZone', AddBoxZone)
+exports('qb-target', 'AddBoxZone', AddBoxZone)
 
 local function RemoveZone(name)
 	if not Zones[name] then return end
@@ -258,13 +258,13 @@ local function RemoveZone(name)
 	if Entities[Zones[name]] then Entities[Zones[name]] = nil end
 	Zones[name] = nil
 end
-Package.Export('RemoveZone', RemoveZone)
+exports('qb-target', 'RemoveZone', RemoveZone)
 
 local function AddGlobalPlayer(parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	SetOptions(Types['ALS_WorldCharacterBP_C'], distance, options)
 end
-Package.Export('AddGlobalPlayer', AddGlobalPlayer)
+exports('qb-target', 'AddGlobalPlayer', AddGlobalPlayer)
 
 -- Events
 
@@ -306,16 +306,16 @@ end)
 
 -- Keybinds
 
-Input.Register('Target', Config.OpenKey)
-Input.Bind('Target', InputEvent.Pressed, enableTarget)
-Input.Bind('Target', InputEvent.Released, disableTarget)
+-- Input.Register('Target', Config.OpenKey)
+-- Input.Bind('Target', InputEvent.Pressed, enableTarget)
+-- Input.Bind('Target', InputEvent.Released, disableTarget)
 
-Input.Subscribe('MouseDown', function(key_name)
-	if target_active and key_name == Config.MenuControlKey and next(nui_data) then
-		enableMouse()
-		my_webui:CallFunction('validTarget', { data = nui_data })
-	end
-end)
+-- Input.Subscribe('MouseDown', function(key_name)
+-- 	if target_active and key_name == Config.MenuControlKey and next(nui_data) then
+-- 		enableMouse()
+-- 		my_webui:CallFunction('validTarget', { data = nui_data })
+-- 	end
+-- end)
 
 -- Setup config options
 
