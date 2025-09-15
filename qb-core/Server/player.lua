@@ -371,6 +371,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
     else
         QBCore.Players[self.PlayerData.netId] = self
         QBCore.Player.Save(self.PlayerData.source)
+        exports['qb-multicharacter']:SetPlayerLoaded(self)
         --Events.Call('QBCore:Server:PlayerLoaded', self) -- Server->Server needed
         self.Functions.UpdatePlayerData()
     end
