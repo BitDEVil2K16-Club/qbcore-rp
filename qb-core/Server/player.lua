@@ -19,16 +19,19 @@ end)
 -- end)
 
 function QBCore.Player.Logout(source)
-    local playerId = source:GetID()
+    local PlayerState = source:GetLyraPlayerState()
+    local playerId = PlayerState:GetPlayerId()
     if not QBCore.Players[playerId] then return end
     local Player = QBCore.Players[playerId]
     Player.Functions.Save()
-    if source:GetControlledCharacter() then source:GetControlledCharacter():Destroy() end
-    TriggerClientEvent('QBCore:Client:OnPlayerUnload', source)
-    Events.Call('QBCore:Server:OnPlayerUnload', source)
+    --if source:GetControlledCharacter() then source:GetControlledCharacter():Destroy() end
+    TriggerClientEvent(source, 'QBCore:Client:OnPlayerUnload')
+    --Events.Call('QBCore:Server:OnPlayerUnload', source)
     QBCore.Player_Buckets[Player.PlayerData.license] = nil
     QBCore.Players[playerId] = nil
 end
+
+exports('qb-core', 'Logout', QBCore.Player.Logout)
 
 -- Functions
 
@@ -62,7 +65,8 @@ end
 function QBCore.Player.Login(source, citizenid, newData)
     if not source then return false end
     if citizenid then
-        local license = source:GetAccountID()
+        local PlayerState = source:GetLyraPlayerState()
+        local license = PlayerState:GetHelixUserId()
         local result = MySQL.query.await('SELECT * FROM players where citizenid = ?', { citizenid })
         local PlayerData = result[1]
         if PlayerData and license == PlayerData.license then
@@ -80,6 +84,7 @@ function QBCore.Player.Login(source, citizenid, newData)
     end
     return true
 end
+
 exports('qb-core', 'Login', QBCore.Player.Login)
 
 function QBCore.Player.GetPlayerByLicense(license)
@@ -132,7 +137,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
     function self.Functions.UpdatePlayerData()
         if self.Offline then return end
-        Events.Call('QBCore:Player:SetPlayerData', self.PlayerData)
+        --Events.Call('QBCore:Player:SetPlayerData', self.PlayerData)
         TriggerClientEvent(self.PlayerData.source, 'QBCore:Player:SetPlayerData', self.PlayerData)
     end
 
@@ -163,7 +168,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            Events.Call('QBCore:Server:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
+            --Events.Call('QBCore:Server:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
             TriggerClientEvent('QBCore:Client:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
         end
 
@@ -193,7 +198,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            Events.Call('QBCore:Server:OnGangUpdate', self.PlayerData.source, self.PlayerData.gang)
+            --Events.Call('QBCore:Server:OnGangUpdate', self.PlayerData.source, self.PlayerData.gang)
             TriggerClientEvent('QBCore:Client:OnGangUpdate', self.PlayerData.source, self.PlayerData.gang)
         end
 
@@ -210,7 +215,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
     function self.Functions.SetJobDuty(onDuty)
         self.PlayerData.job.onduty = not not onDuty
-        Events.Call('QBCore:Server:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
+        --Events.Call('QBCore:Server:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
         TriggerClientEvent('QBCore:Client:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
         self.Functions.UpdatePlayerData()
     end
@@ -259,7 +264,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
             end
             TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, false)
             TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'add', reason)
-            Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'add', reason)
+            --Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'add', reason)
         end
 
         return true
@@ -292,7 +297,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
                 TriggerClientEvent('qb-phone:client:RemoveBankMoney', self.PlayerData.source, amount)
             end
             TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'remove', reason)
-            Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'remove', reason)
+            --Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'remove', reason)
         end
 
         return true
@@ -312,7 +317,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
             --Events.Call('qb-log:server:CreateLog', 'playermoney', 'SetMoney', 'green', '**' .. GetPlayerName(self.PlayerData.source) .. ' (citizenid: ' .. self.PlayerData.citizenid .. ' | id: ' .. self.PlayerData.source .. ')** $' .. amount .. ' (' .. moneytype .. ') set, new ' .. moneytype .. ' balance: ' .. self.PlayerData.money[moneytype] .. ' reason: ' .. reason)
             TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, math.abs(difference), difference < 0)
             TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'set', reason)
-            Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'set', reason)
+            --Events.Call('QBCore:Server:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'set', reason)
         end
 
         return true
@@ -368,7 +373,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
     else
         QBCore.Players[self.PlayerData.netId] = self
         QBCore.Player.Save(self.PlayerData.source)
-        Events.Call('QBCore:Server:PlayerLoaded', self) -- Server->Server needed
+        --Events.Call('QBCore:Server:PlayerLoaded', self) -- Server->Server needed
         self.Functions.UpdatePlayerData()
     end
 end
@@ -412,20 +417,20 @@ function QBCore.Player.Save(source)
             position = excluded.position,
             metadata = excluded.metadata,
             inventory = excluded.inventory;
-        ]], 
-    {
-        PlayerData.citizenid,
-        tonumber(PlayerData.cid),
-        PlayerData.license,
-        PlayerData.name,
-        JSON.stringify(PlayerData.money),
-        JSON.stringify(PlayerData.charinfo),
-        JSON.stringify(PlayerData.job),
-        JSON.stringify(PlayerData.gang),
-        JSON.stringify({x = pcoords.X, y = pcoords.Y, z = pcoords.Z}),
-        JSON.stringify(PlayerData.metadata),
-        JSON.stringify(ItemsJson),
-    })
+        ]],
+        {
+            PlayerData.citizenid,
+            tonumber(PlayerData.cid),
+            PlayerData.license,
+            PlayerData.name,
+            JSON.stringify(PlayerData.money),
+            JSON.stringify(PlayerData.charinfo),
+            JSON.stringify(PlayerData.job),
+            JSON.stringify(PlayerData.gang),
+            JSON.stringify({ x = pcoords.X, y = pcoords.Y, z = pcoords.Z }),
+            JSON.stringify(PlayerData.metadata),
+            JSON.stringify(ItemsJson),
+        })
 end
 
 local playertables = {
