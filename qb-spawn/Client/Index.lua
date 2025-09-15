@@ -11,23 +11,22 @@ local function SetDisplay(bool)
 			translations[k:sub(#'ui.' + 1)] = Lang:t(k)
 		end
 	end
-	if not Input.IsMouseEnabled() then
-		Input.SetMouseEnabled(true)
-	end
-	my_webui:BringToFront()
+	-- if not Input.IsMouseEnabled() then
+	-- 	Input.SetMouseEnabled(true)
+	-- end
+	-- my_webui:BringToFront()
 	my_webui:CallFunction('showUi', bool, translations)
 end
 
 local function PreSpawnPlayer(value)
 	SetDisplay(value)
-	Input.SetMouseEnabled(false)
-	Input.SetInputEnabled(true)
+	-- Input.SetMouseEnabled(false)
+	-- Input.SetInputEnabled(true)
 end
 
-local function SetCam(campos)
-	local player = Client.GetLocalPlayer()
-	player:TranslateCameraTo(Vector(campos[1], campos[2], campos[3]), 1.0, 0)
-end
+-- local function SetCam(campos)
+-- 	HPlayer:TranslateCameraTo(Vector(campos[1], campos[2], campos[3]), 1.0, 0)
+-- end
 
 -- Events
 
@@ -41,7 +40,7 @@ end)
 
 RegisterClientEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
 	if not new then
-		QBCore.Functions.TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
+		exports['qb-core']:TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
 			local myHouses = {}
 			if houses then
 				for i = 1, #houses do
@@ -74,14 +73,14 @@ my_webui:Subscribe('qb-spawn:setCam', function(data)
 	end
 end)
 
-my_webui:Subscribe('qb-spawn:chooseAppa', function(data)
+my_webui:RegisterEventHandler('qb-spawn:chooseAppa', function(data)
 	local appaYeet = data.appType
 	SetDisplay(false)
 	TriggerServerEvent('qb-apartments:server:CreateApartment', appaYeet, Apartments.Locations[appaYeet].label, true)
 	TriggerClientEvent('QBCore:Client:OnPlayerLoaded')
 end)
 
-my_webui:Subscribe('qb-spawn:spawnplayer', function(data)
+my_webui:RegisterEventHandler('qb-spawn:spawnplayer', function(data)
 	local location = tostring(data.spawnloc)
 	local type = tostring(data.typeLoc)
 	local PlayerData = QBCore.Functions.GetPlayerData()
