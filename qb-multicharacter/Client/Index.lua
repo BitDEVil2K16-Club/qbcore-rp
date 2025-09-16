@@ -1,35 +1,4 @@
 local Lang = require('Shared/locales/en')
-Timer.SetTimeout(function()
-    my_webui = WebUI('Multicharacter', 'qb-multicharacter/Client/html/index.html')
-    -- NUI Events
-    my_webui:RegisterEventHandler('selectCharacter', function(data)
-        local cData = data.cData
-        TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-        my_webui:CallFunction('openUI', nil, false)
-    end)
-
-    my_webui:RegisterEventHandler('setupCharacters', function()
-        TriggerServerEvent('qb-multicharacter:server:setupCharacters')
-    end)
-
-    my_webui:RegisterEventHandler('RemoveBlur', function()
-        SetTimecycleModifier('default')
-    end)
-
-    my_webui:RegisterEventHandler('createNewCharacter', function(data)
-        local cData = data
-        if cData.gender == Lang:t('ui.male') then
-            cData.gender = 0
-        elseif cData.gender == Lang:t('ui.female') then
-            cData.gender = 1
-        end
-        TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
-    end)
-
-    my_webui:RegisterEventHandler('removeCharacter', function(data)
-        TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
-    end)
-end, 2000)
 -- Functions
 
 -- local function openCharMenu(bool)
@@ -57,7 +26,38 @@ local function setupCharMenuUI(numOfChars)
             translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
         end
     end
-    my_webui:CallFunction('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
+    my_webui = WebUI('Multicharacter', 'qb-multicharacter/Client/html/index.html')
+    -- NUI Events
+    my_webui:RegisterEventHandler('selectCharacter', function(data)
+        local cData = data.cData
+        TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
+        my_webui:CallFunction('openUI', Config.customNationality, false, 0, false, translations)
+    end)
+
+    my_webui:RegisterEventHandler('setupCharacters', function()
+        TriggerServerEvent('qb-multicharacter:server:setupCharacters')
+    end)
+
+    my_webui:RegisterEventHandler('RemoveBlur', function()
+        SetTimecycleModifier('default')
+    end)
+
+    my_webui:RegisterEventHandler('createNewCharacter', function(data)
+        local cData = data
+        if cData.gender == Lang:t('ui.male') then
+            cData.gender = 0
+        elseif cData.gender == Lang:t('ui.female') then
+            cData.gender = 1
+        end
+        TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
+    end)
+
+    my_webui:RegisterEventHandler('removeCharacter', function(data)
+        TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
+    end)
+    Timer.SetTimeout(function()
+        my_webui:CallFunction('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
+    end, 1000)
 end
 
 -- Events
