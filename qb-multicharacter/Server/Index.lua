@@ -88,8 +88,8 @@ RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cD
                     if Apartments.Starting then
                         TriggerClientEvent(source, 'qb-apartments:client:setupSpawnUI', cData)
                     else
-                        TriggerClientEvent(source, 'qb-spawn:client:setupSpawns', cData, false, nil)
                         TriggerClientEvent(source, 'qb-spawn:client:openUI', true)
+                        TriggerClientEvent(source, 'qb-spawn:client:setupSpawns', cData, false, nil)
                     end
                 end
                 --Events.Call('qb-log:server:CreateLog', 'joinleave', 'Loaded', 'green', '**' .. source:GetAccountName() .. '** (<@' .. (exports['qb-core']:GetIdentifier(source, 'discord'):gsub('discord:', '') or 'unknown') .. '> |  ||' .. (exports['qb-core']:GetIdentifier(source, 'ip') or 'undefined') .. '|| | ' .. (exports['qb-core']:GetIdentifier(source, 'license') or 'undefined') .. ' | ' .. cData.citizenid .. ' | ' .. source .. ') loaded..')
