@@ -160,7 +160,7 @@ end)
 
 -- Callbacks
 
-exports['qb-core']:CreateCallback('qb-apartments:GetAvailableApartments', function(_, cb, apartment)
+RegisterServerEvent('qb-apartments:server:GetAvailableApartments', function(source, apartment)
 	local apartments = {}
 	if
 		ApartmentObjects ~= nil
@@ -177,10 +177,11 @@ exports['qb-core']:CreateCallback('qb-apartments:GetAvailableApartments', functi
 			end
 		end
 	end
-	cb(apartments)
+
+	TriggerClientEvent(source, 'qb-apartments:client:GetAvailableApartments', apartments)
 end)
 
-exports['qb-core']:CreateCallback('qb-apartments:GetApartmentOffset', function(_, cb, apartmentId)
+RegisterServerEvent('qb-apartments:server:GetApartmentOffset', function(source, apartmentId)
 	local retval = 0
 	if ApartmentObjects ~= nil then
 		for k, _ in pairs(ApartmentObjects) do
@@ -192,10 +193,10 @@ exports['qb-core']:CreateCallback('qb-apartments:GetApartmentOffset', function(_
 			end
 		end
 	end
-	cb(retval)
+	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffset', retval)
 end)
 
-exports['qb-core']:CreateCallback('qb-apartments:GetApartmentOffsetNewOffset', function(_, cb, apartment)
+RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, apartment)
 	local retval = Apartments.SpawnOffset
 	if
 		ApartmentObjects ~= nil
@@ -208,50 +209,51 @@ exports['qb-core']:CreateCallback('qb-apartments:GetApartmentOffsetNewOffset', f
 			end
 		end
 	end
-	cb(retval)
+	TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', retval)
 end)
 
-exports['qb-core']:CreateCallback('qb-apartments:GetOwnedApartment', function(source, cb, cid)
+RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, cid)
 	if cid then
 		local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { cid })
 		if result and result[1] then
-			return cb(result[1])
+			return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', result[1])
 		end
-		return cb(nil)
+
+		return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', nil)
 	else
 		local Player = exports['qb-core']:GetPlayer(source)
 		if not Player then return end
 		local result =
 			exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
 		if result[1] then
-			return cb(result[1])
+			return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', result[1])
 		end
-		return cb(nil)
+		return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', nil)
 	end
 end)
 
-exports['qb-core']:CreateCallback('qb-apartments:IsOwner', function(source, cb, apartment)
+RegisterServerEvent('qb-apartments:server:IsOwner', function(source, apartment)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
 	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
 	if result and result[1] then
 		if result[1].type == apartment then
-			cb(true)
+			TriggerClientEvent(source, 'qb-apartments:client:IsOwner', true)
 		else
-			cb(false)
+			TriggerClientEvent(source, 'qb-apartments:client:IsOwner', false)
 		end
 	else
-		cb(false)
+		TriggerClientEvent(source, 'qb-apartments:client:IsOwner', false)
 	end
 end)
 
-exports['qb-core']:CreateCallback('qb-apartments:GetOutfits', function(source, cb)
+RegisterServerEvent('qb-apartments:server:GetOutfits', function(source)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
 	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM player_outfits WHERE citizenid = ?', { Player.PlayerData.citizenid })
 	if result and result[1] ~= nil then
-		cb(result)
+		TriggerClientEvent(source, 'qb-apartments:client:GetOutfits', result)
 	else
-		cb(nil)
+		TriggerClientEvent(source, 'qb-apartments:client:GetOutfits', nil)
 	end
 end)
