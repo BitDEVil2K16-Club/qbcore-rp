@@ -3,7 +3,7 @@ local Houses = {}
 
 -- Functions
 
-local function SetDisplay(bool)
+local function SetDisplay(bool, cData, new, apps)
 	local translations = {}
 	for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
 		if k:sub(0, #'ui.') then
@@ -71,6 +71,23 @@ local function SetDisplay(bool)
 			TriggerServerEvent('qb-spawn:server:spawnPlayer', coords)
 		end
 	end)
+
+	if not new then
+		exports['qb-core']:TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
+			local myHouses = {}
+			if houses then
+				for i = 1, #houses do
+					myHouses[#myHouses + 1] = {
+						house = houses[i].house,
+						label = houses[i].address,
+					}
+				end
+			end
+			my_webui:CallFunction('setupLocations', Config.Spawns, myHouses, new)
+		end, cData.citizenid)
+	elseif new then
+		my_webui:CallFunction('setupApartments', apps, new)
+	end
 	
 	my_webui.Browser.OnLoadCompleted:Add(my_webui.Host, function()
 		my_webui:CallFunction('showUi', bool, translations)
@@ -93,25 +110,10 @@ RegisterClientEvent('qb-houses:client:setHouseConfig', function(houseConfig)
 	Houses = houseConfig
 end)
 
-RegisterClientEvent('qb-spawn:client:openUI', function(value)
-	SetDisplay(value)
+RegisterClientEvent('qb-spawn:client:openUI', function(value, cData, new, apps)
+	SetDisplay(value, cData, new, apps)
 end)
 
-RegisterClientEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
-	if not new then
-		exports['qb-core']:TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
-			local myHouses = {}
-			if houses then
-				for i = 1, #houses do
-					myHouses[#myHouses + 1] = {
-						house = houses[i].house,
-						label = houses[i].address,
-					}
-				end
-			end
-			my_webui:CallFunction('setupLocations', Config.Spawns, myHouses, new)
-		end, cData.citizenid)
-	elseif new then
-		my_webui:CallFunction('setupApartments', apps, new)
-	end
+RegisterClientEvent('qb-spawn:client:setupSpawns', function()
+
 end)

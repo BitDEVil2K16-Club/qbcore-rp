@@ -414,8 +414,7 @@ RegisterClientEvent('qb-apartments:client:GetOwnedApartment', function(result, n
 	elseif result then
 		-- Regular owned apartment response
 		--local cData = exports['qb-core']:GetPlayerData()
-		TriggerLocalClientEvent('qb-spawn:client:setupSpawns', cData, false, nil)
-		TriggerLocalClientEvent('qb-spawn:client:openUI', true)
+		TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, false, nil)
 		TriggerLocalClientEvent('qb-apartments:client:SetHomeBlip', result.type)
 
 		-- If this was called from EnterApartment, enter the apartment
@@ -435,11 +434,9 @@ RegisterClientEvent('qb-apartments:client:GetOwnedApartment', function(result, n
 		-- No owned apartment
 		--local cData = exports['qb-core']:GetPlayerData()
 		if Apartments.Starting then
-			TriggerLocalClientEvent('qb-spawn:client:setupSpawns', cData, true, Apartments.Locations)
-			TriggerLocalClientEvent('qb-spawn:client:openUI', true)
+			TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, true, Apartments.Locations)
 		else
-			TriggerLocalClientEvent('qb-spawn:client:setupSpawns', cData, false, nil)
-			TriggerLocalClientEvent('qb-spawn:client:openUI', true)
+			TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, false, nil)
 			TriggerLocalClientEvent('qb-apartments:client:SetHomeBlip', nil)
 		end
 

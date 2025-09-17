@@ -196,7 +196,7 @@ RegisterServerEvent('qb-apartments:server:GetApartmentOffset', function(source, 
 	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffset', retval)
 end)
 
-RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, apartment)
+--[[ RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, apartment)
 	local retval = Apartments.SpawnOffset
 	if
 		ApartmentObjects ~= nil
@@ -210,7 +210,7 @@ RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, a
 		end
 	end
 	TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', retval)
-end)
+end) ]]
 
 RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, cid)
 	if cid then
