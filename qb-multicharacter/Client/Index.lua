@@ -71,7 +71,8 @@ RegisterClientEvent('qb-multicharacter:client:ReceiveCharacters', function(chara
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
-    Input.SetMouseEnabled(false)
+    my_webui:Destroy()
+    --Input.SetMouseEnabled(false)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
@@ -82,8 +83,9 @@ RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()
-    Input.SetMouseEnabled(false)
-    Input.SetInputEnabled(true)
+    --Input.SetMouseEnabled(false)
+    --Input.SetInputEnabled(true)
+    my_webui:Destroy()
     TriggerClientEvent('QBCore:Client:OnPlayerLoaded')
     TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
     TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
