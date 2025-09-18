@@ -34,8 +34,10 @@ local function SetDisplay(bool, cData, new, apps)
 	my_webui:RegisterEventHandler('qb-spawn:chooseAppa', function(data)
 		local appaYeet = data.appType
 		SetDisplay(false)
-		TriggerServerEvent('qb-apartments:server:CreateApartment', appaYeet, Apartments.Locations[appaYeet].label, true)
-		TriggerClientEvent('QBCore:Client:OnPlayerLoaded')
+		Timer.SetNextTick(function()
+			TriggerServerEvent('qb-apartments:server:CreateApartment', appaYeet, true)
+			TriggerClientEvent('QBCore:Client:OnPlayerLoaded')
+		end)
 	end)
 
 	my_webui:RegisterEventHandler('qb-spawn:spawnplayer', function(data)
