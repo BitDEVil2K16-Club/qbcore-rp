@@ -15,8 +15,8 @@ local function CreateShell(spawn, exitXYZH, model)
 	POIOffsets.exit = exitXYZH
 	--local Player = Client.GetLocalPlayer()
 	--local dimension = Player:GetDimension()
-	HPlayer:StartCameraFade(0, 1, 0.1, Color(0.0, 0.0, 0.0, 1), true, true)
-	local house = StaticMesh(Vector(spawn.X, spawn.Y, spawn.Z), Rotator(), model, CollisionType.Normal)
+	--HPlayer:StartCameraFade(0, 1, 0.1, Color(0.0, 0.0, 0.0, 1), true, true)
+	local house = StaticMesh(Vector(spawn.X, spawn.Y, spawn.Z), Rotator(), model)
 	--house:SetDimension(dimension)
 	objects[#objects + 1] = house
 	Timer.SetTimeout(function()
@@ -27,7 +27,7 @@ local function CreateShell(spawn, exitXYZH, model)
 			spawn.Z + POIOffsets.exit.z,
 			POIOffsets.exit.h
 		)
-	end, 5000)
+	end, 1000)
 	return { objects, POIOffsets }
 end
 

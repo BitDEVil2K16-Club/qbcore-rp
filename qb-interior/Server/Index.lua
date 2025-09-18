@@ -3,8 +3,8 @@
 local function TeleportToInterior(player, x, y, z, h)
 	local ped = player:K2_GetPawn()
 	if not ped then return end
-	ped:K2_SetActorLocationAndRotation(Vector(x, y, z), Rotator(0, h, 0))
-	player:StopCameraFade()
+	ped:K2_SetActorLocationAndRotation(Vector(x, y, z), Rotator(0, h, 0), false, _, true)
+	--player:StopCameraFade()
 end
 
 RegisterServerEvent('qb-interior:server:teleportPlayer', function(player, x, y, z, h)
