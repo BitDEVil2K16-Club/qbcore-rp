@@ -177,7 +177,7 @@ local function EnterApartment(house, apartmentId, new)
 end
 
 local function LeaveApartment(house)
-	Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
+	--Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
 	TriggerServerEvent('qb-apartments:returnBucket')
 	Client.GetLocalPlayer():StartCameraFade(0, 1, 0.1, Color(0, 0, 0, 1), true, true)
 	DespawnInterior(HouseObj, function()
@@ -194,7 +194,7 @@ local function LeaveApartment(house)
 		CurrentApartment = nil
 		InApartment = false
 		CurrentOffset = 0
-		Sound(Vector(), 'package://qb-apartments/Client/houses_door_close.ogg', true)
+		--Sound(Vector(), 'package://qb-apartments/Client/houses_door_close.ogg', true)
 		TriggerServerEvent('qb-apartments:server:setCurrentApartment', nil)
 		DeleteInApartmentTargets()
 		DeleteApartmentsEntranceTargets()
@@ -256,22 +256,22 @@ RegisterClientEvent('qb-apartments:client:setupSpawnUI', function(cData)
 end)
 
 RegisterClientEvent('qb-apartments:client:SpawnInApartment', function(apartmentId, apartment)
-	if RangDoorbell ~= nil then
-		local ped = Client.GetLocalPlayer():GetControlledCharacter()
-		if not ped then return end
-		local pos = ped:GetLocation()
-		local doorbelldist = pos:Distance(
-			Vector(
-				Apartments.Locations[RangDoorbell].coords[1],
-				Apartments.Locations[RangDoorbell].coords[2],
-				Apartments.Locations[RangDoorbell].coords[3]
-			)
-		)
-		if doorbelldist > 500 then
-			exports['qb-core']:Notify(Lang:t('error.to_far_from_door'))
-			return
-		end
-	end
+	-- if RangDoorbell ~= nil then
+	-- 	local ped = HPlayer:K2_GetPawn()
+	-- 	if not ped then return end
+	-- 	local pos = ped:GetLocation()
+	-- 	local doorbelldist = pos:Distance(
+	-- 		Vector(
+	-- 			Apartments.Locations[RangDoorbell].coords[1],
+	-- 			Apartments.Locations[RangDoorbell].coords[2],
+	-- 			Apartments.Locations[RangDoorbell].coords[3]
+	-- 		)
+	-- 	)
+	-- 	if doorbelldist > 500 then
+	-- 		exports['qb-core']:Notify(Lang:t('error.to_far_from_door'))
+	-- 		return
+	-- 	end
+	-- end
 	ClosestHouse = apartment
 	EnterApartment(apartment, apartmentId, true)
 	IsOwned = true
@@ -282,23 +282,23 @@ RegisterClientEvent('qb-apartments:client:LastLocationHouse', function(apartment
 	EnterApartment(apartmentType, apartmentId, false)
 end)
 
-RegisterClientEvent('qb-apartments:client:SetHomeBlip', function(home)
-	SetClosestApartment()
-	for name, _ in pairs(Apartments.Locations) do
-		local coords = {
-			x = Apartments.Locations[name].coords[1],
-			y = Apartments.Locations[name].coords[2],
-			z = Apartments.Locations[name].coords[3],
-		}
-		TriggerLocalClientEvent('Map:RemoveBlip', Apartments.Locations[name].blip)
-		Apartments.Locations[name].blip = TriggerLocalClientEvent('Map:AddBlip', {
-			id = name,
-			name = Apartments.Locations[name].label,
-			imgUrl = './media/map-icons/apt_owned.svg',
-			coords = coords,
-		})
-	end
-end)
+-- RegisterClientEvent('qb-apartments:client:SetHomeBlip', function(home)
+-- 	SetClosestApartment()
+-- 	for name, _ in pairs(Apartments.Locations) do
+-- 		local coords = {
+-- 			x = Apartments.Locations[name].coords[1],
+-- 			y = Apartments.Locations[name].coords[2],
+-- 			z = Apartments.Locations[name].coords[3],
+-- 		}
+-- 		TriggerLocalClientEvent('Map:RemoveBlip', Apartments.Locations[name].blip)
+-- 		Apartments.Locations[name].blip = TriggerLocalClientEvent('Map:AddBlip', {
+-- 			id = name,
+-- 			name = Apartments.Locations[name].label,
+-- 			imgUrl = './media/map-icons/apt_owned.svg',
+-- 			coords = coords,
+-- 		})
+-- 	end
+-- end)
 
 RegisterClientEvent('qb-apartments:client:RingMenu', function(data)
 	RangDoorbell = ClosestHouse
@@ -372,15 +372,15 @@ RegisterClientEvent('qb-apartments:client:GetApartmentOffset', function(offset)
 			Apartments.Locations[ClosestHouse].coords[2],
 			Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset
 		)
-		local data = CreateApartmentFurnished(coords)
+		local data = exports['qb-interior']:CreateApartmentFurnished(coords)
 		HouseObj = data[1]
 		POIOffsets = data[2]
 		InApartment = true
-		TriggerLocalClientEvent('qb-weathersync:client:DisableSync')
+		--TriggerLocalClientEvent('qb-weathersync:client:DisableSync')
 		TriggerServerEvent('qb-apartments:server:SetInsideMeta', ClosestHouse, CurrentApartment, true, true)
-		Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
+		--Sound(Vector(), 'package://qb-apartments/Client/houses_door_open.ogg', true)
 		TriggerServerEvent('qb-apartments:server:setCurrentApartment', CurrentApartment)
-		if Input.IsMouseEnabled() then Input.SetMouseEnabled(false) end
+		--if Input.IsMouseEnabled() then Input.SetMouseEnabled(false) end
 		TriggerLocalClientEvent('qb-interior:client:SetNewState', false)
 	end
 end)

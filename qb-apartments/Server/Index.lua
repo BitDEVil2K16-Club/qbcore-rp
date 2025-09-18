@@ -3,18 +3,20 @@ local ApartmentObjects = {}
 
 -- Functions
 
-local function CreateApartmentId(type)
-	local UniqueFound = false
-	local AparmentId = nil
-
-	while not UniqueFound do
-		AparmentId = tostring(math.random(1, 9999))
-		local result = exports['qb-core']:DatabaseAction('Select', 'SELECT COUNT(*) as count FROM apartments WHERE name = ?', { tostring(type .. AparmentId) })
-		if result and result[1].count == 0 then
-			UniqueFound = true
+local function CreateApartmentId(t)
+	local MAX_ATTEMPTS = 50
+	local attempts = 0
+	local id, name, result
+	repeat
+		attempts = attempts + 1
+		id = tostring(math.random(100000, 999999))
+		name = tostring(t .. id)
+		result = exports['qb-core']:DatabaseAction('Select', 'SELECT COUNT(*) as count FROM apartments WHERE name = ?', { name })
+		if attempts >= MAX_ATTEMPTS then
+			error(('[apartments] could not find unique id after %d attempts'):format(MAX_ATTEMPTS))
 		end
-	end
-	return AparmentId
+	until (result and result[1] and tonumber(result[1].count) == 0)
+	return id
 end
 
 local function GetApartmentInfo(apartmentId)
@@ -66,32 +68,39 @@ RegisterServerEvent('qb-apartments:server:openStash', function(source, CurrentAp
 	OpenInventory(source, CurrentApartment)
 end)
 
-RegisterServerEvent('qb-apartments:server:CreateApartment', function(source, type, label, firstSpawn)
-	local Player = exports['qb-core']:GetPlayer(source)
+RegisterServerEvent('qb-apartments:server:CreateApartment', function(source, type, firstSpawn)
+	local PlayerState = source:GetLyraPlayerState()
+	local netId = PlayerState:GetPlayerId()
+	local Player = exports['qb-core']:GetPlayer(netId)
 	if not Player then return end
 	local num = CreateApartmentId(type)
 	local apartmentId = tostring(type .. num)
-	label = tostring(label .. ' ' .. num)
-	exports['qb-core']:DatabaseAction('Insert', 'INSERT INTO apartments (name, type, label, citizenid) VALUES (?, ?, ?, ?)', {
-		apartmentId,
-		type,
-		label,
-		Player.PlayerData.citizenid,
-	})
-	TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.receive_apart') .. ' (' .. label .. ')')
+	local label = tostring(Apartments.Locations[type].label .. ' ' .. num)
+
+	print('Apartment ID: ', apartmentId)
+	print('Apartment Label: ', label)
+
+	-- exports['qb-core']:DatabaseAction('Insert', 'INSERT INTO apartments (name, type, label, citizenid) VALUES (?, ?, ?, ?)', {
+	-- 	apartmentId,
+	-- 	type,
+	-- 	label,
+	-- 	Player.PlayerData.citizenid,
+	-- })
+	--TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.receive_apart') .. ' (' .. label .. ')')
 	if firstSpawn then
-		local coords = Vector(
-			Apartments.Locations[type].coords[1],
-			Apartments.Locations[type].coords[2],
-			Apartments.Locations[type].coords[3]
-		)
+		-- local coords = Vector(
+		-- 	Apartments.Locations[type].coords[1],
+		-- 	Apartments.Locations[type].coords[2],
+		-- 	Apartments.Locations[type].coords[3]
+		-- )
+		-- print('Coords: ', coords)
 		-- local new_char = HCharacter(coords, Rotator(0, 0, 0), source)
 		-- local source_dimension = source:GetDimension()
 		-- new_char:SetDimension(source_dimension)
 		-- source:Possess(new_char)
 		TriggerClientEvent(source, 'qb-apartments:client:SpawnInApartment', apartmentId, type)
 	end
-	TriggerClientEvent(source, 'qb-apartments:client:SetHomeBlip', type)
+	--TriggerClientEvent(source, 'qb-apartments:client:SetHomeBlip', type)
 end)
 
 RegisterServerEvent('qb-apartments:server:UpdateApartment', function(source, type, label)
@@ -196,7 +205,7 @@ RegisterServerEvent('qb-apartments:server:GetApartmentOffset', function(source, 
 	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffset', retval)
 end)
 
---[[ RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, apartment)
+RegisterServerEvent('qb-apartments:server:GetApartmentOffsetNewOffset', function(source, apartment)
 	local retval = Apartments.SpawnOffset
 	if
 		ApartmentObjects ~= nil
@@ -209,8 +218,8 @@ end)
 			end
 		end
 	end
-	TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', retval)
-end) ]]
+	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffsetNewOffset', retval)
+end)
 
 RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, cid)
 	if cid then
@@ -221,12 +230,11 @@ RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, c
 
 		return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', nil)
 	else
-		local ObjectRef = UE.FSoftObjectPtr(source)
-		ObjectRef:Set(source)
-		local Player = exports['qb-core']:GetPlayer(ObjectRef)
+		local PlayerState = source:GetLyraPlayerState()
+		local netId = PlayerState:GetPlayerId()
+		local Player = exports['qb-core']:GetPlayer(netId)
 		if not Player then return end
-		local result =
-			exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
+		local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
 		if result[1] then
 			return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', result[1])
 		end
