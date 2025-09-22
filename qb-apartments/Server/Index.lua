@@ -69,9 +69,7 @@ RegisterServerEvent('qb-apartments:server:openStash', function(source, CurrentAp
 end)
 
 RegisterServerEvent('qb-apartments:server:CreateApartment', function(source, type, firstSpawn)
-	local PlayerState = source:GetLyraPlayerState()
-	local netId = PlayerState:GetPlayerId()
-	local Player = exports['qb-core']:GetPlayer(netId)
+	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
 	local num = CreateApartmentId(type)
 	local apartmentId = tostring(type .. num)
@@ -230,9 +228,7 @@ RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, c
 
 		return TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', nil)
 	else
-		local PlayerState = source:GetLyraPlayerState()
-		local netId = PlayerState:GetPlayerId()
-		local Player = exports['qb-core']:GetPlayer(netId)
+		local Player = exports['qb-core']:GetPlayer(source)
 		if not Player then return end
 		local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
 		if result[1] then
