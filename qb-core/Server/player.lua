@@ -62,11 +62,8 @@ end
 
 function QBCore.Player.Login(source, citizenid, newData)
     if not source then return false end
-    local ObjectPath = UE.UKismetSystemLibrary.MakeSoftObjectPath(source)
-    local SoftRef = UE.UKismetSystemLibrary.Conv_SoftObjPathToSoftObjRef(ObjectPath)
-    local Player = UE.UKismetSystemLibrary.Conv_SoftObjectReferenceToObject(SoftRef)
     if citizenid then
-        local PlayerState = Player:GetLyraPlayerState()
+        local PlayerState = source:GetLyraPlayerState()
         local license = PlayerState:GetHelixUserId()
         local result = Database.Select('SELECT * FROM players where citizenid = ?', { citizenid })
         local PlayerData = result[1] and result[1].Columns:ToTable()
@@ -78,10 +75,10 @@ function QBCore.Player.Login(source, citizenid, newData)
             PlayerData.metadata = JSON.parse(PlayerData.metadata)
             PlayerData.charinfo = JSON.parse(PlayerData.charinfo)
             PlayerData.items = formatItems(JSON.parse(PlayerData.inventory))
-            QBCore.Player.CheckPlayerData(Player, PlayerData)
+            QBCore.Player.CheckPlayerData(source, PlayerData)
         end
     else
-        QBCore.Player.CheckPlayerData(Player, newData)
+        QBCore.Player.CheckPlayerData(source, newData)
     end
     return true
 end
