@@ -63,9 +63,7 @@ RegisterServerEvent('qb-multicharacter:server:disconnect', function(source)
 end)
 
 RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cData) -- TO DO ADD APARTMENTS SUPPORT
-    local ObjectRef = UE.FSoftObjectPtr(source)
-    ObjectRef:Set(source)
-    if exports['qb-core']:Login(tostring(ObjectRef), cData.citizenid) then
+    if exports['qb-core']:Login(source, cData.citizenid) then
         local PlayerState = source:GetLyraPlayerState()
         local netId = PlayerState:GetPlayerId()
         CheckUserInterval = Timer.SetInterval(function()
@@ -102,9 +100,7 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
     local newData = {}
     newData.cid = data.cid
     newData.charinfo = data
-    local ObjectRef = UE.FSoftObjectPtr(source)
-    ObjectRef:Set(source)
-    if exports['qb-core']:Login(tostring(ObjectRef), false, newData) then
+    if exports['qb-core']:Login(source, false, newData) then
         local PlayerState = source:GetLyraPlayerState()
         local netId = PlayerState:GetPlayerId()
         CheckInterval = Timer.SetInterval(function()
@@ -140,9 +136,7 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
 end)
 
 RegisterServerEvent('qb-multicharacter:server:deleteCharacter', function(source, citizenid)
-    local ObjectRef = UE.FSoftObjectPtr(source)
-    ObjectRef:Set(source)
-    local Success = exports['qb-core']:DeleteCharacter(ObjectRef, citizenid)
+    local Success = exports['qb-core']:DeleteCharacter(source, citizenid)
     if not Success then return end
     TriggerClientEvent(source, 'QBCore:Notify', Lang:t('notifications.char_deleted'), 'success')
     TriggerClientEvent(source, 'qb-multicharacter:client:chooseChar')
