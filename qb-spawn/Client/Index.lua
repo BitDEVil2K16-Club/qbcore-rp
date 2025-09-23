@@ -36,7 +36,7 @@ local function SetDisplay(bool, cData, new, apps)
 		SetDisplay(false)
 		Timer.SetNextTick(function()
 			TriggerServerEvent('qb-apartments:server:CreateApartment', appaYeet, true)
-			TriggerClientEvent('QBCore:Client:OnPlayerLoaded')
+			TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
 		end)
 	end)
 
