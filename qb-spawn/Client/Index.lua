@@ -10,6 +10,8 @@ local function SetDisplay(bool, cData, new, apps)
 			translations[k:sub(#'ui.' + 1)] = Lang:t(k)
 		end
 	end
+
+	if not bool then my_webui:Destroy() return end
 	-- if not Input.IsMouseEnabled() then
 	-- 	Input.SetMouseEnabled(true)
 	-- end
