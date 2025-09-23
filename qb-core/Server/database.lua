@@ -409,3 +409,7 @@ function DatabaseAction(ActionType, ...)
     return #ResultSet ~= 0 and ResultSet or result
 end
 exports('qb-core', 'DatabaseAction', DatabaseAction)
+
+function onShutdown()
+    Database.Close()
+end
