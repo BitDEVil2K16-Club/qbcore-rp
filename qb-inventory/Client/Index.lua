@@ -1,5 +1,100 @@
-local Lang = Package.Require('../Shared/locales/' .. QBConfig.Language .. '.lua')
-Timer.SetTimeout(function()
+local Lang = require('Shared/locales/en')
+Player_data = exports['qb-core']:GetPlayerData()
+local hotbarShown = false
+
+require('Client/drops')
+require('Client/vehicles')
+-- Handlers
+
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
+	--LocalPlayer.state:set('inv_busy', false, true)
+	Player_data = exports['qb-core']:GetPlayerData()
+	exports['qb-core']:TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
+		Drops = theDrops
+	end)
+end)
+
+RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
+	-- LocalPlayer.state:set('inv_busy', true, true)
+	Player_data = {}
+end)
+
+RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
+	Player_data = val
+end)
+
+-- Functions
+
+local function FormatWeaponAttachments(itemdata)
+	if not itemdata.info or not itemdata.info.attachments or #itemdata.info.attachments == 0 then
+		return {}
+	end
+	local attachments = {}
+	local weaponName = itemdata.name
+	local WeaponAttachments = getConfigWeaponAttachments()
+	if not WeaponAttachments then
+		return {}
+	end
+	for attachmentType, weapons in pairs(WeaponAttachments) do
+		local componentHash = weapons[weaponName]
+		if componentHash then
+			for _, attachmentData in pairs(itemdata.info.attachments) do
+				if attachmentData.component == componentHash then
+					local label = QBShared.Items[attachmentType] and QBShared.Items[attachmentType].label or 'Unknown'
+					attachments[#attachments + 1] = {
+						attachment = attachmentType,
+						label = label,
+					}
+				end
+			end
+		end
+	end
+	return attachments
+end
+
+-- Events
+
+RegisterClientEvent('qb-inventory:client:requiredItems', function(items, bool)
+	local itemTable = {}
+	if bool then
+		for k in pairs(items) do
+			itemTable[#itemTable + 1] = {
+				item = items[k].name,
+				label = QBShared.Items[items[k].name]['label'],
+				image = items[k].image,
+			}
+		end
+	end
+
+	my_webui:CallFunction('requiredItem', { items = itemTable, toggle = bool })
+end)
+
+RegisterClientEvent('qb-inventory:client:hotbar', function(items)
+	hotbarShown = not hotbarShown
+	my_webui:CallFunction('toggleHotbar', { open = hotbarShown, items = items })
+end)
+
+RegisterClientEvent('qb-inventory:client:closeInv', function()
+	my_webui:CallFunction('closeInventory')
+end)
+
+RegisterClientEvent('qb-inventory:client:updateInventory', function(items)
+	my_webui:CallFunction('updateInventory', { inventory = items })
+end)
+
+RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
+	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
+end)
+
+RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
+	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
+end)
+
+RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
+	my_webui:CallFunction('UseItemResponse', bool, itemData)
+end)
+
+RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 	my_webui = WebUI('Inventory', 'qb-inventory/Client/html/index.html')
 	-- NUI Events
 	my_webui:RegisterEventHandler('SetInventoryData', function(data)
@@ -108,114 +203,46 @@ Timer.SetTimeout(function()
 			end
 		end, data.AttachmentData, WeaponData)
 	end)
-end, 2000)
-Player_data = exports['qb-core']:GetPlayerData()
-local hotbarShown = false
 
-Package.Require('drops.lua')
-Package.Require('vehicles.lua')
-
--- Handlers
-
-RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
-	--LocalPlayer.state:set('inv_busy', false, true)
-	Player_data = exports['qb-core']:GetPlayerData()
-	exports['qb-core']:TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
-		Drops = theDrops
+	my_webui.Browser.OnLoadCompleted:Add(my_webui.Host, function()
+		my_webui:CallFunction(
+			'openInventory',
+			{ inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other }
+		)
 	end)
 end)
 
-RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
-	-- LocalPlayer.state:set('inv_busy', true, true)
-	Player_data = {}
-end)
-
-RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
-	Player_data = val
-end)
-
--- Functions
-
-local function FormatWeaponAttachments(itemdata)
-	if not itemdata.info or not itemdata.info.attachments or #itemdata.info.attachments == 0 then
-		return {}
-	end
-	local attachments = {}
-	local weaponName = itemdata.name
-	local WeaponAttachments = getConfigWeaponAttachments()
-	if not WeaponAttachments then
-		return {}
-	end
-	for attachmentType, weapons in pairs(WeaponAttachments) do
-		local componentHash = weapons[weaponName]
-		if componentHash then
-			for _, attachmentData in pairs(itemdata.info.attachments) do
-				if attachmentData.component == componentHash then
-					local label = QBShared.Items[attachmentType] and QBShared.Items[attachmentType].label or 'Unknown'
-					attachments[#attachments + 1] = {
-						attachment = attachmentType,
-						label = label,
-					}
-				end
-			end
+-- Open UI
+--[[ Timer.CreateThread(function()
+    while true do
+        local Player = HPlayer
+        if not Player then return end
+		local key = UE.FKey(Config.Keybinds.Open)
+		key.KeyName = Config.Keybinds.Open
+        if Player:WasInputKeyJustPressed(key) then
+			TriggerServerEvent('qb-inventory:server:openInventory')
 		end
-	end
-	return attachments
-end
+        --if Player:IsInputKeyDown(key) then print('Key Down') end
+        Timer.Wait(0)
+    end
+end) ]]
 
--- Events
-
-Events.Subscribe('qb-inventory:client:requiredItems', function(items, bool)
-	local itemTable = {}
-	if bool then
-		for k in pairs(items) do
-			itemTable[#itemTable + 1] = {
-				item = items[k].name,
-				label = QBShared.Items[items[k].name]['label'],
-				image = items[k].image,
-			}
+Timer.CreateThread(function()
+	while true do
+		local Player = HPlayer
+		if not Player then return end
+		local key = UE.FKey()
+		key.KeyName = Config.Keybinds.Open
+		if Player:WasInputKeyJustPressed(key) then 
+			print('Opening the inventory:')
+			TriggerServerEvent('qb-inventory:server:openInventory') 
 		end
+		Timer.Wait(1)
 	end
-
-	my_webui:CallFunction('requiredItem', { items = itemTable, toggle = bool })
-end)
-
-RegisterClientEvent('qb-inventory:client:hotbar', function(items)
-	hotbarShown = not hotbarShown
-	my_webui:CallFunction('toggleHotbar', { open = hotbarShown, items = items })
-end)
-
-Events.Subscribe('qb-inventory:client:closeInv', function()
-	my_webui:CallFunction('closeInventory')
-end)
-
-Events.Subscribe('qb-inventory:client:updateInventory', function(items)
-	my_webui:CallFunction('updateInventory', { inventory = items })
-end)
-
-Events.Subscribe('qb-inventory:client:ItemBox', function(itemData, type, amount)
-	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
-end)
-
-RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
-	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
-end)
-
-RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
-	my_webui:CallFunction('UseItemResponse', bool, itemData)
-end)
-
-RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
-	my_webui:CallFunction(
-		'openInventory',
-		{ inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other }
-	)
-	my_webui:BringToFront() -- Unused
-	Input.SetMouseEnabled(true)
 end)
 
 -- Commands
-
+--[[ 
 Input.Register('Inventory', Config.Keybinds.Open)
 Input.Register('Hotbar', Config.Keybinds.Hotbar)
 
@@ -253,3 +280,4 @@ Input.Subscribe('KeyPress', function(key_name)
 		TriggerServerEvent('qb-inventory:server:useItem', itemData)
 	end
 end)
+ ]]

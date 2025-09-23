@@ -13,7 +13,7 @@ Config = {
     },
 
     Keybinds = {
-        Open = 'Tab',
+        Open = 'TAB',
         Hotbar = 'Z',
     },
 
