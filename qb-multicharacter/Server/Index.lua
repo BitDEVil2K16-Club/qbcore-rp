@@ -76,10 +76,6 @@ RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cD
                     local coords = JSON.parse(cData.position)
                     local pawn = source:K2_GetPawn()
                     if pawn then pawn:K2_SetActorLocation(Vector(coords.x, coords.y, coords.z), false, nil, true) end
-                    --local new_char = HCharacter(coords, Rotator(0, 0, 0), source)
-                    --local source_dimension = source:GetDimension()
-                    --new_char:SetDimension(source_dimension)
-                    --source:Possess(new_char)
                     TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded')
                     TriggerClientEvent(source, 'qb-multicharacter:client:spawnLastLocation', coords, cData)
                 else
@@ -90,7 +86,6 @@ RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cD
                         TriggerClientEvent(source, 'qb-spawn:client:openUI', true, cData, false, nil)
                     end
                 end
-                --Events.Call('qb-log:server:CreateLog', 'joinleave', 'Loaded', 'green', '**' .. source:GetAccountName() .. '** (<@' .. (exports['qb-core']:GetIdentifier(source, 'discord'):gsub('discord:', '') or 'unknown') .. '> |  ||' .. (exports['qb-core']:GetIdentifier(source, 'ip') or 'undefined') .. '|| | ' .. (exports['qb-core']:GetIdentifier(source, 'license') or 'undefined') .. ' | ' .. cData.citizenid .. ' | ' .. source .. ') loaded..')
                 Timer.ClearInterval(CheckUserInterval)
             end
         end, 10)
@@ -106,26 +101,19 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
         local netId = PlayerState:GetPlayerId()
         CheckInterval = Timer.SetInterval(function()
             if hasDonePreloading[netId] then
-                local PlayerState = source:GetLyraPlayerState()
                 local Apartments = exports['qb-apartments']:Apartments()
                 if Apartments.Starting then
-                    --local randbucket = (math.random(1, 999))
-                    --exports['qb-core']:SetPlayerBucket(source, randbucket)
                     print('^2[qb-core]^7 ' .. PlayerState:GetPlayerName() .. ' has successfully loaded!')
                     --QBCore.Commands.Refresh(source)
                     --loadHouseData(source)
                     TriggerClientEvent(source, 'qb-multicharacter:client:closeNUI')
-                    TriggerClientEvent(source, 'qb-apartments:client:setupSpawnUI', newData)
+                    TriggerClientEvent(source, 'qb-apartments:client:setupSpawnUI')
                     --GiveStarterItems(source)
                     Timer.ClearInterval(CheckInterval)
                 else
                     print('^2[qb-core]^7 ' .. PlayerState:GetPlayerName() .. ' has successfully loaded!')
                     --QBCore.Commands.Refresh(source)
                     --loadHouseData(source)
-                    --local new_char = HCharacter(QBConfig.DefaultSpawn, Rotator(0, 0, 0), source)
-                    --local source_dimension = source:GetDimension()
-                    --new_char:SetDimension(source_dimension)
-                    --source:Possess(new_char)
                     TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded')
                     TriggerClientEvent(source, 'qb-multicharacter:client:closeNUIdefault')
                     --GiveStarterItems(source)

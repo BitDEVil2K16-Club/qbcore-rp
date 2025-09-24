@@ -1,23 +1,6 @@
 local Lang = require('Shared/locales/en')
--- Functions
 
--- local function openCharMenu(bool)
---player:SetCameraLocation(Config.CamCoords)
---player:SetCameraRotation(Config.CamRotation)
---QBCore.Functions.TriggerCallback('qb-multicharacter:server:GetNumberOfCharacters', function(result)
--- local translations = {}
--- for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
---     if k:sub(0, ('ui.'):len()) then
---         translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
---     end
--- end
---my_webui:BringToFront() -- Unused
---Input.SetMouseEnabled(bool)
---Input.SetInputEnabled(false)
---my_webui:CallFunction('openUI', Config.customNationality, bool, result, Config.EnableDeleteButton, translations)
--- my_webui:CallFunction('openUI', Config.customNationality, true, 5, Config.EnableDeleteButton, translations)
---end)
--- end
+-- Functions
 
 local function setupCharMenuUI(numOfChars)
     local translations = {}
@@ -72,19 +55,15 @@ end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
     my_webui:Destroy()
-    --Input.SetMouseEnabled(false)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
     Timer.SetTimeout(function()
-        --openCharMenu(true)
         TriggerServerEvent('qb-multicharacter:server:GetNumberOfCharacters')
     end, 4000)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()
-    --Input.SetMouseEnabled(false)
-    --Input.SetInputEnabled(true)
     my_webui:Destroy()
     TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
     TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
