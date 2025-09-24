@@ -7,9 +7,8 @@ RegisterServerEvent('qb-spawn:server:spawnPlayer', function(source, coords)
         local position = Player.PlayerData.position
         coords = Vector(position.X, position.Y, position.Z)
     end
-    --local new_char = HCharacter(coords, Rotator(0, 0, 0), source)
-    --local source_dimension = source:GetDimension()
-    --new_char:SetDimension(source_dimension)
-    --source:Possess(new_char)
+    local ped = source:K2_GetPawn()
+    if not ped then return end
+    ped:K2_SetActorLocationAndRotation(Vector(coords.X, coords.Y, coords.Z), Rotator(0, 0, 0), false, _, true)
     TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded')
 end)

@@ -11,7 +11,10 @@ local function SetDisplay(bool, cData, new, apps)
 		end
 	end
 
-	if not bool then my_webui:Destroy() return end
+	if not bool then
+		my_webui:Destroy()
+		return
+	end
 	-- if not Input.IsMouseEnabled() then
 	-- 	Input.SetMouseEnabled(true)
 	-- end
@@ -45,34 +48,40 @@ local function SetDisplay(bool, cData, new, apps)
 	my_webui:RegisterEventHandler('qb-spawn:spawnplayer', function(data)
 		local location = tostring(data.spawnloc)
 		local type = tostring(data.typeLoc)
-		local PlayerData = QBCore.Functions.GetPlayerData()
+		local PlayerData = exports['qb-core']:GetPlayerData()
 		local insideMeta = PlayerData.metadata['inside']
 		if type == 'current' then
-			PreSpawnPlayer(false)
-			if insideMeta.house ~= nil then
-				local houseId = insideMeta.house
-				TriggerLocalClientEvent('qb-houses:client:LastLocationHouse', houseId)
-			elseif insideMeta.apartment.apartmentType ~= nil or insideMeta.apartment.apartmentId ~= nil then
-				local apartmentType = insideMeta.apartment.apartmentType
-				local apartmentId = insideMeta.apartment.apartmentId
-				TriggerClientEvent('qb-apartments:client:LastLocationHouse', apartmentType, apartmentId)
-			end
-			TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
-			TriggerServerEvent('qb-spawn:server:spawnPlayer')
+			Timer.SetNextTick(function()
+				if insideMeta.house ~= nil then
+					local houseId = insideMeta.house
+					TriggerLocalClientEvent('qb-houses:client:LastLocationHouse', houseId)
+				elseif insideMeta.apartment.apartmentType ~= nil or insideMeta.apartment.apartmentId ~= nil then
+					local apartmentType = insideMeta.apartment.apartmentType
+					local apartmentId = insideMeta.apartment.apartmentId
+					TriggerClientEvent('qb-apartments:client:LastLocationHouse', apartmentType, apartmentId)
+				end
+				TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
+				TriggerServerEvent('qb-spawn:server:spawnPlayer')
+			end)
+			SetDisplay(false)
 		elseif type == 'house' then
-			PreSpawnPlayer(false)
-			TriggerLocalClientEvent('qb-houses:client:enterOwnedHouse', location)
-			TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
-			TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
-			TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
+			Timer.SetNextTick(function()
+				TriggerLocalClientEvent('qb-houses:client:enterOwnedHouse', location)
+				TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
+				TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
+				TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
+			end)
+			SetDisplay(false)
 		elseif type == 'normal' then
 			local pos = Config.Spawns[location].coords
 			local coords = Vector(pos[1], pos[2], pos[3])
-			PreSpawnPlayer(false)
-			TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
-			TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
-			TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
-			TriggerServerEvent('qb-spawn:server:spawnPlayer', coords)
+			Timer.SetNextTick(function()
+				TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
+				TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
+				TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
+				TriggerServerEvent('qb-spawn:server:spawnPlayer', coords)
+			end)
+			SetDisplay(false)
 		end
 	end)
 
@@ -95,12 +104,6 @@ local function SetDisplay(bool, cData, new, apps)
 			my_webui:CallFunction('setupApartments', apps, new)
 		end
 	end)
-end
-
-local function PreSpawnPlayer(value)
-	SetDisplay(value)
-	-- Input.SetMouseEnabled(false)
-	-- Input.SetInputEnabled(true)
 end
 
 -- local function SetCam(campos)
