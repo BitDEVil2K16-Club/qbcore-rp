@@ -1,4 +1,4 @@
-local my_webui = WebUI('Notify', 'file://html/index.html')
+--local my_webui = WebUI('Notify', 'file://html/index.html')
 QBCore.Functions = {}
 
 -- Callback Functions --

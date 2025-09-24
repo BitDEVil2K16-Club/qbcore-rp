@@ -405,7 +405,7 @@ RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
         registerEntrance()
         houseBlips()
         if closest_house and next(Config.Houses[closest_house].garage) == nil then return end
-        Events.Call('qb-garages:client:setHouseGarage', closest_house, has_key)
+        --Events.Call('qb-garages:client:setHouseGarage', closest_house, has_key)
     end)
 end)
 

@@ -24,30 +24,29 @@ end)
 -- 	local POIOffsets = {}
 -- 	POIOffsets.exit = exitXYZH
 -- 	--player:StartCameraFade(0, 1, 0.1, Color(0.0, 0.0, 0.0, 1), true, true)
--- 	local house = Prop(Vector(spawn.X, spawn.Y, spawn.Z - 1000), Rotator(), model)
+-- 	local house = StaticMesh(Vector(spawn.X, spawn.Y, spawn.Z - 1000), Rotator(), model)
 -- 	--house:SetGravityEnabled(false)
--- 	local house_location = house:K2_GetActorLocation()
 -- 	objects[#objects + 1] = house
 -- 	TeleportToInterior(
 -- 		player,
--- 		house_location.X + POIOffsets.exit.x,
--- 		house_location.Y + POIOffsets.exit.y,
--- 		house_location.Z + POIOffsets.exit.z,
+-- 		spawn.X - POIOffsets.exit.x,
+-- 		spawn.Y - POIOffsets.exit.y,
+-- 		spawn.Z + POIOffsets.exit.z,
 -- 		POIOffsets.exit.h
 -- 	)
 -- 	return { objects, POIOffsets }
 -- end
 
--- -- Shells
+-- -- -- Shells
 
 -- exports('qb-interior', 'CreateApartmentFurnished', function(player, spawn)
--- 	local exit = JSON.parse('{"x": -430.0, "y": -347.0, "z": 93.0, "h": 90.81}')
+-- 	local exit = JSON.parse('{"x": 430.0, "y": 347.0, "z": 93.0, "h": 90.81}')
 -- 	local model = '/Game/Shells/modernhotel_shell/SM_modernhotel_shell.SM_modernhotel_shell'
 -- 	local obj = CreateShell(player, spawn, exit, model)
 -- 	if obj and obj[2] then
--- 		obj[2].clothes = JSON.parse('{"x": -6.028, "y": -9.5, "z": 1.2, "h":2.263}')
--- 		obj[2].stash = JSON.parse('{"x": -7.305, "y": -3.922, "z": 0.5, "h":2.263}')
--- 		obj[2].logout = JSON.parse('{"x": -0.8, "y": 1.0, "z": 1.0, "h":2.263}')
+-- 		obj[2].clothes = JSON.parse('{"x": 247.8, "y": -296.9, "z": 110.0, "h": 2.263}')
+-- 		obj[2].stash = JSON.parse('{"x": -237.7, "y": -296.9, "z": 110.0, "h": 2.263}')
+-- 		obj[2].logout = JSON.parse('{"x": -458.3, "y": 134.6, "z": 93.0, "h": 2.263}')
 -- 	end
 -- 	-- if IsNew then
 -- 	-- 	Timer.SetTimeout(function()
