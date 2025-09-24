@@ -61,7 +61,7 @@ function GetSlotsByItem(items, itemName)
     return slotsFound
 end
 
-Package.Export('GetSlotsByItem', GetSlotsByItem)
+exports('qb-inventory', 'GetSlotsByItem', GetSlotsByItem)
 
 function GetFirstSlotByItem(items, itemName)
     if not items then return nil end
@@ -73,13 +73,13 @@ function GetFirstSlotByItem(items, itemName)
     return nil
 end
 
-Package.Export('GetFirstSlotByItem', GetFirstSlotByItem)
+exports('qb-inventory', 'GetFirstSlotByItem', GetFirstSlotByItem)
 
 function GetItemBySlot(source, slot)
     return exports['qb-core']:GetPlayer(source).PlayerData.items[tonumber(slot)]
 end
 
-Package.Export('GetItemBySlot', GetItemBySlot)
+exports('qb-inventory', 'GetItemBySlot', GetItemBySlot)
 
 function GetItemByName(source, item)
     local PlayerItems = exports['qb-core']:GetPlayer(source).PlayerData.items
@@ -87,7 +87,7 @@ function GetItemByName(source, item)
     return PlayerItems[slot]
 end
 
-Package.Export('GetItemByName', GetItemByName)
+exports('qb-inventory', 'GetItemByName', GetItemByName)
 
 function GetItemsByName(source, item)
     local PlayerItems = exports['qb-core']:GetPlayer(source).PlayerData.items
@@ -103,7 +103,7 @@ function GetItemsByName(source, item)
     return items
 end
 
-Package.Export('GetItemsByName', GetItemsByName)
+exports('qb-inventory', 'GetItemsByName', GetItemsByName)
 
 function GetItemCount(source, items)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -124,7 +124,7 @@ function GetItemCount(source, items)
     return count
 end
 
-Package.Export('GetItemCount', GetItemCount)
+exports('qb-inventory', 'GetItemCount', GetItemCount)
 
 function GetTotalWeight(items)
     if not items then return 0 end
@@ -135,7 +135,7 @@ function GetTotalWeight(items)
     return tonumber(weight)
 end
 
-Package.Export('GetTotalWeight', GetTotalWeight)
+exports('qb-inventory', 'GetTotalWeight', GetTotalWeight)
 
 function CanAddItem(source, item, amount)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -159,7 +159,7 @@ function CanAddItem(source, item, amount)
     return true
 end
 
-Package.Export('CanAddItem', CanAddItem)
+exports('qb-inventory', 'CanAddItem', CanAddItem)
 
 function ClearInventory(source, filterItems)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -185,7 +185,7 @@ function ClearInventory(source, filterItems)
     end
 end
 
-Package.Export('ClearInventory', ClearInventory)
+exports('qb-inventory', 'ClearInventory', ClearInventory)
 
 function SetInventory(source, items)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -197,7 +197,7 @@ function SetInventory(source, items)
     end
 end
 
-Package.Export('SetInventory', SetInventory)
+exports('qb-inventory', 'SetInventory', SetInventory)
 
 function SetItemData(source, itemName, key, val)
     if not itemName or not key then return false end
@@ -211,7 +211,7 @@ function SetItemData(source, itemName, key, val)
     return true
 end
 
-Package.Export('SetItemData', SetItemData)
+exports('qb-inventory', 'SetItemData', SetItemData)
 
 function HasItem(source, items, amount)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -245,19 +245,19 @@ function HasItem(source, items, amount)
     return false
 end
 
-Package.Export('HasItem', HasItem)
+exports('qb-inventory', 'HasItem', HasItem)
 
 function CreateUsableItem(itemName, data)
     exports['qb-core']:CreateUseableItem(itemName, data)
 end
 
-Package.Export('CreateUsableItem', CreateUsableItem)
+exports('qb-inventory', 'CreateUsableItem', CreateUsableItem)
 
 function GetUsableItem(itemName)
     return exports['qb-core']:CanUseItem(itemName)
 end
 
-Package.Export('GetUsableItem', GetUsableItem)
+exports('qb-inventory', 'GetUsableItem', GetUsableItem)
 
 function UseItem(itemName, ...)
     local itemData = GetUsableItem(itemName)
@@ -266,7 +266,7 @@ function UseItem(itemName, ...)
     callback(...)
 end
 
-Package.Export('UseItem', UseItem)
+exports('qb-inventory', 'UseItem', UseItem)
 
 function CloseInventory(source, identifier)
     local player_ped = source:GetControlledCharacter()
@@ -278,7 +278,7 @@ function CloseInventory(source, identifier)
     TriggerClientEvent('qb-inventory:client:closeInv', source)
 end
 
-Package.Export('CloseInventory', CloseInventory)
+exports('qb-inventory', 'CloseInventory', CloseInventory)
 
 function OpenInventoryById(source, targetId)
     local Player = exports['qb-core']:GetPlayer(source)
@@ -296,7 +296,7 @@ function OpenInventoryById(source, targetId)
     TriggerClientEvent('qb-inventory:client:openInventory', source, playerItems, formattedInventory)
 end
 
-Package.Export('OpenInventoryById', OpenInventoryById)
+exports('qb-inventory', 'OpenInventoryById', OpenInventoryById)
 
 local function CreateShop(shopData)
     if shopData.name then
@@ -327,7 +327,7 @@ local function CreateShop(shopData)
     end
 end
 
-Package.Export('CreateShop', CreateShop)
+exports('qb-inventory', 'CreateShop', CreateShop)
 
 local function OpenShop(source, name)
     if not name then return end
@@ -353,17 +353,17 @@ local function OpenShop(source, name)
     TriggerClientEvent('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
 end
 
-Package.Export('OpenShop', OpenShop)
+exports('qb-inventory', 'OpenShop', OpenShop)
 
 function OpenInventory(source, identifier, data)
     local QBPlayer = exports['qb-core']:GetPlayer(source)
     if not QBPlayer then return end
-    local player_ped = source:GetControlledCharacter()
+    local player_ped = source:K2_GetPawn()
 
     if not identifier then
-        TriggerClientEvent('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items)
-        player_ped:SetInputEnabled(false)
-        source:SetValue('inv_busy', true, true)
+        TriggerClientEvent(source, 'qb-inventory:client:openInventory', QBPlayer.PlayerData.items)
+        --player_ped:SetInputEnabled(false)
+        --source:SetValue('inv_busy', true, true)
         return
     end
 
@@ -392,15 +392,15 @@ function OpenInventory(source, identifier, data)
         slots = inventory.slots,
         inventory = inventory.items
     }
-    player_ped:SetInputEnabled(false)
-    source:SetValue('inv_busy', true, true)
-    TriggerClientEvent('qb-inventory:client:openInventory', source, QBPlayer.PlayerData.items, formattedInventory)
+    --player_ped:SetInputEnabled(false)
+    --source:SetValue('inv_busy', true, true)
+    TriggerClientEvent(source, 'qb-inventory:client:openInventory', QBPlayer.PlayerData.items, formattedInventory)
 end
 
-Package.Export('OpenInventory', OpenInventory)
+exports('qb-inventory', 'OpenInventory', OpenInventory)
 
 function AddItem(identifier, item, amount, slot, info, reason)
-    local itemInfo = QBShared.Items[item:lower()]
+    local itemInfo = exports['qb-core']:GetShared('Items')[item:lower()]
     if not itemInfo then
         print('AddItem: Invalid item')
         return false
@@ -472,9 +472,9 @@ function AddItem(identifier, item, amount, slot, info, reason)
             combinable = itemInfo.combinable
         }
 
-        if QBShared.SplitStr(item, '_')[1] == 'weapon' then
+        if exports['qb-core']:Shared('SplitStr', item, '_')[1] == 'weapon' then
             if not inventory[slot].info.serie then
-                inventory[slot].info.serie = tostring(QBShared.RandomInt(2) .. QBShared.RandomStr(3) .. QBShared.RandomInt(1) .. QBShared.RandomStr(2) .. QBShared.RandomInt(3) .. QBShared.RandomStr(4))
+                inventory[slot].info.serie = tostring(exports['qb-core']:Shared('RandomInt', 2) .. exports['qb-core']:Shared('RandomStr', 3) .. exports['qb-core']:Shared('RandomInt', 1) .. exports['qb-core']:Shared('RandomStr', 2) .. exports['qb-core']:Shared('RandomInt', 3) .. exports['qb-core']:Shared('RandomStr', 4))
             end
             if not inventory[slot].info.quality then
                 inventory[slot].info.quality = 100
@@ -482,7 +482,7 @@ function AddItem(identifier, item, amount, slot, info, reason)
         end
     end
 
-    if player then player.Functions.SetPlayerData('items', inventory) end
+    if player then exports['qb-core']:Player(identifier, 'SetPlayerData', 'items', inventory) end
     -- local invName = player and identifier:GetName() .. ' (' .. identifier:GetID() .. ')' or identifier
     -- local addReason = reason or 'No reason specified'
     -- local resourceName = 'qb-inventory'
@@ -500,7 +500,7 @@ function AddItem(identifier, item, amount, slot, info, reason)
     return true
 end
 
-Package.Export('AddItem', AddItem)
+exports('qb-inventory', 'AddItem', AddItem)
 
 function RemoveItem(identifier, item, amount, slot, reason)
     if not QBShared.Items[item:lower()] then
@@ -565,4 +565,4 @@ function RemoveItem(identifier, item, amount, slot, reason)
     return true
 end
 
-Package.Export('RemoveItem', RemoveItem)
+exports('qb-inventory', 'RemoveItem', RemoveItem)

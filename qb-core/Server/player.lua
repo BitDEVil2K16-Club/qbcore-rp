@@ -484,5 +484,5 @@ exports('qb-core', 'Player', function(Player, MethodName, ...)
     if not QBCore.Players[Player] then return end
     if not MethodName then return end
 
-    return QBCore.Players[Player][MethodName](...)
+    return QBCore.Players[Player].Functions[MethodName](...)
 end)
