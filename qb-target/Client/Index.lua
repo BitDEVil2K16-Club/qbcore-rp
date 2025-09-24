@@ -180,6 +180,40 @@ local function AddBoxZone(name, center, length, width, zoneOptions, targetoption
 end
 exports('qb-target', 'AddBoxZone', AddBoxZone)
 
+local function AddSphereZone(name, center, radius, zoneOptions, targetoptions)
+	if not name or not center or not radius or not zoneOptions or not targetoptions then return end
+	if Zones[name] then return end
+	if not Zones[name] then Zones[name] = {} end
+
+	-- Spawn Sphere
+	local spawnCenter = UE.FVector(center.X, center.Y, center.Z)
+	local xform       = UE.FTransform()
+	xform.Translation = spawnCenter
+	xform.Rotation    = UE.FQuat(0, 0, 0, 1)
+	local actor       = HWorld:SpawnActor(UE.AActor, xform, UE.ESpawnActorCollisionHandlingMethod.AlwaysSpawn)
+	if not actor then return nil end
+	local sphere = actor:AddComponentByClass(UE.USphereComponent, false, xform, false)
+	if not sphere then return nil end
+	sphere:SetSphereRadius(radius, true)
+	local debug = (zoneOptions.debug ~= nil) and zoneOptions.debug or false
+	sphere:SetHiddenInGame(not debug, true)
+	sphere:SetVisibility(debug, true)
+	sphere:SetCastShadow(false)
+	sphere:SetMobility(UE.EComponentMobility.Stationary)
+	sphere:SetCollisionEnabled(UE.ECollisionEnabled.QueryOnly)
+	sphere:SetCollisionObjectType(UE.ECollisionChannel.ECC_WorldDynamic)
+	sphere:SetGenerateOverlapEvents(false)
+	sphere:SetCollisionResponseToAllChannels(UE.ECollisionResponse.ECR_Ignore)
+	sphere:SetCollisionResponseToChannel(UE.ECollisionChannel.ECC_Visibility, UE.ECollisionResponse.ECR_Block)
+
+	Zones[name] = actor
+	AddTargetEntity(actor, {
+		distance = zoneOptions.distance or Config.MaxDistance,
+		options  = targetoptions
+	})
+end
+exports('qb-target', 'AddSphereZone', AddSphereZone)
+
 -- Casting
 
 local function clearTarget()
@@ -340,6 +374,24 @@ end)
 -- 			label = 'Test Interaction',
 -- 			action = function()
 -- 				print('Test zone 1 clicked!')
+-- 			end
+-- 		}
+-- 	})
+
+-- 	-- Example sphere zone
+-- 	AddSphereZone('test_sphere_1', {
+-- 		X = -249.54,
+-- 		Y = 1358.93,
+-- 		Z = 91.697
+-- 	}, 3.0, { -- radius of 3.0 units
+-- 		debug = true,
+-- 		distance = 5.0
+-- 	}, {
+-- 		{
+-- 			icon = 'fas fa-hand',
+-- 			label = 'Sphere Test Interaction',
+-- 			action = function()
+-- 				print('Sphere zone clicked!')
 -- 			end
 -- 		}
 -- 	})
