@@ -21,14 +21,14 @@ end)
 function QBCore.Player.Logout(source)
     local PlayerState = source:GetLyraPlayerState()
     local playerId = PlayerState:GetPlayerId()
-    if not QBCore.Players[playerId] then return end
-    local Player = QBCore.Players[playerId]
+    if not QBCore.Players[source] then return end
+    local Player = QBCore.Players[source]
     Player.Functions.Save()
     --if source:GetControlledCharacter() then source:GetControlledCharacter():Destroy() end
     TriggerClientEvent(source, 'QBCore:Client:OnPlayerUnload')
     --Events.Call('QBCore:Server:OnPlayerUnload', source)
     QBCore.Player_Buckets[Player.PlayerData.license] = nil
-    QBCore.Players[playerId] = nil
+    QBCore.Players[source] = nil
 end
 
 -- Functions
@@ -362,7 +362,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
     if self.Offline then
         return self
     else
-        QBCore.Players[self.PlayerData.netId] = self
+        QBCore.Players[self.PlayerData.source] = self
         QBCore.Player.Save(self.PlayerData.source)
         exports['qb-multicharacter']:SetPlayerLoaded(self)
         --Events.Call('QBCore:Server:PlayerLoaded', self) -- Server->Server needed
@@ -375,7 +375,7 @@ function QBCore.Player.Save(source)
     local ped = source:K2_GetPawn()
     if ped then pcoords = ped:K2_GetActorLocation() end
     local PlayerState = source:GetLyraPlayerState()
-    local PlayerData = QBCore.Players[PlayerState:GetPlayerId()].PlayerData
+    local PlayerData = QBCore.Players[source].PlayerData
     if not PlayerData then
         print('ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
         return
@@ -479,3 +479,10 @@ for functionName, func in pairs(QBCore.Player) do
 		exports('qb-core', functionName, func)
 	end
 end
+
+exports('qb-core', 'Player', function(Player, MethodName, ...)
+    if not QBCore.Players[Player] then return end
+    if not MethodName then return end
+
+    return QBCore.Players[Player][MethodName](...)
+end)
