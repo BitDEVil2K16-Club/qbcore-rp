@@ -69,6 +69,7 @@ RegisterServerEvent('qb-multicharacter:server:loadUserData', function(source, cD
         CheckUserInterval = Timer.SetInterval(function()
             if hasDonePreloading[netId] then
                 print('[qb-core] ' .. PlayerState:GetPlayerName() .. ' (Citizen ID: ' .. cData.citizenid .. ') has successfully loaded!')
+                TriggerClientEvent(source, 'qb-multicharacter:client:closeNUI')
                 --QBCore.Commands.Refresh(source)
                 --loadHouseData(source)
                 if Config.SkipSelection then
