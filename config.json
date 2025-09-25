@@ -1,3 +1,11 @@
 {
-  "packages": ["qb-core", "qb-multicharacter", "qb-spawn", "qb-interior", "qb-apartments", "qb-inventory"]
+  "packages": [
+    "qb-core",
+    "qb-interior",
+    "qb-multicharacter",
+    "qb-spawn",
+    "qb-target",
+    "qb-inventory",
+    "qb-apartments"
+  ]
 }
