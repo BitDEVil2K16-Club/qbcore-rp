@@ -5,6 +5,10 @@ local hasDonePreloading = {}
 
 RegisterServerEvent('PlayerJoined', function(source)
     print('[QBCore] Player Joined:', source)
+    if exports['qb-core']:GetPlayer(source) then
+        print('[QBCore] Player already logged in:', source)
+        return
+    end
     TriggerClientEvent(source, 'qb-multicharacter:client:chooseChar')
 end)
 
