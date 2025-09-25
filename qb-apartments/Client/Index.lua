@@ -65,7 +65,7 @@ local function RegisterApartmentEntranceTarget(apartmentID, apartmentData)
 	exports['qb-target']:AddBoxZone(boxName, coords, boxData.length, boxData.width, {
 		name = boxName,
 		heading = boxData.heading,
-		debug = true,
+		debug = boxData.debug,
 		distance = boxData.distance,
 	}, options)
 
