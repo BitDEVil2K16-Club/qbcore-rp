@@ -84,12 +84,34 @@ RegisterServerEvent('qb-apartments:server:CreateApartment', function(source, typ
 	--TriggerClientEvent(source, 'qb-apartments:client:SetHomeBlip', type)
 end)
 
-RegisterServerEvent('qb-apartments:server:UpdateApartment', function(source, type, label)
+RegisterServerEvent('qb-apartments:server:UpdateApartment', function(source, type)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
-	exports['qb-core']:DatabaseAction('Update', 'UPDATE apartments SET type = ?, label = ? WHERE citizenid = ?', { type, label, Player.PlayerData.citizenid })
-	TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.changed_apart'))
-	--TriggerClientEvent(source, 'qb-apartments:client:SetHomeBlip', type)
+
+	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
+
+	if result and result[1] then
+		local label = tostring(Apartments.Locations[type].label)
+		exports['qb-core']:DatabaseAction('Update', 'UPDATE apartments SET type = ?, label = ? WHERE citizenid = ?', {
+			type,
+			label,
+			Player.PlayerData.citizenid
+		})
+		TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.changed_apart'))
+	else
+		local num = CreateApartmentId(type)
+		local apartmentId = tostring(type .. num)
+		local label = tostring(Apartments.Locations[type].label .. ' ' .. num)
+		exports['qb-core']:DatabaseAction('Insert', 'INSERT INTO apartments (name, type, label, citizenid) VALUES (?, ?, ?, ?)', {
+			apartmentId,
+			type,
+			label,
+			Player.PlayerData.citizenid,
+		})
+		TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.receive_apart') .. ' (' .. label .. ')')
+	end
+
+	TriggerClientEvent(source, 'qb-apartments:client:IsOwner', true)
 end)
 
 RegisterServerEvent('qb-apartments:server:RingDoor', function(source, apartmentId, apartment)
@@ -109,23 +131,27 @@ end)
 RegisterServerEvent('qb-apartments:server:AddObject', function(source, apartmentId, apartment, offset)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return end
-	if ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil and ApartmentObjects[apartment].apartments[apartmentId] ~= nil then
-		ApartmentObjects[apartment].apartments[apartmentId].players[source] = Player.PlayerData.citizenid
-	else
-		if ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil then
-			ApartmentObjects[apartment].apartments[apartmentId] = {}
-			ApartmentObjects[apartment].apartments[apartmentId].offset = offset
-			ApartmentObjects[apartment].apartments[apartmentId].players = {}
-			ApartmentObjects[apartment].apartments[apartmentId].players[source] = Player.PlayerData.citizenid
-		else
-			ApartmentObjects[apartment] = {}
-			ApartmentObjects[apartment].apartments = {}
-			ApartmentObjects[apartment].apartments[apartmentId] = {}
-			ApartmentObjects[apartment].apartments[apartmentId].offset = offset
-			ApartmentObjects[apartment].apartments[apartmentId].players = {}
-			ApartmentObjects[apartment].apartments[apartmentId].players[source] = Player.PlayerData.citizenid
-		end
+
+	if not ApartmentObjects[apartment] then
+		ApartmentObjects[apartment] = { apartments = {} }
 	end
+
+	if not ApartmentObjects[apartment].apartments then
+		ApartmentObjects[apartment].apartments = {}
+	end
+
+	if not ApartmentObjects[apartment].apartments[apartmentId] then
+		if offset == 0 or offset == nil then
+			offset = CalculateNewOffset()
+		end
+
+		ApartmentObjects[apartment].apartments[apartmentId] = {
+			offset = offset,
+			players = {}
+		}
+	end
+
+	ApartmentObjects[apartment].apartments[apartmentId].players[source] = Player.PlayerData.citizenid
 end)
 
 RegisterServerEvent('qb-apartments:server:RemoveObject', function(source, apartmentId, apartment)
@@ -144,7 +170,23 @@ RegisterServerEvent('qb-apartments:server:setCurrentApartment', function(ap)
 	Player.Functions.SetMetaData('currentapartment', ap)
 end)
 
--- Callbacks
+RegisterServerEvent('qb-apartments:server:EnterOwnedApartment', function(source, apartmentType)
+	local Player = exports['qb-core']:GetPlayer(source)
+	if not Player then return end
+
+	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ? AND type = ?', {
+		Player.PlayerData.citizenid,
+		apartmentType
+	})
+
+	if result and result[1] then
+		-- Found their apartment, tell client to enter it
+		TriggerClientEvent(source, 'qb-apartments:client:SpawnInApartment', result[1].name, result[1].type)
+	else
+		-- No apartment found
+		TriggerClientEvent(source, 'QBCore:Notify', 'You don\'t own an apartment here', 'error')
+	end
+end)
 
 RegisterServerEvent('qb-apartments:server:GetAvailableApartments', function(source, apartment)
 	local apartments = {}
@@ -167,51 +209,53 @@ RegisterServerEvent('qb-apartments:server:GetAvailableApartments', function(sour
 	TriggerClientEvent(source, 'qb-apartments:client:GetAvailableApartments', apartments)
 end)
 
+local function CalculateNewOffset()
+	local maxOffset = math.abs(Apartments.SpawnOffset or -20000)
+	local baseOffset = 1000
+	local startingOffset = Apartments.SpawnOffset or -20000
+	if ApartmentObjects ~= nil then
+		for _, data in pairs(ApartmentObjects) do
+			if data.apartments then
+				for _, apartmentData in pairs(data.apartments) do
+					if apartmentData.offset and math.abs(tonumber(apartmentData.offset)) > maxOffset then
+						maxOffset = math.abs(tonumber(apartmentData.offset))
+					end
+				end
+			end
+		end
+	end
+
+	if maxOffset == math.abs(startingOffset) then
+		return startingOffset
+	end
+
+	if startingOffset < 0 then
+		return -(maxOffset + baseOffset)
+	else
+		return maxOffset + baseOffset
+	end
+end
+
 RegisterServerEvent('qb-apartments:server:GetApartmentOffset', function(source, apartmentId)
 	local retval = 0
+	local found = false
 	if ApartmentObjects ~= nil then
-		for k in pairs(ApartmentObjects) do
-			if
-				ApartmentObjects[k].apartments[apartmentId] ~= nil and tonumber(ApartmentObjects[k].apartments[apartmentId].offset) ~= 0
-			then
-				retval = tonumber(ApartmentObjects[k].apartments[apartmentId].offset)
+		for _, data in pairs(ApartmentObjects) do
+			if data.apartments and data.apartments[apartmentId] ~= nil then
+				if data.apartments[apartmentId].offset and tonumber(data.apartments[apartmentId].offset) ~= 0 then
+					retval = tonumber(data.apartments[apartmentId].offset)
+					found = true
+					break
+				end
 			end
 		end
 	end
+	if not found then
+		retval = CalculateNewOffset()
+	end
+
 	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffset', retval)
 end)
-
-RegisterServerEvent('qb-apartments:server:GetApartmentOffsetNewOffset', function(source, apartment)
-	local retval = Apartments.SpawnOffset
-	if ApartmentObjects ~= nil and ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil then
-		for k, _ in pairs(ApartmentObjects[apartment].apartments) do
-			if ApartmentObjects[apartment].apartments[k] ~= nil then
-				retval = ApartmentObjects[apartment].apartments[k].offset + Apartments.SpawnOffset
-			end
-		end
-	end
-	TriggerClientEvent(source, 'qb-apartments:client:GetApartmentOffsetNewOffset', retval)
-end)
-
--- RegisterServerEvent('qb-apartments:server:GetOwnedApartment', function(source, cid)
--- 	print('------------------')
--- 	print('qb-apartments:server:GetOwnedApartment')
--- 	print('------------------')
-
--- 	-- New Player
--- 	if not cid then
--- 		TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment')
--- 		return
--- 	end
-
--- 	-- Existing Player
--- 	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { cid })
--- 	if result and result[1] then
--- 		TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment', result[1])
--- 		return
--- 	end
--- 	TriggerClientEvent(source, 'qb-apartments:client:GetOwnedApartment')
--- end)
 
 RegisterServerEvent('qb-apartments:server:IsOwner', function(source, apartment)
 	local Player = exports['qb-core']:GetPlayer(source)
