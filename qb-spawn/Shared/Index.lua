@@ -1,35 +1,35 @@
 Config = {
     Spawns = {
 
-        police = {
-            coords = { 21285.498475, -22822.663792, 496.837506 },
-            location = 'police',
-            label = 'Sheriffs Office',
+        gas = {
+            coords = { -2431.417130, 14675.314118, -299.850009 },
+            location = 'gas',
+            label = 'Gas Station',
         },
 
-        hospital = {
-            coords = { 42724.710378, 38470.335952, 547.711786 },
-            location = 'hospital',
-            label = 'Hospital',
-        },
+        -- hospital = {
+        --     coords = { 42724.710378, 38470.335952, 547.711786 },
+        --     location = 'hospital',
+        --     label = 'Hospital',
+        -- },
 
-        firedept = {
-            coords = { 47466.083097, 79845.345592, 538.201812 },
-            location = 'firedept',
-            label = 'Fire Department',
-        },
+        -- firedept = {
+        --     coords = { 47466.083097, 79845.345592, 538.201812 },
+        --     location = 'firedept',
+        --     label = 'Fire Department',
+        -- },
 
-        bank = {
-            coords = { 28348.597337, 30850.565477, 551.375390 },
-            location = 'bank',
-            label = 'Bank',
-        },
+        -- bank = {
+        --     coords = { 28348.597337, 30850.565477, 551.375390 },
+        --     location = 'bank',
+        --     label = 'Bank',
+        -- },
 
-        cardealer = {
-            coords = { 4886.664003, 95375.505303, 548.341051 },
-            location = 'cardealer',
-            label = 'Car Dealer',
-        },
+        -- cardealer = {
+        --     coords = { 4886.664003, 95375.505303, 548.341051 },
+        --     location = 'cardealer',
+        --     label = 'Car Dealer',
+        -- },
 
         -- Apartments w/ interiors
         -- Vector(-32293.6, -89116.4, 207.9),
