@@ -140,7 +140,7 @@ exports('qb-inventory', 'GetTotalWeight', GetTotalWeight)
 function CanAddItem(source, item, amount)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return false end
-    local itemData = QBShared.Items[item:lower()]
+    local itemData = exports['qb-core']:GetShared('Items')[item:lower()]
     if not itemData then return false end
     local weight = itemData.weight * amount
     local totalWeight = GetTotalWeight(Player.PlayerData.items) + weight
@@ -503,7 +503,7 @@ end
 exports('qb-inventory', 'AddItem', AddItem)
 
 function RemoveItem(identifier, item, amount, slot, reason)
-    if not QBShared.Items[item:lower()] then
+    if not exports['qb-core']:GetShared('Items')[item:lower()] then
         print('RemoveItem: Invalid item')
         return false
     end
@@ -547,7 +547,7 @@ function RemoveItem(identifier, item, amount, slot, reason)
         inventory[slot] = nil
     end
 
-    if player then player.Functions.SetPlayerData('items', inventory) end
+    if player then exports['qb-core']:Player(identifier, 'SetPlayerData', 'items', inventory) end
     -- local invName = player and identifier:GetName() .. ' (' .. identifier:GetID() .. ')' or identifier
     -- local removeReason = reason or 'No reason specified'
     -- local resourceName = 'qb-inventory'

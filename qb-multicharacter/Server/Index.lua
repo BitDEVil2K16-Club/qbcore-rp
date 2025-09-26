@@ -17,7 +17,7 @@ end)
 local function GiveStarterItems(source)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
-    for _, v in pairs(QBShared.StarterItems) do
+    for _, v in pairs(exports['qb-core']:GetShared('StarterItems')) do
         local info = {}
         if v.item == 'id_card' then
             info.citizenid = Player.PlayerData.citizenid
@@ -32,7 +32,7 @@ local function GiveStarterItems(source)
             info.birthdate = Player.PlayerData.charinfo.birthdate
             info.type = 'Class C Driver License'
         end
-        AddItem(source, v.item, v.amount, false, info)
+        exports['qb-inventory']:AddItem(source, v.item, v.amount, false, info)
     end
 end
 
@@ -133,7 +133,7 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
                     --loadHouseData(source)
                     TriggerClientEvent(source, 'qb-multicharacter:client:closeNUI')
                     TriggerClientEvent(source, 'qb-apartments:client:setupSpawnUI', newData)
-                    --GiveStarterItems(source)
+                    GiveStarterItems(source)
                     Timer.ClearInterval(CheckInterval)
                 else
                     print('^2[qb-core]^7 ' .. PlayerState:GetPlayerName() .. ' has successfully loaded!')
@@ -141,7 +141,7 @@ RegisterServerEvent('qb-multicharacter:server:createCharacter', function(source,
                     --loadHouseData(source)
                     TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded')
                     TriggerClientEvent(source, 'qb-multicharacter:client:closeNUIdefault')
-                    --GiveStarterItems(source)
+                    GiveStarterItems(source)
                     Timer.ClearInterval(CheckInterval)
                 end
             end
