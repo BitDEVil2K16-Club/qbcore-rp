@@ -334,7 +334,7 @@ Timer.CreateThread(function()
 	while true do
 		local Player = HPlayer
 		if not Player then return end
-
+		--if Player:GetInputMode() ~= 1 then
 		do
 			local key = UE.FKey()
 			key.KeyName = Config.OpenKey
@@ -354,6 +354,7 @@ Timer.CreateThread(function()
 		end
 
 		Timer.Wait(1)
+		--end
 	end
 end)
 
