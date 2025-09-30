@@ -333,18 +333,22 @@ end
 
 -- Inputs
 
+local targetKey = UE.FKey()
+targetKey.KeyName = Config.OpenKey
+
+local menuControl = UE.FKey()
+menuControl.KeyName = Config.MenuControlKey
+
 Timer.CreateThread(function()
 	while true do
 		if not HPlayer then return end
 		do
-			local key = UE.FKey()
-			key.KeyName = Config.OpenKey
-			if HPlayer:WasInputKeyJustPressed(key) then
+			if HPlayer:WasInputKeyJustPressed(targetKey) then
 				if HPlayer:GetInputMode() ~= 1 then
 					enableTarget()
 				end
 			end
-			if HPlayer:WasInputKeyJustReleased(key) then
+			if HPlayer:WasInputKeyJustReleased(targetKey) then
 				if target_active then
 					disableTarget()
 				end
@@ -352,8 +356,6 @@ Timer.CreateThread(function()
 		end
 
 		do
-			local menuControl = UE.FKey()
-			menuControl.KeyName = Config.MenuControlKey
 			if target_active and target_entity and nui_data and nui_data[1] then
 				if HPlayer:WasInputKeyJustPressed(menuControl) then
 					print('Menu control pressed')
