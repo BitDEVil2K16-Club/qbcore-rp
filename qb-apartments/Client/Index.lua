@@ -6,7 +6,7 @@ local CurrentApartment = nil
 local IsOwned = false
 local CurrentDoorBell = 0
 local CurrentOffset = 0
-local HouseObj = {}
+local HouseObj = 0
 local POIOffsets = nil
 local RangDoorbell = nil
 local InApartmentTargets = {}
@@ -232,17 +232,19 @@ local function EnterApartment(house, apartmentId, new)
 end
 
 local function LeaveApartment(house)
-	exports['qb-interior']:DespawnInterior(HouseObj, function()
-		TriggerServerEvent('qb-interior:server:teleportPlayer', Apartments.Locations[house].coords[1], Apartments.Locations[house].coords[2], Apartments.Locations[house].coords[3], 0)
-		TriggerServerEvent('qb-apartments:server:RemoveObject', CurrentApartment, house)
-		TriggerServerEvent('qb-apartments:server:SetInsideMeta', CurrentApartment, false)
-		CurrentApartment = nil
-		InApartment = false
-		CurrentOffset = 0
-		TriggerServerEvent('qb-apartments:server:setCurrentApartment', nil)
-		DeleteInApartmentTargets()
-		DeleteApartmentsEntranceTargets()
-	end)
+	exports['qb-interior']:DespawnInterior(HouseObj)
+	TriggerServerEvent('qb-interior:server:teleportPlayer', Apartments.Locations[house].coords[1], Apartments.Locations[house].coords[2], Apartments.Locations[house].coords[3], 0)
+	TriggerServerEvent('qb-apartments:server:RemoveObject', CurrentApartment, house)
+	TriggerServerEvent('qb-apartments:server:SetInsideMeta', CurrentApartment, false)
+	CurrentApartment = nil
+	InApartment = false
+	CurrentOffset = 0
+	POIOffsets = nil
+	HouseObj = 0
+	ClosestHouse = nil
+	TriggerServerEvent('qb-apartments:server:setCurrentApartment', nil)
+	DeleteInApartmentTargets()
+	DeleteApartmentsEntranceTargets()
 end
 
 local function SetClosestApartment()

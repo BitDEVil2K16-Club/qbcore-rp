@@ -1,20 +1,28 @@
+local interiors = {}
+local nextId = 1
+
 -- Functions
 
-exports('qb-interior', 'DespawnInterior', function(objects, cb)
-	for _, v in pairs(objects) do
-		if v:IsValid(v) then
-			v:Destroy()
-		end
+exports('qb-interior', 'DespawnInterior', function(id)
+	if interiors[id] and interiors[id].object then
+		interiors[id].object:K2_DestroyActor()
+		interiors[id] = nil
 	end
-	cb()
 end)
 
 local function CreateShell(spawn, exitXYZH, model)
-	local objects = {}
+	local id = nextId
+	nextId = nextId + 1
+
 	local POIOffsets = {}
 	POIOffsets.exit = exitXYZH
 	local house = StaticMesh(Vector(spawn.X, spawn.Y, spawn.Z), Rotator(), model)
-	objects[#objects + 1] = house
+
+	interiors[id] = {
+		object = house,
+		POIOffsets = POIOffsets
+	}
+
 	Timer.SetTimeout(function()
 		TriggerServerEvent(
 			'qb-interior:server:teleportPlayer',
@@ -24,7 +32,8 @@ local function CreateShell(spawn, exitXYZH, model)
 			POIOffsets.exit.h
 		)
 	end, 1000)
-	return { objects, POIOffsets }
+
+	return id, POIOffsets
 end
 
 -- Shells
@@ -32,13 +41,16 @@ end
 exports('qb-interior', 'CreateApartmentFurnished', function(spawn)
 	local exit = JSON.parse('{"x": 430.0, "y": 347.0, "z": 93.0, "h": 90.81}')
 	local model = '/Game/Shells/modernhotel_shell/SM_modernhotel_shell.SM_modernhotel_shell'
-	local obj = CreateShell(spawn, exit, model)
-	if obj and obj[2] then
-		obj[2].clothes = JSON.parse('{"x": 247.8, "y": -296.9, "z": 110.0, "h": 2.263}')
-		obj[2].stash = JSON.parse('{"x": -237.7, "y": -296.9, "z": 110.0, "h": 2.263}')
-		obj[2].logout = JSON.parse('{"x": -458.3, "y": 134.6, "z": 93.0, "h": 2.263}')
+	local id, POIOffsets = CreateShell(spawn, exit, model)
+
+	if POIOffsets then
+		POIOffsets.clothes = JSON.parse('{"x": 247.8, "y": -296.9, "z": 110.0, "h": 2.263}')
+		POIOffsets.stash = JSON.parse('{"x": -237.7, "y": -296.9, "z": 110.0, "h": 2.263}')
+		POIOffsets.logout = JSON.parse('{"x": -458.3, "y": 134.6, "z": 93.0, "h": 2.263}')
+		interiors[id].POIOffsets = POIOffsets
 	end
-	return { obj[1], obj[2] }
+
+	return { id, POIOffsets }
 end)
 
 exports('qb-interior', 'CreateContainer', function(spawn)
