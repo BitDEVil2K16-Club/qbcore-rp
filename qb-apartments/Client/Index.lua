@@ -103,22 +103,22 @@ local function SetInApartmentTargets()
 	local entrancePos = Vector(
 		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.exit.x,
 		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.exit.y,
-		Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset + POIOffsets.exit.z
+		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.exit.z
 	)
 	local stashPos = Vector(
 		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.stash.x,
 		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.stash.y,
-		Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset + POIOffsets.stash.z
+		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.stash.z
 	)
 	local outfitsPos = Vector(
 		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.clothes.x,
 		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.clothes.y,
-		Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset + POIOffsets.clothes.z
+		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.clothes.z
 	)
 	local logoutPos = Vector(
 		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.logout.x,
 		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.logout.y,
-		Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset + POIOffsets.logout.z
+		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.logout.z
 	)
 	RegisterInApartmentTarget('entrancePos', entrancePos, 0, {
 		{
@@ -191,7 +191,7 @@ local function EnterApartment(house, apartmentId, new)
 				local coords = Vector(
 					Apartments.Locations[house].coords[1],
 					Apartments.Locations[house].coords[2],
-					Apartments.Locations[house].coords[3] - CurrentOffset
+					Apartments.Locations[house].coords[3] + CurrentOffset
 				)
 				local data = exports['qb-interior']:CreateApartmentFurnished(coords)
 				HouseObj = data[1]
@@ -212,7 +212,7 @@ local function EnterApartment(house, apartmentId, new)
 			local coords = Vector(
 				Apartments.Locations[ClosestHouse].coords[1],
 				Apartments.Locations[ClosestHouse].coords[2],
-				Apartments.Locations[ClosestHouse].coords[3] - CurrentOffset
+				Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset
 			)
 			local data = exports['qb-interior']:CreateApartmentFurnished(coords)
 			HouseObj = data[1]
