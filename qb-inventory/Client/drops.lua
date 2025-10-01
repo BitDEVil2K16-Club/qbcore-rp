@@ -29,12 +29,10 @@ function GetDrops()
 	end)
 end
 
--- Events
-
-RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
-	local dropId = bag:GetID()
-	local newDropId = "drop-" .. dropId
-	AddTargetEntity(bag, {
+function SetupDropTarget(bag)
+	local dropId = bag.ActorGuid
+	local newDropId = string.format('drop-%s-%s-%s-%s', dropId.A, dropId.B, dropId.C, dropId.D)
+	exports['qb-target']:AddTargetEntity(bag.Object, {
 		options = {
 			{
 				icon = "fas fa-backpack",
@@ -58,6 +56,12 @@ RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
 		},
 		distance = 2.5,
 	})
+end
+
+-- Events
+
+RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
+	SetupDropTarget(bag)
 end)
 
 -- KeyPress

@@ -20,7 +20,7 @@ Config = {
     CleanupDropTime = 15,    -- in minutes
     CleanupDropInterval = 1, -- in minutes
 
-    ItemDropObject = 'abcca-qbcore::SM_Trash',
+    ItemDropObject = '/Engine/BasicShapes/Cube.Cube',
 }
 
 VehicleStorage = {

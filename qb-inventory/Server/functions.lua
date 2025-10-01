@@ -334,8 +334,8 @@ local function OpenShop(source, name)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
     if not RegisteredShops[name] then return end
-    local player = source:GetControlledCharacter()
-    local playerCoords = player:GetLocation()
+    local player = source:K2_GetPawn()
+    local playerCoords = player:K2_GetActorLocation()
     if RegisteredShops[name].coords then
         local shopDistance = RegisteredShops[name].coords
         if shopDistance then
@@ -350,7 +350,7 @@ local function OpenShop(source, name)
         slots = #RegisteredShops[name].items,
         inventory = RegisteredShops[name].items
     }
-    TriggerClientEvent('qb-inventory:client:openInventory', source, Player.PlayerData.items, formattedInventory)
+    TriggerClientEvent(source, 'qb-inventory:client:openInventory', Player.PlayerData.items, formattedInventory)
 end
 
 exports('qb-inventory', 'OpenShop', OpenShop)

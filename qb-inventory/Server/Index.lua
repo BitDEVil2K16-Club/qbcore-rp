@@ -5,6 +5,29 @@ require('Shared/locales/en')
 require('Server/functions')
 --require('Server/commands')
 
+-- Local Callback System
+local RegisteredCallbacks = {}
+
+local function RegisterCallback(name, cb)
+	RegisteredCallbacks[name] = cb
+end
+
+RegisterServerEvent('inventory:server:TriggerCallback', function(source, cbName, requestId, ...)
+	if RegisteredCallbacks[cbName] then
+		local result = RegisteredCallbacks[cbName](source, ...)
+		TriggerClientEvent(source, 'inventory:client:CallbackResponse', requestId, result)
+	end
+end)
+
+function BroadcastRemote(eventName, ...)
+    local Players = UE.UGameplayStatics.GetAllActorsOfClass(HWorld, UE.UClass.Load('/Script/SandboxGame.HPlayerController'), Players)
+    if not Players or type(Players) ~= 'userdata' then return end
+
+    for k, source in pairs(Players) do
+        TriggerClientEvent(source, eventName, ...)
+    end
+end
+
 -- Handlers
 
 RegisterServerEvent('QBCore:Server:PlayerLoaded', function(Player)
@@ -44,8 +67,8 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
     local player_ped = source:K2_GetPawn()
     if not player_ped then return end
-    AddItem(source, 'nitrous', 1, nil, nil, 'Testing')
-    AddItem(source, 'repairkit', 1, nil, nil, 'Testing')
+    --AddItem(source, 'nitrous', 1, nil, nil, 'Testing')
+    --AddItem(source, 'repairkit', 1, nil, nil, 'Testing')
 --[[     local in_vehicle = player_ped:GetVehicle()
     if in_vehicle then
         local plate = in_vehicle:GetValue('plate')
@@ -179,43 +202,44 @@ exports['qb-core']:CreateCallback('qb-inventory:server:GetCurrentDrops', functio
     cb(Drops)
 end)
 
-exports['qb-core']:CreateCallback('qb-inventory:server:createDrop', function(source, cb, item)
+RegisterCallback('qb-inventory:server:createDrop', function(source, item, newDropId)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then
-        cb(false)
-        return
+        return false
     end
-    local playerPed = source:GetControlledCharacter()
-    local playerCoords = playerPed:GetLocation()
+    local playerPed = source:K2_GetPawn()
+    local playerCoords = playerPed:K2_GetActorLocation()
     if RemoveItem(source, item.name, item.amount, item.fromSlot) then
         --if item.type == 'weapon' then SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true) end
         --TaskPlayAnim(playerPed, 'pickup_object', 'pickup_low', 8.0, -8.0, 2000, 0, 0, false, false, false)
-        local control_rotation = playerPed:GetControlRotation()
+--[[         local control_rotation = playerPed:GetControlRotation()
         local forward_vector = control_rotation:GetForwardVector()
         local spawn_location = playerCoords + Vector(0, 0, 40) + forward_vector * Vector(200)
-        local bag = Prop(spawn_location, control_rotation, Config.ItemDropObject, 1)
-        local dropId = bag:GetID()
-        local newDropId = 'drop-' .. dropId
+        local bag = StaticMesh(spawn_location, control_rotation, Config.ItemDropObject,CollisionType.StaticOnly)
+        --local dropId = bag:GetID()
+        local dropId = bag.ActorGuid
+        local newDropId = string.format('drop-%s-%s-%s-%s', dropId.A, dropId.B, dropId.C, dropId.D) ]]
         if not Drops[newDropId] then
             Drops[newDropId] = {
                 name = newDropId,
                 label = 'Drop',
                 items = { item },
-                entity = bag,
-                entityId = dropId,
+                --entity = bag,
+                --entityId = dropId,
+                creator = source,
                 createdTime = os.time(),
                 coords = playerCoords,
                 maxweight = Config.DropSize.maxweight,
                 slots = Config.DropSize.slots,
                 isOpen = true
             }
-            Events.BroadcastRemote('qb-inventory:client:setupDropTarget', bag)
+            --BroadcastRemote('qb-inventory:client:setupDropTarget', bag.Object)
         else
             table.insert(Drops[newDropId].items, item)
         end
-        cb(dropId)
+        return true
     else
-        cb(false)
+        return false
     end
 end)
 

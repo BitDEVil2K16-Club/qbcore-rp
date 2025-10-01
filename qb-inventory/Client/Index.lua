@@ -6,14 +6,32 @@ local my_webui = nil
 
 require('Client/drops')
 require('Client/vehicles')
+
+-- Local Callback System
+local CallbackRequests = {}
+local CallbackRequestId = 0
+
+local function TriggerCallback(name, cb, ...)
+	CallbackRequestId = CallbackRequestId + 1
+	CallbackRequests[CallbackRequestId] = cb
+	TriggerServerEvent('inventory:server:TriggerCallback', name, CallbackRequestId, ...)
+end
+
+RegisterClientEvent('inventory:client:CallbackResponse', function(requestId, ...)
+	if CallbackRequests[requestId] then
+		CallbackRequests[requestId](...)
+		CallbackRequests[requestId] = nil
+	end
+end)
+
 -- Handlers
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
 	--LocalPlayer.state:set('inv_busy', false, true)
 	Player_data = exports['qb-core']:GetPlayerData()
-	exports['qb-core']:TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
+--[[ 	exports['qb-core']:TriggerCallback('qb-inventory:server:GetCurrentDrops', function(theDrops)
 		Drops = theDrops
-	end)
+	end) ]]
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
@@ -144,13 +162,24 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 		TriggerServerEvent('qb-inventory:server:useItem', data.item)
 	end)
 
-	my_webui:RegisterEventHandler('DropItem', function(item)
-		exports['qb-core']:TriggerCallback('qb-inventory:server:createDrop', function(dropId)
-			if dropId then
-				local newDropId = 'drop-' .. dropId
-				my_webui:CallFunction('DropItemResponse', newDropId, item)
+	my_webui:RegisterEventHandler('DropItem', function(item, cb)
+		local PlayerPed = HPlayer:K2_GetPawn()
+		local PawnPosition = PlayerPed:K2_GetActorLocation()
+		local PawnRotation = PlayerPed:K2_GetActorRotation()
+
+		local ForwardVec = PlayerPed:GetActorForwardVector()
+		local SpawnPosition = PawnPosition + (ForwardVec * 200)
+		PawnRotation.Yaw = PawnRotation.Yaw
+
+		local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
+		local actorId = bag.ActorGuid
+		local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
+		TriggerCallback('qb-inventory:server:createDrop', function(success)
+			if success then
+				SetupDropTarget(bag)
+				cb(newDropId)
 			end
-		end, item)
+		end, item, newDropId)
 	end)
 
 	my_webui:RegisterEventHandler('AttemptPurchase', function(data)
