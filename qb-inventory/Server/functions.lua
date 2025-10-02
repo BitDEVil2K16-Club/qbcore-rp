@@ -25,7 +25,7 @@ local function SetupShopItems(shopItems)
     local slot = 1
     if shopItems and next(shopItems) then
         for _, item in pairs(shopItems) do
-            local itemInfo = QBShared.Items[item.name:lower()]
+            local itemInfo = exports['qb-core']:GetShared('Items')[item.name:lower()]
             if itemInfo then
                 items[slot] = {
                     name = itemInfo['name'],
@@ -339,8 +339,8 @@ local function OpenShop(source, name)
     if RegisteredShops[name].coords then
         local shopDistance = RegisteredShops[name].coords
         if shopDistance then
-            local distance = #(playerCoords - shopDistance)
-            if distance > 5.0 then return end
+            local distance = UE.FVector.Dist(playerCoords, shopDistance)
+            if distance > 150.0 then return end
         end
     end
     local formattedInventory = {
