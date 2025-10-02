@@ -2,7 +2,6 @@ Inventories = {}
 Drops = {}
 RegisteredShops = {}
 require('Shared/locales/en')
-require('Server/functions')
 --require('Server/commands')
 
 -- Local Callback System
@@ -146,11 +145,11 @@ RegisterServerEvent('qb-inventory:server:useItem', function(source, item)
     if itemInfo.type == 'weapon' then
         Events.Call('qb-weapons:server:equipWeapon', source, itemData)
         TriggerClientEvent('qb-inventory:client:ItemBox', source, itemInfo, 'use')
-        TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
+        --TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
     else
         UseItem(itemData.name, source, itemData)
         TriggerClientEvent('qb-inventory:client:ItemBox', source, itemInfo, 'use')
-        TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
+        --TriggerClientEvent('qb-inventory:client:useItem', source, true, itemData)
     end
 end)
 
@@ -243,7 +242,7 @@ RegisterCallback('qb-inventory:server:createDrop', function(source, item, newDro
     end
 end)
 
-exports['qb-core']:CreateCallback('qb-inventory:server:attemptPurchase', function(source, cb, data)
+CreateCallback('qb-inventory:server:attemptPurchase', function(source, cb, data)
     local itemInfo = data.item
     local amount = data.amount
     local shop = string.gsub(data.shop, 'shop%-', '')
@@ -254,7 +253,7 @@ exports['qb-core']:CreateCallback('qb-inventory:server:attemptPurchase', functio
         return
     end
     if not CanAddItem(source, itemInfo.name, amount) then
-        TriggerClientEvent('QBCore:Notify', source, 'Cannot hold item', 'error')
+        TriggerClientEvent(source, 'QBCore:Notify', 'Cannot hold item', 'error')
         cb(false)
         return
     end
@@ -265,34 +264,34 @@ exports['qb-core']:CreateCallback('qb-inventory:server:attemptPurchase', functio
         Events.Call('qb-shops:server:UpdateShopItems', shop, itemInfo, amount)
         cb(true)
     else
-        TriggerClientEvent('QBCore:Notify', source, 'You do not have enough money', 'error')
+        TriggerClientEvent(source, 'QBCore:Notify', 'You do not have enough money', 'error')
         cb(false)
     end
 end)
 
-exports['qb-core']:CreateCallback('qb-inventory:server:giveItem', function(source, cb, target, item, amount)
+CreateCallback('qb-inventory:server:giveItem', function(source, cb, target, item, amount)
     local player = exports['qb-core']:GetPlayer(source)
     if not player or player.PlayerData.metadata['isdead'] or player.PlayerData.metadata['inlaststand'] or player.PlayerData.metadata['ishandcuffed'] then
         cb(false)
         return
     end
-    local playerPed = source:GetControlledCharacter()
+    local playerPed = source:K2_GetPawn()
 
     local Target = exports['qb-core']:GetPlayer(target)
     if not Target or Target.PlayerData.metadata['isdead'] or Target.PlayerData.metadata['inlaststand'] or Target.PlayerData.metadata['ishandcuffed'] then
         cb(false)
         return
     end
-    local targetPed = target:GetControlledCharacter()
+    local targetPed = target:K2_GetPawn()
 
-    local pCoords = playerPed:GetLocation()
-    local tCoords = targetPed:GetLocation()
-    if pCoords:Distance(tCoords) > 10 then
+    local pCoords = playerPed:K2_GetActorLocation()
+    local tCoords = targetPed:K2_GetActorLocation()
+    if UE.FVector.Dist(pCoords, tCoords) > 100 then
         cb(false)
         return
     end
 
-    local itemInfo = QBShared.Items[item:lower()]
+    local itemInfo = exports['qb-core']:GetShared('Items')[item:lower()]
     if not itemInfo then
         cb(false)
         return
