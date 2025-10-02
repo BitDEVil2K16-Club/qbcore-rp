@@ -267,7 +267,7 @@ Timer.CreateThread(function()
 		if HPlayer:WasInputKeyJustPressed(invKey) then
 			if HPlayer:GetInputMode() ~= 1 then
 				if inv_open then
-					--if my_webui == nil then return end
+					if my_webui == nil then return end
 					my_webui:CallFunction('closeInventory')
 				else
 					TriggerServerEvent('qb-inventory:server:openInventory')
