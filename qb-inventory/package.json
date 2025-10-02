@@ -6,6 +6,7 @@
         "Client/Index.lua"
     ],
     "server": [
-        "Server/Index.lua"
+        "Server/Index.lua",
+        "Server/functions.lua"
     ]
 }
