@@ -184,7 +184,6 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 
 	my_webui:RegisterEventHandler('AttemptPurchase', function(data, cb)
 		TriggerCallback('qb-inventory:server:attemptPurchase', function(canPurchase)
-			print('canPurchase:', canPurchase)
 			cb(canPurchase)
 		end, data)
 	end)
