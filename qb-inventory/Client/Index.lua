@@ -115,10 +115,10 @@ RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amou
 	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
 end)
 
-RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
+--[[ RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
 	if my_webui == nil then return end
 	my_webui:CallFunction('UseItemResponse', bool, itemData)
-end)
+end) ]]
 
 RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 	my_webui = WebUI('Inventory', 'qb-inventory/Client/html/index.html', true)
@@ -182,19 +182,20 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 		end, item, newDropId)
 	end)
 
-	my_webui:RegisterEventHandler('AttemptPurchase', function(data)
-		exports['qb-core']:TriggerCallback('qb-inventory:server:attemptPurchase', function(canPurchase)
-			my_webui:CallFunction('AttemptPurchaseResponse', canPurchase, data)
+	my_webui:RegisterEventHandler('AttemptPurchase', function(data, cb)
+		TriggerCallback('qb-inventory:server:attemptPurchase', function(canPurchase)
+			print('canPurchase:', canPurchase)
+			cb(canPurchase)
 		end, data)
 	end)
 
-	my_webui:RegisterEventHandler('GiveItem', function(data)
+	my_webui:RegisterEventHandler('GiveItem', function(data, cb)
 		local player, distance = exports['qb-core']:GetClosestPlayer()
 		if player and distance < 500 then
 			local playerId = player:GetID()
-			exports['qb-core']:TriggerCallback('qb-inventory:server:giveItem', function(success)
-				my_webui:CallFunction('GiveItemResponse', success, data)
-			end, playerId, data.item.name)
+			TriggerCallback('qb-inventory:server:giveItem', function(success)
+				cb(success)
+			end, playerId, data.item.name, data.amount)
 		else
 			exports['qb-core']:Notify(Lang:t('notify.nonb'), 'error')
 		end
@@ -202,15 +203,15 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 
 	-- qb-weapons
 
-	my_webui:RegisterEventHandler('GetWeaponData', function(cData)
+	my_webui:RegisterEventHandler('GetWeaponData', function(cData, cb)
 		local data = {
 			WeaponData = QBShared.Items[cData.weapon],
 			AttachmentData = FormatWeaponAttachments(cData.ItemData),
 		}
-		my_webui:CallFunction('GetWeaponDataResponse', data)
+		cb(data)
 	end)
 
-	my_webui:RegisterEventHandler('RemoveAttachment', function(data)
+	my_webui:RegisterEventHandler('RemoveAttachment', function(data, cb)
 		local ped = PlayerPedId()
 		local WeaponData = data.WeaponData
 		local allAttachments = getConfigWeaponAttachments()
@@ -236,7 +237,7 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 					Attachments = Attachies,
 					WeaponData = WeaponData,
 				}
-				my_webui:CallFunction('GetWeaponDataResponse', DJATA)
+				cb(DJATA)
 			else
 				RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))
 			end
