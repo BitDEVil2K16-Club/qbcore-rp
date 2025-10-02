@@ -274,46 +274,6 @@ local function SetClosestApartment()
 	end
 end
 
-local function MenuOwners()
-	TriggerCallback('qb-apartments:GetAvailableApartments', function(apartments)
-		if next(apartments) == nil then
-			exports['qb-core']:Notify(Lang:t('error.nobody_home'), 'error')
-			exports['qb-menu']:closeMenu()
-		else
-			local apartmentMenu = {
-				{
-					header = Lang:t('text.tennants'),
-					isMenuHeader = true
-				}
-			}
-
-			for k, v in pairs(apartments) do
-				apartmentMenu[#apartmentMenu + 1] = {
-					header = v,
-					txt = '',
-					params = {
-						event = 'apartments:client:RingMenu',
-						args = {
-							apartmentId = k
-						}
-					}
-
-				}
-			end
-
-			apartmentMenu[#apartmentMenu + 1] = {
-				header = Lang:t('text.close_menu'),
-				txt = '',
-				params = {
-					event = 'qb-menu:client:closeMenu'
-				}
-
-			}
-			exports['qb-menu']:openMenu(apartmentMenu)
-		end
-	end, ClosestHouse)
-end
-
 -- Events
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -382,7 +342,43 @@ RegisterClientEvent('qb-apartments:client:RingDoor', function(player)
 end)
 
 RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
-	MenuOwners()
+	TriggerCallback('qb-apartments:GetAvailableApartments', function(apartments)
+		if next(apartments) == nil then
+			exports['qb-core']:Notify(Lang:t('error.nobody_home'), 'error')
+			exports['qb-menu']:closeMenu()
+		else
+			local apartmentMenu = {
+				{
+					header = Lang:t('text.tennants'),
+					isMenuHeader = true
+				}
+			}
+
+			for k, v in pairs(apartments) do
+				apartmentMenu[#apartmentMenu + 1] = {
+					header = v,
+					txt = '',
+					params = {
+						event = 'apartments:client:RingMenu',
+						args = {
+							apartmentId = k
+						}
+					}
+
+				}
+			end
+
+			apartmentMenu[#apartmentMenu + 1] = {
+				header = Lang:t('text.close_menu'),
+				txt = '',
+				params = {
+					event = 'qb-menu:client:closeMenu'
+				}
+
+			}
+			exports['qb-menu']:openMenu(apartmentMenu)
+		end
+	end, ClosestHouse)
 end)
 
 RegisterClientEvent('qb-apartments:client:EnterApartment', function()

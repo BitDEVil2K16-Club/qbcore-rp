@@ -162,7 +162,7 @@ end)
 
 -- Callbacks
 
-RegisterCallback('apartments:GetAvailableApartments', function(source, apartment)
+RegisterCallback('qb-apartments:GetAvailableApartments', function(source, apartment)
 	local apartments = {}
 	if ApartmentObjects ~= nil and ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil then
 		for k, _ in pairs(ApartmentObjects[apartment].apartments) do
