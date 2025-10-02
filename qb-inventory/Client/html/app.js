@@ -515,43 +515,45 @@ const InventoryContainer = Vue.createApp({
                     item: sourceItem,
                     amount: transferAmount || sourceItem.amount,
                     shop: this.otherInventoryName,
-                });
-                if (response.data) {
-                    const sourceInventory = this.getInventoryByType("other");
-                    const targetInventory = this.getInventoryByType("player");
-                    const amountToTransfer = transferAmount !== null ? transferAmount : sourceItem.amount;
-                    if (sourceItem.amount < amountToTransfer) {
-                        this.inventoryError(sourceSlot);
-                        return;
-                    }
-                    let targetItem = targetInventory[targetSlot];
-                    if (!targetItem || targetItem.name !== sourceItem.name) {
-                        let foundSlot = Object.keys(targetInventory).find((slot) => targetInventory[slot] && targetInventory[slot].name === sourceItem.name);
-                        if (foundSlot) {
-                            targetInventory[foundSlot].amount += amountToTransfer;
-                        } else {
-                            const targetInventoryKeys = Object.keys(targetInventory);
-                            if (targetInventoryKeys.length < this.totalSlots) {
-                                let freeSlot = Array.from({ length: this.totalSlots }, (_, i) => i + 1).find((i) => !(i in targetInventory));
-                                targetInventory[freeSlot] = {
-                                    ...sourceItem,
-                                    amount: amountToTransfer,
-                                };
+                }, (canPurchase) => {
+                    console.log(canPurchase)
+                    if (canPurchase) {
+                        const sourceInventory = this.getInventoryByType("other");
+                        const targetInventory = this.getInventoryByType("player");
+                        const amountToTransfer = transferAmount !== null ? transferAmount : sourceItem.amount;
+                        if (sourceItem.amount < amountToTransfer) {
+                            this.inventoryError(sourceSlot);
+                            return;
+                        }
+                        let targetItem = targetInventory[targetSlot];
+                        if (!targetItem || targetItem.name !== sourceItem.name) {
+                            let foundSlot = Object.keys(targetInventory).find((slot) => targetInventory[slot] && targetInventory[slot].name === sourceItem.name);
+                            if (foundSlot) {
+                                targetInventory[foundSlot].amount += amountToTransfer;
                             } else {
-                                this.inventoryError(sourceSlot);
-                                return;
+                                const targetInventoryKeys = Object.keys(targetInventory);
+                                if (targetInventoryKeys.length < this.totalSlots) {
+                                    let freeSlot = Array.from({ length: this.totalSlots }, (_, i) => i + 1).find((i) => !(i in targetInventory));
+                                    targetInventory[freeSlot] = {
+                                        ...sourceItem,
+                                        amount: amountToTransfer,
+                                    };
+                                } else {
+                                    this.inventoryError(sourceSlot);
+                                    return;
+                                }
                             }
+                        } else {
+                            targetItem.amount += amountToTransfer;
+                        }
+                        sourceItem.amount -= amountToTransfer;
+                        if (sourceItem.amount <= 0) {
+                            delete sourceInventory[sourceSlot];
                         }
                     } else {
-                        targetItem.amount += amountToTransfer;
+                        this.inventoryError(sourceSlot);
                     }
-                    sourceItem.amount -= amountToTransfer;
-                    if (sourceItem.amount <= 0) {
-                        delete sourceInventory[sourceSlot];
-                    }
-                } else {
-                    this.inventoryError(sourceSlot);
-                }
+                });
             } catch (error) {
                 this.inventoryError(sourceSlot);
             }
@@ -596,15 +598,15 @@ const InventoryContainer = Vue.createApp({
                         hEvent("DropItem", {
                             ...newItem,
                             fromSlot: item.slot,
+                        }, (newDropId) => {
+                            if (newDropId) {
+                                delete this.playerInventory[playerItemKey];
+                                this.otherInventory[1] = newItem;
+                                this.otherInventoryName = newDropId;
+                                this.otherInventoryLabel = newDropId;
+                                this.isOtherInventoryEmpty = false;
+                            }
                         });
-
-                        if (response.data) {
-                            delete this.playerInventory[playerItemKey];
-                            this.otherInventory[1] = newItem;
-                            this.otherInventoryName = response.data;
-                            this.otherInventoryLabel = response.data;
-                            this.isOtherInventoryEmpty = false;
-                        }
                     } catch (error) {
                         this.inventoryError(item.slot);
                     }
@@ -714,13 +716,14 @@ const InventoryContainer = Vue.createApp({
                             amount: amountToGive,
                             slot: selectedItem.slot,
                             info: selectedItem.info,
-                        });
-                        if (!response.data) return;
+                        }, (success) => {
+                            if (!success) return;
 
-                        this.playerInventory[selectedItem.slot].amount -= amountToGive;
-                        if (this.playerInventory[selectedItem.slot].amount === 0) {
-                            delete this.playerInventory[selectedItem.slot];
-                        }
+                            this.playerInventory[selectedItem.slot].amount -= amountToGive;
+                            if (this.playerInventory[selectedItem.slot].amount === 0) {
+                                delete this.playerInventory[selectedItem.slot];
+                            }
+                        });
                     } catch (error) {
                         console.error("An error occurred while giving the item:", error);
                     }
@@ -817,18 +820,13 @@ const InventoryContainer = Vue.createApp({
             if (!this.showWeaponAttachments) {
                 this.selectedWeapon = this.contextMenuItem;
                 this.showWeaponAttachments = true;
-                hEvent("GetWeaponData", JSON.stringify({ weapon: this.selectedWeapon.name, ItemData: this.selectedWeapon }))
-                    .then((response) => {
-                        const data = response.data;
-                        if (data.AttachmentData !== null && data.AttachmentData !== undefined) {
-                            if (data.AttachmentData.length > 0) {
-                                this.selectedWeaponAttachments = data.AttachmentData;
-                            }
+                hEvent("GetWeaponData", JSON.stringify({ weapon: this.selectedWeapon.name, ItemData: this.selectedWeapon }), (data) => {
+                    if (data.AttachmentData !== null && data.AttachmentData !== undefined) {
+                        if (data.AttachmentData.length > 0) {
+                            this.selectedWeaponAttachments = data.AttachmentData;
                         }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                    }
+                })
             } else {
                 this.showWeaponAttachments = false;
                 this.selectedWeapon = null;
@@ -843,22 +841,21 @@ const InventoryContainer = Vue.createApp({
             if (index !== -1) {
                 this.selectedWeaponAttachments.splice(index, 1);
             }
-            hEvent("RemoveAttachment", JSON.stringify({ AttachmentData: attachment, WeaponData: this.selectedWeapon }))
-                .then((response) => {
-                    this.selectedWeapon = response.data.WeaponData;
-                    if (response.data.Attachments) {
-                        this.selectedWeaponAttachments = response.data.Attachments;
-                    }
-                    const nextSlot = this.findNextAvailableSlot(this.playerInventory);
-                    if (nextSlot !== null) {
-                        response.data.itemInfo.amount = 1;
-                        this.playerInventory[nextSlot] = response.data.itemInfo;
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    this.selectedWeaponAttachments.splice(index, 0, attachment);
-                });
+            let success = false;
+            hEvent("RemoveAttachment", JSON.stringify({ AttachmentData: attachment, WeaponData: this.selectedWeapon }), (data) => {
+                this.selectedWeapon = data.WeaponData;
+                if (data.Attachments) {
+                    this.selectedWeaponAttachments = data.Attachments;
+                }
+                const nextSlot = this.findNextAvailableSlot(this.playerInventory);
+                if (nextSlot !== null) {
+                    data.itemInfo.amount = 1;
+                    this.playerInventory[nextSlot] = data.itemInfo;
+                }
+                success = true;
+            })
+            if (!success)
+                this.selectedWeaponAttachments.splice(index, 0, attachment);
         },
         generateTooltipContent(item) {
             if (!item) {
@@ -890,19 +887,15 @@ const InventoryContainer = Vue.createApp({
             let toInventoryName = toInventory === "other" ? this.otherInventoryName : toInventory;
 
             hEvent("SetInventoryData", {
-                    fromInventory: fromInventoryName,
-                    toInventory: toInventoryName,
-                    fromSlot,
-                    toSlot,
-                    fromAmount,
-                    toAmount,
-                })
-            .then((response) => {
+                fromInventory: fromInventoryName,
+                toInventory: toInventoryName,
+                fromSlot,
+                toSlot,
+                fromAmount,
+                toAmount,
+            }, () => {
                 this.clearDragData();
             })
-            .catch((error) => {
-                console.error("Error posting inventory data:", error);
-            });
         },
     },
     mounted() {
