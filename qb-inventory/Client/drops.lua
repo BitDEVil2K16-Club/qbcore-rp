@@ -39,11 +39,10 @@ function SetupDropTarget(bag)
 			{
 				icon = "fas fa-backpack",
 				label = Lang:t("menu.o_bag"),
-				action = function()
-					TriggerServerEvent("qb-inventory:server:openDrop", newDropId)
-					CurrentDrop = newDropId
-					CurrentDropActor = bag
-				end,
+				type = 'client',
+				event = 'qb-inventory:client:openDrop',
+				dropId = newDropId,
+				dropActor = bag,
 			},
 			{
 				icon = "fas fa-hand-pointer",
@@ -65,6 +64,12 @@ end
 
 RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
 	SetupDropTarget(bag)
+end)
+
+RegisterClientEvent("qb-inventory:client:openDrop", function(data)
+	CurrentDrop = data.dropId
+	CurrentDropActor = data.dropActor
+	TriggerServerEvent("qb-inventory:server:openDrop", data.dropId)
 end)
 
 RegisterClientEvent("qb-inventory:client:deleteDropTarget", function()
