@@ -114,7 +114,8 @@ RegisterServerEvent('qb-inventory:server:closeInventory', function(source, inven
     end
     if Drops[inventory] then
         if #Drops[inventory].items == 0 then
-            Drops[inventory].entity:K2_Destroy()
+            --Drops[inventory].entity:K2_Destroy()
+            TriggerClientEvent(source, 'qb-inventory:client:deleteDropTarget')
         end
         Drops[inventory].isOpen = false
         return

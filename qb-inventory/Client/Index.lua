@@ -168,6 +168,7 @@ RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 			if success then
 				SetupDropTarget(bag)
 				cb(newDropId)
+				CurrentDropActor = bag
 			end
 		end, item, newDropId)
 	end)

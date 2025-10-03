@@ -2,6 +2,7 @@ local Lang = require("Shared/locales/en")
 local holdingDrop = false
 local bagObject = nil
 local heldDrop = nil
+CurrentDropActor = nil
 CurrentDrop = nil
 
 -- Functions
@@ -19,6 +20,7 @@ function GetDrops()
 							action = function()
 								TriggerServerEvent("qb-inventory:server:openDrop", k)
 								CurrentDrop = dropId
+								CurrentDropActor = bag
 							end,
 						},
 					},
@@ -40,6 +42,7 @@ function SetupDropTarget(bag)
 				action = function()
 					TriggerServerEvent("qb-inventory:server:openDrop", newDropId)
 					CurrentDrop = newDropId
+					CurrentDropActor = bag
 				end,
 			},
 			{
@@ -62,6 +65,12 @@ end
 
 RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
 	SetupDropTarget(bag)
+end)
+
+RegisterClientEvent("qb-inventory:client:deleteDropTarget", function()
+	if CurrentDropActor then
+		CurrentDropActor:K2_DestroyActor()
+	end
 end)
 
 -- KeyPress
