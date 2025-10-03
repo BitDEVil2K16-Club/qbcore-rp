@@ -177,7 +177,7 @@ function ClearInventory(source, filterItems)
         end
     end
 
-    Player.Functions.SetPlayerData('items', savedItemData)
+    exports['qb-core']:Player('SetPlayerData', 'items', savedItemData)
 
     if not Player.Offline then
         local logMessage = string.format('**%s (citizenid: %s | id: %s)** inventory cleared', source:GetAccountName(), Player.PlayerData.citizenid, source)
@@ -190,7 +190,7 @@ exports('qb-inventory', 'ClearInventory', ClearInventory)
 function SetInventory(source, items)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
-    Player.Functions.SetPlayerData('items', items)
+    exports['qb-core']:Player('SetPlayerData', 'items', items)
     if not Player.Offline then
         local logMessage = string.format('**%s (citizenid: %s | id: %s)** items set: %s', source:GetAccountName(), Player.PlayerData.citizenid, source, json.encode(items))
         --Events.Call('qb-log:server:CreateLog', 'playerinventory', 'SetInventory', 'blue', logMessage)
@@ -207,7 +207,7 @@ function SetItemData(source, itemName, key, val)
     if not item then return false end
     item[key] = val
     Player.PlayerData.items[item.slot] = item
-    Player.Functions.SetPlayerData('items', Player.PlayerData.items)
+    exports['qb-core']:Player('SetPlayerData', 'items', Player.PlayerData.items)
     return true
 end
 
@@ -269,13 +269,13 @@ end
 exports('qb-inventory', 'UseItem', UseItem)
 
 function CloseInventory(source, identifier)
-    local player_ped = source:GetControlledCharacter()
-    player_ped:SetInputEnabled(true)
-    source:SetValue('inv_busy', false, true)
+    local player_ped = source:K2_GetPawn()
+    --player_ped:SetInputEnabled(true)
+    --source:SetValue('inv_busy', false, true)
     if identifier and Inventories[identifier] then
         Inventories[identifier].isOpen = false
     end
-    TriggerClientEvent('qb-inventory:client:closeInv', source)
+    TriggerClientEvent(source, 'qb-inventory:client:closeInv')
 end
 
 exports('qb-inventory', 'CloseInventory', CloseInventory)
@@ -293,7 +293,7 @@ function OpenInventoryById(source, targetId)
         slots = Config.MaxSlots,
         inventory = targetItems
     }
-    TriggerClientEvent('qb-inventory:client:openInventory', source, playerItems, formattedInventory)
+    TriggerClientEvent(source, 'qb-inventory:client:openInventory', playerItems, formattedInventory)
 end
 
 exports('qb-inventory', 'OpenInventoryById', OpenInventoryById)
@@ -375,7 +375,7 @@ function OpenInventory(source, identifier, data)
     local inventory = Inventories[identifier]
 
     if inventory and inventory.isOpen then
-        TriggerClientEvent('QBCore:Notify', source, 'This inventory is currently in use', 'error')
+        TriggerClientEvent(source, 'QBCore:Notify', 'This inventory is currently in use', 'error')
         return
     end
 

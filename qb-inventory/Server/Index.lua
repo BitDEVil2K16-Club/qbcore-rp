@@ -73,7 +73,7 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
 end)
 
 RegisterServerEvent('qb-inventory:server:toggleHotbar', function(source)
-    if source:GetValue('inv_busy', false) then return end
+    --if source:GetValue('inv_busy', false) then return end
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player or Player.PlayerData.metadata['isdead'] or Player.PlayerData.metadata['inlaststand'] or Player.PlayerData.metadata['ishandcuffed'] then return end
     local hotbarItems = {
