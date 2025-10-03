@@ -3,7 +3,7 @@ local my_webui = nil
 
 local function setupUI()
     if my_webui then return end
-    my_webui = WebUI('Input', 'qb-input/Client/html/index.html', true)
+    my_webui = WebUI('qb-input', 'qb-input/Client/html/index.html', true)
     my_webui:RegisterEventHandler('buttonSubmit', function()
         if not properties then return end
         properties:resolve(data.data)
