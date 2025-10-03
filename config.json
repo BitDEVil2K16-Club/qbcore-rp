@@ -9,6 +9,7 @@
     "qb-apartments",
     "qb-hud",
     "qb-menu",
-    "qb-input"
+    "qb-input",
+    "qb-banking"
   ]
 }
