@@ -11,22 +11,7 @@ local POIOffsets = nil
 local RangDoorbell = nil
 local InApartmentTargets = {}
 
--- Local Callback System
-local CallbackRequests = {}
-local CallbackRequestId = 0
-
-local function TriggerCallback(name, cb, ...)
-	CallbackRequestId = CallbackRequestId + 1
-	CallbackRequests[CallbackRequestId] = cb
-	TriggerServerEvent('apartments:server:TriggerCallback', name, CallbackRequestId, ...)
-end
-
-RegisterClientEvent('apartments:client:CallbackResponse', function(requestId, ...)
-	if CallbackRequests[requestId] then
-		CallbackRequests[requestId](...)
-		CallbackRequests[requestId] = nil
-	end
-end)
+-- Functions
 
 local function RegisterApartmentEntranceTarget(apartmentID, apartmentData)
 	local coords = Vector(apartmentData.coords[1], apartmentData.coords[2], apartmentData.coords[3])
@@ -180,9 +165,9 @@ local function DeleteInApartmentTargets()
 end
 
 local function EnterApartment(house, apartmentId, new)
-	TriggerCallback('qb-apartments:GetApartmentOffset', function(offset)
+	TriggerCallback('GetApartmentOffset', function(offset)
 		if offset == nil or offset == 0 then
-			TriggerCallback('qb-apartments:GetApartmentOffsetNewOffset', function(newoffset)
+			TriggerCallback('GetApartmentOffsetNewOffset', function(newoffset)
 				if newoffset > Apartments.MaxOffset then
 					newoffset = Apartments.SpawnOffset
 				end
@@ -266,7 +251,7 @@ local function SetClosestApartment()
 	end
 	if current ~= ClosestHouse and isLoggedIn and not InApartment then
 		ClosestHouse = current
-		TriggerCallback('qb-apartments:IsOwner', function(result)
+		TriggerCallback('IsOwner', function(result)
 			IsOwned = result
 			DeleteApartmentsEntranceTargets()
 			DeleteInApartmentTargets()
@@ -290,7 +275,7 @@ RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
 end)
 
 RegisterClientEvent('qb-apartments:client:setupSpawnUI', function(cData)
-	TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
+	TriggerCallback('GetOwnedApartment', function(result)
 		if result then
 			TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, false, nil)
 			--TriggerLocalClientEvent('apartments:client:SetHomeBlip', result.type)
@@ -342,7 +327,7 @@ RegisterClientEvent('qb-apartments:client:RingDoor', function(player)
 end)
 
 RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
-	TriggerCallback('qb-apartments:GetAvailableApartments', function(apartments)
+	TriggerCallback('GetAvailableApartments', function(apartments)
 		if next(apartments) == nil then
 			exports['qb-core']:Notify(Lang:t('error.nobody_home'), 'error')
 			exports['qb-menu']:closeMenu()
@@ -382,7 +367,7 @@ RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
 end)
 
 RegisterClientEvent('qb-apartments:client:EnterApartment', function()
-	TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
+	TriggerCallback('GetOwnedApartment', function(result)
 		if result ~= nil then
 			EnterApartment(ClosestHouse, result.name)
 		end
@@ -392,7 +377,7 @@ end)
 RegisterClientEvent('qb-apartments:client:UpdateApartment', function()
 	local apartmentType = ClosestHouse
 	local apartmentLabel = Apartments.Locations[ClosestHouse].label
-	TriggerCallback('qb-apartments:GetOwnedApartment', function(result)
+	TriggerCallback('GetOwnedApartment', function(result)
 		if result == nil then
 			TriggerServerEvent('qb-apartments:server:CreateApartment', apartmentType, apartmentLabel, false)
 		else

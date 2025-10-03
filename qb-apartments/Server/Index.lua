@@ -1,20 +1,6 @@
 local Lang = require('Shared/locales/en')
 local ApartmentObjects = {}
 
--- Local Callback System
-local RegisteredCallbacks = {}
-
-local function RegisterCallback(name, cb)
-	RegisteredCallbacks[name] = cb
-end
-
-RegisterServerEvent('apartments:server:TriggerCallback', function(source, cbName, requestId, ...)
-	if RegisteredCallbacks[cbName] then
-		local result = RegisteredCallbacks[cbName](source, ...)
-		TriggerClientEvent(source, 'apartments:client:CallbackResponse', requestId, result)
-	end
-end)
-
 -- Functions
 
 local function CreateApartmentId(t)
@@ -162,7 +148,7 @@ end)
 
 -- Callbacks
 
-RegisterCallback('qb-apartments:GetAvailableApartments', function(source, apartment)
+RegisterCallback('GetAvailableApartments', function(source, apartment)
 	local apartments = {}
 	if ApartmentObjects ~= nil and ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil then
 		for k, _ in pairs(ApartmentObjects[apartment].apartments) do
@@ -175,7 +161,7 @@ RegisterCallback('qb-apartments:GetAvailableApartments', function(source, apartm
 	return apartments
 end)
 
-RegisterCallback('qb-apartments:GetApartmentOffset', function(source, apartmentId)
+RegisterCallback('GetApartmentOffset', function(source, apartmentId)
 	local retval = 0
 	if ApartmentObjects ~= nil then
 		for k, _ in pairs(ApartmentObjects) do
@@ -187,7 +173,7 @@ RegisterCallback('qb-apartments:GetApartmentOffset', function(source, apartmentI
 	return retval
 end)
 
-RegisterCallback('qb-apartments:GetApartmentOffsetNewOffset', function(source, apartment)
+RegisterCallback('GetApartmentOffsetNewOffset', function(source, apartment)
 	local retval = Apartments.SpawnOffset
 	if ApartmentObjects ~= nil and ApartmentObjects[apartment] ~= nil and ApartmentObjects[apartment].apartments ~= nil then
 		for k, _ in pairs(ApartmentObjects[apartment].apartments) do
@@ -199,7 +185,7 @@ RegisterCallback('qb-apartments:GetApartmentOffsetNewOffset', function(source, a
 	return retval
 end)
 
-RegisterCallback('qb-apartments:GetOwnedApartment', function(source, cid)
+RegisterCallback('GetOwnedApartment', function(source, cid)
 	if cid then
 		local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { cid })
 		if result[1] ~= nil then
@@ -217,7 +203,7 @@ RegisterCallback('qb-apartments:GetOwnedApartment', function(source, cid)
 	end
 end)
 
-RegisterCallback('qb-apartments:IsOwner', function(source, apartment)
+RegisterCallback('IsOwner', function(source, apartment)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return nil end
 	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM apartments WHERE citizenid = ?', { Player.PlayerData.citizenid })
@@ -232,7 +218,7 @@ RegisterCallback('qb-apartments:IsOwner', function(source, apartment)
 	end
 end)
 
-RegisterCallback('qb-apartments:GetOutfits', function(source)
+RegisterCallback('GetOutfits', function(source)
 	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then return nil end
 	local result = exports['qb-core']:DatabaseAction('Select', 'SELECT * FROM player_outfits WHERE citizenid = ?', { Player.PlayerData.citizenid })
