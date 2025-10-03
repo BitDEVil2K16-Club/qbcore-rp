@@ -22,7 +22,7 @@ function GetDrops()
 							end,
 						},
 					},
-					distance = 2.5,
+					distance = 1000,
 				})
 			end
 		end
@@ -54,7 +54,7 @@ function SetupDropTarget(bag)
 				end,
 			},
 		},
-		distance = 2.5,
+		distance = 1000,
 	})
 end
 
