@@ -10,7 +10,8 @@ local function setupUI()
     my_webui = WebUI('qb-banking', 'qb-banking/html/index.html', true)
     my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
         my_webui:RegisterEventHandler('closeApp', function(_, cb)
-            cb('ok')
+            my_webui:Destroy()
+            my_webui = nil
         end)
 
         my_webui:RegisterEventHandler('withdraw', function(data, cb)
@@ -77,13 +78,15 @@ end
 
 local function OpenBank()
     if not my_webui then setupUI() end
-    TriggerCallback('openBank', function(data)
-        my_webui:CallFunction('openBank', {
-            accounts = data.accounts,
-            statements = data.statements,
-            playerData = data.playerData
-        })
-    end)
+    Timer.SetTimeout(function()
+        TriggerCallback('openBank', function(data)
+            my_webui:CallFunction('openBank', {
+                accounts = data.accounts,
+                statements = data.statements,
+                playerData = data.playerData
+            })
+        end)
+    end, 2500)
 end
 
 RegisterClientEvent('qb-banking:client:openBank', function()
@@ -92,13 +95,15 @@ end)
 
 local function OpenATM()
     if not my_webui then setupUI() end
-    TriggerCallback('openATM', function(data)
-        my_webui:CallFunction('openATM', {
-            accounts = data.accounts,
-            pinNumbers = data.acceptablePins,
-            playerData = data.playerData
-        })
-    end)
+    Timer.SetTimeout(function()
+        TriggerCallback('openATM', function(data)
+            my_webui:CallFunction('openATM', {
+                accounts = data.accounts,
+                pinNumbers = data.acceptablePins,
+                playerData = data.playerData
+            })
+        end)
+    end, 2500)
     -- QBCore.Functions.Progressbar('accessing_atm', Lang:t('progress.atm'), 1500, false, true, {
     --     disableMovement = false,
     --     disableCarMovement = false,

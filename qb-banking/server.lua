@@ -178,7 +178,7 @@ RegisterCallback('openBank', function(source)
             if Statements[accountName] then statements[accountName] = Statements[accountName] end
         end
     end
-    return { accounts, statements, Player.PlayerData }
+    return { accounts = accounts, statements = statements, playerData = Player.PlayerData }
 end)
 
 RegisterCallback('openATM', function(source)
@@ -203,7 +203,7 @@ RegisterCallback('openATM', function(source)
             accounts[#accounts + 1] = accountInfo
         end
     end
-    return { accounts, Player.PlayerData, acceptablePins }
+    return { accounts = accounts, playerData = Player.PlayerData, acceptablePins = acceptablePins }
 end)
 
 RegisterCallback('withdraw', function(source, data)

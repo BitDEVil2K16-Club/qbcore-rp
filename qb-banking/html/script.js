@@ -67,16 +67,16 @@ const bankingApp = Vue.createApp({
                 });
             });
             this.statements = {};
-            Object.keys(bankData.statements).forEach((accountKey) => {
-                this.statements[accountKey] = bankData.statements[accountKey].map((statement) => ({
-                    id: statement.id,
-                    date: statement.date,
-                    reason: statement.reason,
-                    amount: statement.amount,
-                    type: statement.statement_type,
-                    user: statement.citizenid,
-                }));
-            });
+            // Object.keys(bankData.statements).forEach((accountKey) => {
+            //     this.statements[accountKey] = bankData.statements[accountKey].map((statement) => ({
+            //         id: statement.id,
+            //         date: statement.date,
+            //         reason: statement.reason,
+            //         amount: statement.amount,
+            //         type: statement.statement_type,
+            //         user: statement.citizenid,
+            //     }));
+            // });
             this.isBankOpen = true;
         },
         openATM(bankData) {
