@@ -1,92 +1,85 @@
-local Lang = require('locales/en')
 local zones = {}
 local isPlayerInsideBankZone = false
 local my_webui = nil
 
 -- Functions
 
-local function setupUI()
-    if my_webui then return end
-    my_webui = WebUI('qb-banking', 'qb-banking/html/index.html', true)
-    my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-        my_webui:RegisterEventHandler('closeApp', function(_, cb)
-            my_webui:Destroy()
-            my_webui = nil
-        end)
-
-        my_webui:RegisterEventHandler('withdraw', function(data, cb)
-            TriggerCallback('withdraw', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('deposit', function(data, cb)
-            TriggerCallback('deposit', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('internalTransfer', function(data, cb)
-            TriggerCallback('internalTransfer', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('externalTransfer', function(data, cb)
-            TriggerCallback('externalTransfer', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('orderCard', function(data, cb)
-            TriggerCallback('orderCard', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('openAccount', function(data, cb)
-            TriggerCallback('openAccount', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('renameAccount', function(data, cb)
-            TriggerCallback('renameAccount', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('deleteAccount', function(data, cb)
-            TriggerCallback('deleteAccount', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('addUser', function(data, cb)
-            TriggerCallback('addUser', function(status)
-                cb(status)
-            end, data)
-        end)
-
-        my_webui:RegisterEventHandler('removeUser', function(data, cb)
-            TriggerCallback('removeUser', function(status)
-                cb(status)
-            end, data)
-        end)
+my_webui = WebUI('qb-banking', 'qb-banking/html/index.html', 0)
+my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
+    my_webui:RegisterEventHandler('closeApp', function()
+        my_webui:SetLayer(0)
     end)
-end
+
+    my_webui:RegisterEventHandler('withdraw', function(data, cb)
+        TriggerCallback('withdraw', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('deposit', function(data, cb)
+        TriggerCallback('deposit', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('internalTransfer', function(data, cb)
+        TriggerCallback('internalTransfer', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('externalTransfer', function(data, cb)
+        TriggerCallback('externalTransfer', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('orderCard', function(data, cb)
+        TriggerCallback('orderCard', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('openAccount', function(data, cb)
+        TriggerCallback('openAccount', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('renameAccount', function(data, cb)
+        TriggerCallback('renameAccount', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('deleteAccount', function(data, cb)
+        TriggerCallback('deleteAccount', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('addUser', function(data, cb)
+        TriggerCallback('addUser', function(status)
+            cb(status)
+        end, data)
+    end)
+
+    my_webui:RegisterEventHandler('removeUser', function(data, cb)
+        TriggerCallback('removeUser', function(status)
+            cb(status)
+        end, data)
+    end)
+end)
 
 local function OpenBank()
-    if not my_webui then setupUI() end
-    Timer.SetTimeout(function()
-        TriggerCallback('openBank', function(data)
-            my_webui:CallFunction('openBank', {
-                accounts = data.accounts,
-                statements = data.statements,
-                playerData = data.playerData
-            })
-        end)
-    end, 2500)
+    my_webui:SetLayer(5)
+    TriggerCallback('openBank', function(data)
+        my_webui:CallFunction('openBank', {
+            accounts = data.accounts,
+            statements = data.statements,
+            playerData = data.playerData
+        })
+    end)
 end
 
 RegisterClientEvent('qb-banking:client:openBank', function()
@@ -94,40 +87,14 @@ RegisterClientEvent('qb-banking:client:openBank', function()
 end)
 
 local function OpenATM()
-    if not my_webui then setupUI() end
-    Timer.SetTimeout(function()
-        TriggerCallback('openATM', function(data)
-            my_webui:CallFunction('openATM', {
-                accounts = data.accounts,
-                pinNumbers = data.acceptablePins,
-                playerData = data.playerData
-            })
-        end)
-    end, 2500)
-    -- QBCore.Functions.Progressbar('accessing_atm', Lang:t('progress.atm'), 1500, false, true, {
-    --     disableMovement = false,
-    --     disableCarMovement = false,
-    --     disableMouse = false,
-    --     disableCombat = false,
-    -- }, {
-    --     animDict = 'amb@prop_human_atm@male@enter',
-    --     anim = 'enter',
-    -- }, {
-    --     model = 'prop_cs_credit_card',
-    --     bone = 28422,
-    --     coords = vector3(0.1, 0.03, -0.05),
-    --     rotation = vector3(0.0, 0.0, 180.0),
-    -- }, {}, function()
-    --     TriggerCallback('openATM', function(accounts, playerData, acceptablePins)
-    --         SetNuiFocus(true, true)
-    --         my_webui:CallFunction({
-    --             action = 'openATM',
-    --             accounts = accounts,
-    --             pinNumbers = acceptablePins,
-    --             playerData = playerData
-    --         })
-    --     end)
-    -- end)
+    my_webui:SetLayer(5)
+    TriggerCallback('openATM', function(data)
+        my_webui:CallFunction('openATM', {
+            accounts = data.accounts,
+            pinNumbers = data.acceptablePins,
+            playerData = data.playerData
+        })
+    end)
 end
 
 local function NearATM()
