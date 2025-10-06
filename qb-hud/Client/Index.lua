@@ -1,5 +1,5 @@
 local isLoggedIn = false
-local my_webui = nil
+local my_webui = WebUI('qb-hud', 'qb-hud/Client/html/index.html', 0)
 local player_data = {}
 local round = math.floor
 
@@ -40,7 +40,7 @@ RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     player_data = exports['qb-core']:GetPlayerData()
     --updateVoiceLevel()
-    my_webui = WebUI('qb-hud', 'qb-hud/Client/html/index.html', 2)
+    my_webui:SetLayer(2)
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
