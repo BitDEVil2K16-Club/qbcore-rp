@@ -87,6 +87,7 @@ local function setupHandlers()
 		if not next(send_data) then return end
 		local data = send_data[option]
 		if not data then return end
+		disableTarget()
 		send_data = {}
 		if data.action then
 			data.action(data.entity)
@@ -105,7 +106,6 @@ local function setupHandlers()
 				TriggerLocalClientEvent(data.event, data)
 			end
 		end
-		disableTarget()
 	end)
 
 	my_webui:RegisterEventHandler('leftTarget', function()
