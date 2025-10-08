@@ -1,17 +1,7 @@
 local Lang = require('Shared/locales/en')
-local my_webui = nil
+local my_webui = WebUI('qb-multicharacter', 'qb-multicharacter/Client/html/index.html', 0)
 
--- Functions
-
-local function setupCharMenuUI(numOfChars)
-    local translations = {}
-    for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
-        if k:sub(0, ('ui.'):len()) then
-            translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
-        end
-    end
-    my_webui = WebUI('qb-multicharacter', 'qb-multicharacter/Client/html/index.html', true)
-    -- NUI Events
+my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
     my_webui:RegisterEventHandler('selectCharacter', function(data)
         local cData = data.cData
         TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
@@ -39,10 +29,19 @@ local function setupCharMenuUI(numOfChars)
     my_webui:RegisterEventHandler('removeCharacter', function(data)
         TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
     end)
+end)
 
-    my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-        my_webui:CallFunction('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
-    end)
+-- Functions
+
+local function setupCharMenuUI(numOfChars)
+    local translations = {}
+    for k in pairs(Lang.fallback and Lang.fallback.phrases or Lang.phrases) do
+        if k:sub(0, ('ui.'):len()) then
+            translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
+        end
+    end
+    my_webui:SetLayer(5)
+    my_webui:CallFunction('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
 end
 
 -- Events
@@ -56,7 +55,7 @@ RegisterClientEvent('qb-multicharacter:client:ReceiveCharacters', function(chara
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
-    my_webui:Destroy()
+    my_webui:SetLayer(0)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
@@ -66,7 +65,7 @@ RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()
-    my_webui:Destroy()
+    my_webui:SetLayer(0)
     TriggerLocalClientEvent('QBCore:Client:OnPlayerLoaded')
     TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
     TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)

@@ -1,6 +1,6 @@
 local Lang = require('Shared/locales/en')
 local Houses = {}
-local my_webui = nil
+local my_webui = WebUI('qb-spawn', 'qb-spawn/Client/html/index.html', 0)
 
 -- Functions
 
@@ -13,12 +13,33 @@ local function SetDisplay(bool, cData, new, apps)
 	end
 
 	if not bool then
-		my_webui:Destroy()
+		my_webui:SetLayer(0)
 		return
 	end
 
-	my_webui = WebUI('qb-spawn', 'qb-spawn/Client/html/index.html', true)
-	-- NUI Events
+	my_webui:SetLayer(5)
+	my_webui:CallFunction('showUi', bool, translations)
+	if not new then
+		--exports['qb-core']:TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
+		local myHouses = {}
+		-- if houses then
+		-- 	for i = 1, #houses do
+		-- 		myHouses[#myHouses + 1] = {
+		-- 			house = houses[i].house,
+		-- 			label = houses[i].address,
+		-- 		}
+		-- 	end
+		-- end
+		my_webui:CallFunction('setupLocations', Config.Spawns, myHouses, new)
+		--end, cData.citizenid)
+	elseif new then
+		my_webui:CallFunction('setupApartments', apps, new)
+	end
+end
+
+-- UI
+
+my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
 	my_webui:RegisterEventHandler('qb-spawn:setCam', function(data)
 		local location = tostring(data.posname)
 		local type = tostring(data.type)
@@ -81,31 +102,7 @@ local function SetDisplay(bool, cData, new, apps)
 			SetDisplay(false)
 		end
 	end)
-
-	my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-		my_webui:CallFunction('showUi', bool, translations)
-		if not new then
-			--exports['qb-core']:TriggerCallback('qb-houses:server:getOwnedHouses', function(houses)
-			local myHouses = {}
-			-- if houses then
-			-- 	for i = 1, #houses do
-			-- 		myHouses[#myHouses + 1] = {
-			-- 			house = houses[i].house,
-			-- 			label = houses[i].address,
-			-- 		}
-			-- 	end
-			-- end
-			my_webui:CallFunction('setupLocations', Config.Spawns, myHouses, new)
-			--end, cData.citizenid)
-		elseif new then
-			my_webui:CallFunction('setupApartments', apps, new)
-		end
-	end)
-end
-
--- local function SetCam(campos)
--- 	HPlayer:TranslateCameraTo(Vector(campos[1], campos[2], campos[3]), 1.0, 0)
--- end
+end)
 
 -- Events
 
@@ -114,9 +111,7 @@ RegisterClientEvent('qb-houses:client:setHouseConfig', function(houseConfig)
 end)
 
 RegisterClientEvent('qb-spawn:client:openUI', function(value, cData, new, apps)
-	SetDisplay(value, cData, new, apps)
-end)
-
-RegisterClientEvent('qb-spawn:client:setupSpawns', function()
-
+	Timer.SetTimeout(function()
+		SetDisplay(value, cData, new, apps)
+	end, 500)
 end)

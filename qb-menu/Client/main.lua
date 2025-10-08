@@ -1,47 +1,43 @@
 local headerShown = false
 local sendData = nil
-local my_webui = nil
+local my_webui = WebUI('qb-menu', 'qb-menu/Client/html/index.html', 0)
 
--- Functions
-
-local function setupUI()
-    if my_webui then return end
-    my_webui = WebUI('qb-menu', 'qb-menu/Client/html/index.html', true)
-    my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-        my_webui:RegisterEventHandler('clickedButton', function(option)
-            if headerShown then headerShown = false end
-            if sendData then
-                local data = sendData[tonumber(option)]
-                sendData = nil
-                if data.action ~= nil then
-                    data.action()
-                    return
-                end
-                if data then
-                    if data.params.event then
-                        if data.params.isServer then
-                            TriggerServerEvent(data.params.event, data.params.args)
-                        elseif data.params.isCommand then
-                            ExecuteCommand(data.params.event)
-                        elseif data.params.isQBCommand then
-                            TriggerServerEvent('QBCore:CallCommand', data.params.event, data.params.args)
-                        elseif data.params.isAction then
-                            data.params.event(data.params.args)
-                        else
-                            TriggerLocalClientEvent(data.params.event, data.params.args)
-                        end
+my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
+    my_webui:RegisterEventHandler('clickedButton', function(option)
+        if headerShown then headerShown = false end
+        if sendData then
+            local data = sendData[tonumber(option)]
+            sendData = nil
+            if data.action ~= nil then
+                data.action()
+                return
+            end
+            if data then
+                if data.params.event then
+                    if data.params.isServer then
+                        TriggerServerEvent(data.params.event, data.params.args)
+                    elseif data.params.isCommand then
+                        ExecuteCommand(data.params.event)
+                    elseif data.params.isQBCommand then
+                        TriggerServerEvent('QBCore:CallCommand', data.params.event, data.params.args)
+                    elseif data.params.isAction then
+                        data.params.event(data.params.args)
+                    else
+                        TriggerLocalClientEvent(data.params.event, data.params.args)
                     end
                 end
             end
-        end)
-
-        my_webui:RegisterEventHandler('closeMenu', function()
-            headerShown = false
-            sendData = nil
-            TriggerLocalClientEvent('qb-menu:client:menuClosed')
-        end)
+        end
     end)
-end
+
+    my_webui:RegisterEventHandler('closeMenu', function()
+        headerShown = false
+        sendData = nil
+        my_webui:SetLayer(0)
+    end)
+end)
+
+-- Functions
 
 local function sortData(data, skipfirst)
     local header = data[1]
@@ -54,7 +50,7 @@ end
 
 local function openMenu(data, sort, skipFirst)
     if not data or not next(data) then return end
-    if not my_webui then setupUI() end
+    if not my_webui then return end
     if sort then data = sortData(data, skipFirst) end
     -- for _,v in pairs(data) do
     -- 	if v["icon"] then
@@ -67,9 +63,8 @@ local function openMenu(data, sort, skipFirst)
     -- end
     headerShown = false
     sendData = data
-    if my_webui then
-        my_webui:CallFunction('openMenu', data.buttons)
-    end
+    my_webui:SetLayer(5)
+    my_webui:CallFunction('openMenu', data.buttons)
 end
 
 local function closeMenu()
@@ -77,16 +72,16 @@ local function closeMenu()
     headerShown = false
     if not my_webui then return end
     my_webui:CallFunction('closeMenu')
+    my_webui:SetLayer(0)
 end
 
 local function showHeader(data)
     if not data or not next(data) then return end
-    if not my_webui then setupUI() end
+    if not my_webui then return end
+    my_webui:SetLayer(3)
     headerShown = true
     sendData = data
-    if my_webui then
-        my_webui:CallFunction('openMenu', table.clone(data.buttons))
-    end
+    my_webui:CallFunction('openMenu', table.clone(data.buttons))
 end
 
 -- Events

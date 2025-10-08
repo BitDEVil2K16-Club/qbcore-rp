@@ -1,24 +1,5 @@
 QBCore.Functions = {}
-local my_webui = nil
-
--- Callback Functions --
-
--- Create Client Callback
-function QBCore.Functions.CreateClientCallback(name, cb)
-    QBCore.ClientCallbacks[name] = cb
-end
-
--- Trigger Client Callback
-function QBCore.Functions.TriggerClientCallback(name, cb, ...)
-    if not QBCore.ClientCallbacks[name] then return end
-    QBCore.ClientCallbacks[name](cb, ...)
-end
-
--- Trigger Server Callback
-function QBCore.Functions.TriggerCallback(name, cb, ...)
-    QBCore.ServerCallbacks[name] = cb
-    TriggerServerEvent('QBCore:Server:TriggerCallback', name, ...)
-end
+local my_webui = WebUI('qb-core', 'qb-core/Client/html/index.html', 0)
 
 -- Getter Functions
 
@@ -38,19 +19,14 @@ end
 function QBCore.Functions.HideText()
     if not my_webui then return end
     my_webui:CallFunction('hideText')
+    my_webui:SetLayer(0)
 end
 
 function QBCore.Functions.DrawText(text, position)
-    if not my_webui then
-        my_webui = WebUI('DrawText', 'qb-core/Client/html/index.html', 3)
-        my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-            if type(position) ~= 'string' then position = 'left' end
-            my_webui:CallFunction('drawText', text, position)
-        end)
-    else
-        if type(position) ~= 'string' then position = 'left' end
-        my_webui:CallFunction('drawText', text, position)
-    end
+    if not my_webui then return end
+    if type(position) ~= 'string' then position = 'left' end
+    my_webui:SetLayer(3)
+    my_webui:CallFunction('drawText', text, position)
 end
 
 function QBCore.Functions.ChangeText(text, position)
@@ -66,49 +42,30 @@ function QBCore.Functions.KeyPressed()
 end
 
 function QBCore.Functions.Notify(text, texttype, length, icon)
-    print('Notify: ', text, texttype, length, icon)
-    if not my_webui then
-        my_webui = WebUI('DrawText', 'qb-core/Client/html/index.html', 3)
-        my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-            local noti_type = texttype or 'primary'
-            if type(text) == 'table' then
-                my_webui:CallFunction('showNotif', {
-                    text = text.text,
-                    length = length or 5000,
-                    type = noti_type,
-                    caption = text.caption or '',
-                    icon = icon or nil
-                })
-            else
-                my_webui:CallFunction('showNotif', {
-                    text = text,
-                    length = length or 5000,
-                    type = noti_type,
-                    caption = '',
-                    icon = icon or nil
-                })
-            end
-        end)
+    if not my_webui then return end
+    local noti_type = texttype or 'primary'
+    my_webui:SetLayer(3)
+    if type(text) == 'table' then
+        my_webui:CallFunction('showNotif', {
+            text = text.text,
+            length = length or 5000,
+            type = noti_type,
+            caption = text.caption or '',
+            icon = icon or nil
+        })
     else
-        local noti_type = texttype or 'primary'
-        if type(text) == 'table' then
-            my_webui:CallFunction('showNotif', {
-                text = text.text,
-                length = length or 5000,
-                type = noti_type,
-                caption = text.caption or '',
-                icon = icon or nil
-            })
-        else
-            my_webui:CallFunction('showNotif', {
-                text = text,
-                length = length or 5000,
-                type = noti_type,
-                caption = '',
-                icon = icon or nil
-            })
-        end
+        my_webui:CallFunction('showNotif', {
+            text = text,
+            length = length or 5000,
+            type = noti_type,
+            caption = '',
+            icon = icon or nil
+        })
     end
+
+    Timer.SetTimeout(function()
+        my_webui:SetLayer(0)
+    end, length or 5000)
 end
 
 -- World Getters

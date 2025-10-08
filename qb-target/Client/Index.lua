@@ -1,8 +1,47 @@
 local player_data = {}
 local isLoggedIn = false
 local player_ped
-local target_active, target_entity, raycast_timer, my_webui = false, nil, nil, nil
+local target_active, target_entity, raycast_timer = false, nil, nil
 local nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}
+local my_webui = WebUI('Target', 'qb-target/Client/html/index.html', 0)
+
+-- UI
+
+my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
+	my_webui:RegisterEventHandler('selectTarget', function(option)
+		option = tonumber(option) or option
+		if not next(send_data) then return end
+		local data = send_data[option]
+		if not data then return end
+		disableTarget()
+		send_data = {}
+		if data.action then
+			data.action(data.entity)
+		elseif data.event then
+			if data.type == 'client' then
+				TriggerLocalClientEvent(data.event, data)
+			elseif data.type == 'server' then
+				if data.canInteract then data.canInteract = nil end
+				if data.action then data.action = nil end
+				local networked_entity = data.entity.bReplicates
+				if not networked_entity then data.entity = nil end
+				TriggerServerEvent(data.event, data)
+			elseif data.type == 'command' then
+				TriggerServerEvent('QBCore:CallCommand', data.event, data)
+			else
+				TriggerLocalClientEvent(data.event, data)
+			end
+		end
+	end)
+
+	my_webui:RegisterEventHandler('leftTarget', function()
+		target_entity = nil
+	end)
+
+	my_webui:RegisterEventHandler('closeTarget', function()
+		disableTarget()
+	end)
+end)
 
 -- Handlers
 
@@ -80,47 +119,6 @@ local function SetOptions(tbl, distance, options)
 		tbl[v.label] = v
 	end
 end
-
-local function setupHandlers()
-	my_webui:RegisterEventHandler('selectTarget', function(option)
-		option = tonumber(option) or option
-		if not next(send_data) then return end
-		local data = send_data[option]
-		if not data then return end
-		disableTarget()
-		send_data = {}
-		if data.action then
-			data.action(data.entity)
-		elseif data.event then
-			if data.type == 'client' then
-				TriggerLocalClientEvent(data.event, data)
-			elseif data.type == 'server' then
-				if data.canInteract then data.canInteract = nil end
-				if data.action then data.action = nil end
-				local networked_entity = data.entity.bReplicates
-				if not networked_entity then data.entity = nil end
-				TriggerServerEvent(data.event, data)
-			elseif data.type == 'command' then
-				TriggerServerEvent('QBCore:CallCommand', data.event, data)
-			else
-				TriggerLocalClientEvent(data.event, data)
-			end
-		end
-	end)
-
-	my_webui:RegisterEventHandler('leftTarget', function()
-		target_entity = nil
-	end)
-
-	my_webui:RegisterEventHandler('closeTarget', function()
-		disableTarget()
-	end)
-end
-
-my_webui = WebUI('Target', 'qb-target/Client/html/index.html', 0)
-my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-	setupHandlers()
-end)
 
 -- Exports
 
