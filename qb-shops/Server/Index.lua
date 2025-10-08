@@ -4,7 +4,7 @@ local dir = debug.getinfo(1, "S").source .. '/../' -- append trailing slash, exi
 -- Functions
 
 local function readStockFile()
-	local fileHandle, msg = io.open(dir .. "./shops-inventory.json", "r")
+	local fileHandle, msg = io.open(dir .. "./" .. Config.ShopsInvJsonFile, "r")
 	if not fileHandle then print("[qb-shops] Error: Couldn't read shops inventory", msg) return end
 	local content = fileHandle:read("a")
 	fileHandle:close()
@@ -43,7 +43,7 @@ end
 local function saveShopInv(shop, products)
 	local existingData = readStockFile()
 	existingData[shop] = { products = products }
-	local fileHandle = io.open(dir .. "./shops-inventory.json", "w")
+	local fileHandle = io.open(dir .. "./" .. Config.ShopsInvJsonFile, "w")
 	fileHandle:write(JSON.stringify(existingData))
 	fileHandle:close()
 end
