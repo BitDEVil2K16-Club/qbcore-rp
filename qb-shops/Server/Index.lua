@@ -1,7 +1,17 @@
-local stock_file = File(Config.ShopsInvJsonFile)
 local peds = {}
+local dir = debug.getinfo(1, "S").source .. '/../'
 
 -- Functions
+
+local function readStockFile()
+	local fileHandle, msg = io.open(dir .. "./shops-inventory.json", "r")
+	if not fileHandle then print("[qb-shops] Error: Couldn't read shops inventory", msg) return end
+	local content = fileHandle:read("a")
+	fileHandle:close()
+
+	local stock = JSON.parse(content)
+	return stock
+end
 
 local function checkTable(inputValue, requiredValue)
 	if type(inputValue) == 'table' and type(requiredValue) == 'table' then
@@ -31,11 +41,11 @@ local function checkTable(inputValue, requiredValue)
 end
 
 local function saveShopInv(shop, products)
-	local existingData = stock_file:ReadJSON()
+	local existingData = readStockFile()
 	existingData[shop] = { products = products }
-	stock_file:Seek(0)
-	stock_file:Write(json.encode(existingData))
-	stock_file:Flush()
+	local fileHandle = io.open(dir .. "./shops-inventory.json", "w")
+	fileHandle:write(JSON.stringify(existingData))
+	fileHandle:close()
 end
 
 local function deliveryPay(source, shop)
@@ -58,13 +68,13 @@ end
 
 -- Callbacks
 
-QBCore.Functions.CreateCallback('qb-shops:server:getPeds', function(_, cb)
-	cb(peds)
+RegisterCallback('server.getPeds', function(_)
+	return peds
 end)
 
 -- Events
 
-Events.SubscribeRemote('qb-shops:server:RestockShopItems', function(source, shop)
+RegisterServerEvent('qb-shops:server:RestockShopItems', function(source, shop)
 	if not shop then
 		return
 	end
@@ -80,10 +90,10 @@ Events.SubscribeRemote('qb-shops:server:RestockShopItems', function(source, shop
 		Config.Locations[shop].products[k].amount = Config.Locations[shop].products[k].amount + randAmount
 	end
 	saveShopInv(shop, Config.Locations[shop].products)
-	Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
+	--Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
 end)
 
-Events.Subscribe('qb-shops:server:UpdateShopItems', function(shop, itemData, amount) -- called from inventory
+RegisterServerEvent('qb-shops:server:UpdateShopItems', function(shop, itemData, amount) -- called from inventory
 	if not shop or not itemData or not amount then
 		return
 	end
@@ -99,16 +109,16 @@ Events.Subscribe('qb-shops:server:UpdateShopItems', function(shop, itemData, amo
 		Config.Locations[shop].products[itemData.slot].amount = 0
 	end
 	saveShopInv(shop, Config.Locations[shop].products)
-	Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
+	--Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
 end)
 
-Events.SubscribeRemote('qb-shops:server:openShop', function(source, data)
+RegisterServerEvent('qb-shops:server:openShop', function(source, data)
 	local shopName = data.shop
 	local shopData = Config.Locations[shopName]
 	if not shopData then
 		return
 	end
-	local Player = QBCore.Functions.GetPlayer(source)
+	local Player = exports['qb-core']:GetPlayer(source)
 	if not Player then
 		return
 	end
@@ -117,13 +127,15 @@ Events.SubscribeRemote('qb-shops:server:openShop', function(source, data)
 	local items = {}
 
 	if shopData.useStock then
-		local shopInvJson = stock_file:ReadJSON()
-		local shopInventory = shopInvJson[shopName]
-		if shopInventory then
-			for _, product in pairs(shopInventory.products) do
-				local slot = product.slot
-				if products[slot] then
-					products[slot].amount = product.amount
+		local shopInvJson = readStockFile()
+		if shopInvJson then
+			local shopInventory = shopInvJson[shopName]
+			if shopInventory then
+				for _, product in pairs(shopInventory.products) do
+					local slot = product.slot
+					if products[slot] then
+						products[slot].amount = product.amount
+					end
 				end
 			end
 		end
@@ -159,32 +171,34 @@ Events.SubscribeRemote('qb-shops:server:openShop', function(source, data)
 		end
 	end
 
-	CreateShop({
+	exports['qb-inventory']:CreateShop({
 		name = shopName,
 		label = shopData.label,
 		slots = shopData.slots,
 		coords = shopData.coords,
 		items = items,
 	})
-	OpenShop(source, shopName)
+	exports['qb-inventory']:OpenShop(source, shopName)
 end)
 
 -- Spawn Peds
 
 for shop, shopData in pairs(Config.Locations) do
-	if shopData.ped then
-		local coords = shopData.coords
-		local heading = Rotator(0, shopData.heading, 0)
-		local ped = HCharacter(coords, heading, shopData.ped)
-		ped:AddSkeletalMeshAttached('head', 'helix::SK_Male_Head')
-		ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
-		ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
-		ped:AddSkeletalMeshAttached('feet', 'helix::SK_Delivery_Shoes')
-		peds[ped] = {
+	--if shopData.ped then
+		--local coords = shopData.coords
+		--local heading = Rotator(0, shopData.heading, 0)
+		--local ped = HCharacter(coords, heading, shopData.ped)
+		--ped:AddSkeletalMeshAttached('head', 'helix::SK_Male_Head')
+		--ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
+		--ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
+		--ped:AddSkeletalMeshAttached('feet', 'helix::SK_Delivery_Shoes')
+		peds[shop] = {
+			coords = shopData.coords,
+			heading = shopData.heading,
 			options = {
 				{
-					type = 'server',
-					event = 'qb-shops:server:openShop',
+					type = 'client',
+					event = 'qb-shops:client:openShop',
 					shop = shop,
 					label = shopData.targetLabel or Config.DefaultTargetLabel,
 					icon = shopData.targetIcon or Config.DefaultTargetIcon,
@@ -193,7 +207,7 @@ for shop, shopData in pairs(Config.Locations) do
 					gang = shopData.requiredGang,
 				},
 			},
-			distance = 400,
+			distance = 1000,
 		}
-	end
+	--end
 end
