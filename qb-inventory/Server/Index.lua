@@ -266,7 +266,7 @@ RegisterCallback('server.attemptPurchase', function(source, data)
     if Player.PlayerData.money.cash >= price then
         exports['qb-core']:Player(source, 'RemoveMoney', 'cash', price, 'shop-purchase')
         AddItem(source, itemInfo.name, amount, canAddToSlot and data.slot, itemInfo.info)
-        --Events.Call('qb-shops:server:UpdateShopItems', shop, itemInfo, amount)
+        exports['qb-shops']:UpdateShopItems(shop, itemInfo, amount)
         return true
     else
         TriggerClientEvent(source, 'QBCore:Notify', 'You do not have enough money', 'error')

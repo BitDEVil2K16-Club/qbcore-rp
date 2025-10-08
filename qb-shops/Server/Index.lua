@@ -1,5 +1,5 @@
 local peds = {}
-local dir = debug.getinfo(1, "S").source .. '/../'
+local dir = debug.getinfo(1, "S").source .. '/../' -- append trailing slash, exit file dir
 
 -- Functions
 
@@ -66,6 +66,26 @@ local function deliveryPay(source, shop)
 	end
 end
 
+local function UpdateShopItems(shop, itemData, amount)
+	if not shop or not itemData or not amount then
+		return
+	end
+	if not Config.Locations[shop] then
+		return
+	end
+	if not Config.Locations[shop].useStock then
+		return
+	end
+	Config.Locations[shop].products[itemData.slot].amount = Config.Locations[shop].products[itemData.slot].amount
+		- amount
+	if Config.Locations[shop].products[itemData.slot].amount < 0 then
+		Config.Locations[shop].products[itemData.slot].amount = 0
+	end
+	saveShopInv(shop, Config.Locations[shop].products)
+	--Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
+end
+exports('qb-shops', 'UpdateShopItems', UpdateShopItems)
+
 -- Callbacks
 
 RegisterCallback('server.getPeds', function(_)
@@ -94,22 +114,7 @@ RegisterServerEvent('qb-shops:server:RestockShopItems', function(source, shop)
 end)
 
 RegisterServerEvent('qb-shops:server:UpdateShopItems', function(shop, itemData, amount) -- called from inventory
-	if not shop or not itemData or not amount then
-		return
-	end
-	if not Config.Locations[shop] then
-		return
-	end
-	if not Config.Locations[shop].useStock then
-		return
-	end
-	Config.Locations[shop].products[itemData.slot].amount = Config.Locations[shop].products[itemData.slot].amount
-		- amount
-	if Config.Locations[shop].products[itemData.slot].amount < 0 then
-		Config.Locations[shop].products[itemData.slot].amount = 0
-	end
-	saveShopInv(shop, Config.Locations[shop].products)
-	--Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
+	UpdateShopItems(shop, itemData, amount)
 end)
 
 RegisterServerEvent('qb-shops:server:openShop', function(source, data)
