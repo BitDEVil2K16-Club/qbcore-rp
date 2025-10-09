@@ -75,6 +75,7 @@ end)
 RegisterClientEvent('qb-inventory:client:hotbar', function(items)
 	hotbarShown = not hotbarShown
 	if my_webui == nil then return end
+	my_webui:SetLayer(hotbarShown and 3 or 0)
 	my_webui:CallFunction('toggleHotbar', { open = hotbarShown, items = items })
 end)
 
@@ -238,6 +239,9 @@ end)
 local invKey = UE.FKey()
 invKey.KeyName = Config.Keybinds.Open
 
+local hotbarKey = UE.FKey()
+hotbarKey.KeyName = Config.Keybinds.Hotbar
+
 Timer.CreateThread(function()
 	while true do
 		if not HPlayer then return end
@@ -248,6 +252,12 @@ Timer.CreateThread(function()
 				else
 					TriggerServerEvent('qb-inventory:server:openInventory')
 				end
+			end
+		end
+
+		if HPlayer:WasInputKeyJustPressed(hotbarKey) then
+			if HPlayer:GetInputMode() ~= 1 then
+				TriggerServerEvent('qb-inventory:server:toggleHotbar')
 			end
 		end
 		Timer.Wait(1)
