@@ -128,7 +128,7 @@ end)
 RegisterServerEvent('qb-inventory:server:useItem', function(source, item)
     local itemData = GetItemBySlot(source, item.slot)
     if not itemData then return end
-    local itemInfo = QBShared.Items[itemData.name]
+    local itemInfo = exports['qb-core']:GetShared('Items')[itemData.name]
     if itemInfo.type == 'weapon' then
         --Events.Call('qb-weapons:server:equipWeapon', source, itemData)
         TriggerClientEvent(source, 'qb-inventory:client:ItemBox', itemInfo, 'use')
