@@ -72,14 +72,16 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
 end)
 
 local function OpenBank()
-    my_webui:SetLayer(5)
-    TriggerCallback('openBank', function(data)
-        my_webui:CallFunction('openBank', {
-            accounts = data.accounts,
-            statements = data.statements,
-            playerData = data.playerData
-        })
-    end)
+    Timer.SetTimeout(function()
+        my_webui:SetLayer(5)
+        TriggerCallback('openBank', function(data)
+            my_webui:CallFunction('openBank', {
+                accounts = data.accounts,
+                statements = data.statements,
+                playerData = data.playerData
+            })
+        end)
+    end, 500)
 end
 
 RegisterClientEvent('qb-banking:client:openBank', function()
@@ -87,14 +89,16 @@ RegisterClientEvent('qb-banking:client:openBank', function()
 end)
 
 local function OpenATM()
-    my_webui:SetLayer(5)
-    TriggerCallback('openATM', function(data)
-        my_webui:CallFunction('openATM', {
-            accounts = data.accounts,
-            pinNumbers = data.acceptablePins,
-            playerData = data.playerData
-        })
-    end)
+    Timer.SetTimeout(function()
+        my_webui:SetLayer(5)
+        TriggerCallback('openATM', function(data)
+            my_webui:CallFunction('openATM', {
+                accounts = data.accounts,
+                pinNumbers = data.acceptablePins,
+                playerData = data.playerData
+            })
+        end)
+    end, 500)
 end
 
 local function NearATM()
