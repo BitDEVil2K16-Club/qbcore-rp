@@ -369,11 +369,10 @@ for job, zones in pairs(Config.BossMenus) do
         }, {
             options = {
                 {
-                    type = 'client',
-                    event = 'qb-management:client:OpenMenu',
                     icon = 'fas fa-sign-in-alt',
+                    event = 'qb-management:client:OpenMenu',
                     label = Lang:t('target.label'),
-                    canInteract = function() return job == PlayerJob.name and PlayerJob.isboss end,
+                    --canInteract = function() return job == PlayerJob.name and PlayerJob.isboss end,
                 },
             },
             distance = 2.5
@@ -384,18 +383,16 @@ end
 for gang, zones in pairs(Config.GangMenus) do
     for index, coords in ipairs(zones) do
         local zoneName = gang .. '_gangmenu_' .. index
-        exports['qb-target']:AddCircleZone(zoneName, coords, 0.5, {
-            name = zoneName,
-            debugPoly = false,
-            useZ = true
+        exports['qb-target']:AddCircleZone(zoneName, coords, 100, {
+            debug = true,
+            distance = 1000
         }, {
             options = {
                 {
-                    type = 'client',
-                    event = 'qb-management:client:OpenMenu',
                     icon = 'fas fa-sign-in-alt',
+                    event = 'qb-management:client:OpenMenu',
                     label = Lang:t('targetgang.label'),
-                    canInteract = function() return gang == PlayerGang.name and PlayerGang.isboss end,
+                    --canInteract = function() return gang == PlayerGang.name and PlayerGang.isboss end,
                 },
             },
             distance = 2.5

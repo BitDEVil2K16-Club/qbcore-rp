@@ -12,6 +12,7 @@
     "qb-input",
     "qb-banking",
     "qb-cityhall",
-    "qb-shops"
+    "qb-shops",
+    "qb-management"
   ]
 }
