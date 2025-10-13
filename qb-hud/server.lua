@@ -1,0 +1,44 @@
+RegisterServerEvent('qb-hud:server:GainStress', function(source, amount)
+    if Config.DisableStress then return end
+    local Player = exports['qb-core']:GetPlayer(source)
+    if not Player then return end
+    local Job = Player.PlayerData.job.name
+    local JobType = Player.PlayerData.job.type
+    local newStress
+    if not Player or Config.WhitelistedJobs[JobType] or Config.WhitelistedJobs[Job] then return end
+    if not ResetStress then
+        if not Player.PlayerData.metadata['stress'] then
+            Player.PlayerData.metadata['stress'] = 0
+        end
+        newStress = Player.PlayerData.metadata['stress'] + amount
+        if newStress <= 0 then newStress = 0 end
+    else
+        newStress = 0
+    end
+    if newStress > 100 then
+        newStress = 100
+    end
+    exports['qb-core']:Player(source, 'SetMetaData', 'stress', newStress)
+    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
+end)
+
+RegisterServerEvent('qb-hud:server:RelieveStress', function(source, amount)
+    if Config.DisableStress then return end
+    local Player = exports['qb-core']:GetPlayer(source)
+    if not Player then return end
+    local newStress
+    if not ResetStress then
+        if not Player.PlayerData.metadata['stress'] then
+            Player.PlayerData.metadata['stress'] = 0
+        end
+        newStress = Player.PlayerData.metadata['stress'] - amount
+        if newStress <= 0 then newStress = 0 end
+    else
+        newStress = 0
+    end
+    if newStress > 100 then
+        newStress = 100
+    end
+    exports['qb-core']:Player(source, 'SetMetaData', 'stress', newStress)
+    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
+end)
