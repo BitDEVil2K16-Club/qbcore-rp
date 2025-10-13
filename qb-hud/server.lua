@@ -19,7 +19,6 @@ RegisterServerEvent('qb-hud:server:GainStress', function(source, amount)
         newStress = 100
     end
     exports['qb-core']:Player(source, 'SetMetaData', 'stress', newStress)
-    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
 end)
 
 RegisterServerEvent('qb-hud:server:RelieveStress', function(source, amount)
@@ -40,5 +39,4 @@ RegisterServerEvent('qb-hud:server:RelieveStress', function(source, amount)
         newStress = 100
     end
     exports['qb-core']:Player(source, 'SetMetaData', 'stress', newStress)
-    TriggerClientEvent(source, 'qb-hud:client:UpdateStress', newStress)
 end)
