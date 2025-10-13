@@ -1,6 +1,6 @@
 # qb-core
 
-### [Official HELIX QBCore Documentation]([https://docs.qbcore.org](https://development.helix-documentation.pages.dev/qbcore/))
+### [Official HELIX QBCore Documentation]([https://docs.qbcore.org](https://development.helix-documentation.pages.dev/qbcore)
 
 # License
 
