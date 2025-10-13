@@ -405,27 +405,25 @@ end)
 
 RegisterClientEvent('qb-apartments:client:OpenStash', function()
 	if CurrentApartment then
-		TriggerServerEvent('InteractSound_SV:PlayOnSource', 'StashOpen', 0.4)
-		TriggerServerEvent('qb-apartments:server:openStash', CurrentApartment)
+		Timer.SetTimeout(function()
+			TriggerServerEvent('qb-apartments:server:openStash', CurrentApartment)
+		end, 500)
 	end
 end)
 
 RegisterClientEvent('qb-apartments:client:ChangeOutfit', function()
-	TriggerServerEvent('qb-apartments:server:GetOutfits')
+	-- TriggerCallback('GetOutfits', function(outfits)
+	-- 	-- do nothing for now
+	-- end)
+	local characterCreatorComponentClass = UE.UClass.Load('/AdvancedCharacterCreator/Blueprints/BPC_CharacterCreator.BPC_CharacterCreator_C')
+	local pawn = HPlayer:K2_GetPawn()
+	local characterCreatorComponent = pawn:GetComponentByClass(characterCreatorComponentClass)
+	characterCreatorComponent:ShowCharacterCustomizationUI()
 end)
 
 RegisterClientEvent('qb-apartments:client:Logout', function()
 	LeaveApartment(ClosestHouse)
 	TriggerServerEvent('qb-apartments:server:LogoutLocation')
-end)
-
-RegisterClientEvent('qb-apartments:client:GetOutfits', function(outfits)
-	if outfits then
-		-- TODO: Implement outfit menu with the outfits data
-		print('Outfits received:', json.encode(outfits))
-	else
-		exports['qb-core']:Notify(Lang:t('error.no_outfits'), 'error')
-	end
 end)
 
 -- Loop
