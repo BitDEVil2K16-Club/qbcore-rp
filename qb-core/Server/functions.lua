@@ -228,7 +228,6 @@ function QBCore.Functions.GetClosestPlayer(source, coords)
 	if not player_ped then return end
 	local player_coords = coords or player_ped:K2_GetActorLocation()
 	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
-
 	local closest_player, closest_distance = nil, -1
 	for k, v in pairs(hits) do
 		local distance = hit.Distance
@@ -246,7 +245,22 @@ function QBCore.Functions.GetClosestPlayer(source, coords)
 end
 
 function QBCore.Functions.GetClosestNPC(source, coords)
-
+	local player_ped = source:K2_GetPawn()
+	if not player_ped then return end
+	local player_coords = coords or player_ped:K2_GetActorLocation()
+	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
+	local closest_npc, closest_distance = nil, -1
+	for k, v in pairs(hits) do
+		local distance = hit.Distance
+		if closest_distance == -1 or distance < closest_distance then
+			local _, _, _, _, _, _, _, _, _, hitActor = UE.UGameplayStatics.BreakHitResult(hit, _, _, _, _, _, _, _, _, _, hitActor, _, _, _, _, _, _, _, _)
+			if hitActor:IsA(UE.AHelixAICharacter) then
+				closest_npc = hitActor
+				closest_distance = distance
+			end
+		end
+	end
+	return closest_npc, closest_distance
 end
 
 function QBCore.Functions.GetClosestVehicle(source, coords)
@@ -254,7 +268,6 @@ function QBCore.Functions.GetClosestVehicle(source, coords)
 	if not player_ped then return end
 	local player_coords = coords or player_ped:K2_GetActorLocation()
 	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
-
 	local closest_vehicle, closest_distance = nil, -1
 	for k, v in pairs(hits) do
 		local distance = hit.Distance
@@ -272,7 +285,22 @@ function QBCore.Functions.GetClosestVehicle(source, coords)
 end
 
 function QBCore.Functions.GetClosestWeapon(source, coords)
-
+	local player_ped = source:K2_GetPawn()
+	if not player_ped then return end
+	local player_coords = coords or player_ped:K2_GetActorLocation()
+	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
+	local closest_weapon, closest_distance = nil, -1
+	for k, v in pairs(hits) do
+		local distance = hit.Distance
+		if closest_distance == -1 or distance < closest_distance then
+			local _, _, _, _, _, _, _, _, _, hitActor = UE.UGameplayStatics.BreakHitResult(hit, _, _, _, _, _, _, _, _, _, hitActor, _, _, _, _, _, _, _, _)
+			if hitActor:IsA(UE.BWeapon) then
+				closest_weapon = hitActor
+				closest_distance = distance
+			end
+		end
+	end
+	return closest_weapon, closest_distance
 end
 
 function QBCore.Functions.GetClosestObject(source, coords)
