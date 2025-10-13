@@ -169,7 +169,7 @@ Config.Products = {
 Config.Locations = {
 	['minimart'] = {
 		['label'] = 'MiniMart',
-		['coords'] = Vector(1029.019423, 55.972806, 91.818253),
+		['coords'] = Vector(-2322.078254, 15228.652227, -299.849995),
 		['heading'] = 175,
 		['ped'] = '/CharacterCreator/CharacterAssets/Avatar_FBX/Body/Male/Mesh/Male_Full_Body',
 		['animation'] = 'WORLD_HUMAN_STAND_MOBILE',
@@ -181,7 +181,7 @@ Config.Locations = {
 		['blipscale'] = 0.6,
 		['blipcolor'] = 0,
 		['delivery'] = Vector(26.45, -1315.51, 29.62),
-		['useStock'] = true,
+		['useStock'] = false,
 	},
 	--[[ ['hansons'] = {
 		['label'] = 'Hansons',

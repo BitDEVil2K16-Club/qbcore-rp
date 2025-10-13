@@ -1,12 +1,15 @@
 local peds = {}
-local dir = debug.getinfo(1, "S").source .. '/../' -- append trailing slash, exit file dir
+local dir = debug.getinfo(1, 'S').source .. '/../' -- append trailing slash, exit file dir
 
 -- Functions
 
 local function readStockFile()
-	local fileHandle, msg = io.open(dir .. "./" .. Config.ShopsInvJsonFile, "r")
-	if not fileHandle then print("[qb-shops] Error: Couldn't read shops inventory", msg) return end
-	local content = fileHandle:read("a")
+	local fileHandle, msg = io.open(dir .. './' .. Config.ShopsInvJsonFile, 'r')
+	if not fileHandle then
+		print("[qb-shops] Error: Couldn't read shops inventory", msg)
+		return
+	end
+	local content = fileHandle:read('a')
 	fileHandle:close()
 
 	local stock = JSON.parse(content)
@@ -43,7 +46,7 @@ end
 local function saveShopInv(shop, products)
 	local existingData = readStockFile()
 	existingData[shop] = { products = products }
-	local fileHandle = io.open(dir .. "./" .. Config.ShopsInvJsonFile, "w")
+	local fileHandle = io.open(dir .. './' .. Config.ShopsInvJsonFile, 'w')
 	fileHandle:write(JSON.stringify(existingData))
 	fileHandle:close()
 end
@@ -85,12 +88,6 @@ local function UpdateShopItems(shop, itemData, amount)
 	--Events.BroadcastRemote('qb-shops:client:SetShopItems', shop, Config.Locations[shop].products)
 end
 exports('qb-shops', 'UpdateShopItems', UpdateShopItems)
-
--- Callbacks
-
-RegisterCallback('server.getPeds', function(_)
-	return peds
-end)
 
 -- Events
 
@@ -185,34 +182,3 @@ RegisterServerEvent('qb-shops:server:openShop', function(source, data)
 	})
 	exports['qb-inventory']:OpenShop(source, shopName)
 end)
-
--- Spawn Peds
-
-for shop, shopData in pairs(Config.Locations) do
-	--if shopData.ped then
-		--local coords = shopData.coords
-		--local heading = Rotator(0, shopData.heading, 0)
-		--local ped = HCharacter(coords, heading, shopData.ped)
-		--ped:AddSkeletalMeshAttached('head', 'helix::SK_Male_Head')
-		--ped:AddSkeletalMeshAttached('chest', 'helix::SK_Man_Outwear_03')
-		--ped:AddSkeletalMeshAttached('legs', 'helix::SK_Man_Pants_05')
-		--ped:AddSkeletalMeshAttached('feet', 'helix::SK_Delivery_Shoes')
-		peds[shop] = {
-			coords = shopData.coords,
-			heading = shopData.heading,
-			options = {
-				{
-					type = 'client',
-					event = 'qb-shops:client:openShop',
-					shop = shop,
-					label = shopData.targetLabel or Config.DefaultTargetLabel,
-					icon = shopData.targetIcon or Config.DefaultTargetIcon,
-					item = shopData.requiredItem,
-					job = shopData.requiredJob,
-					gang = shopData.requiredGang,
-				},
-			},
-			distance = 1000,
-		}
-	--end
-end
