@@ -1,4 +1,4 @@
-local Lang = require('Shared/locales/en')
+local Lang = require('locales/en')
 local isLoggedIn = false
 local InApartment = false
 local ClosestHouse = nil
