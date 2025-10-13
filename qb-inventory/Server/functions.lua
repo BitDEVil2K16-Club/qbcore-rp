@@ -341,7 +341,7 @@ local function OpenShop(source, name)
         local shopDistance = RegisteredShops[name].coords
         if shopDistance then
             local distance = UE.FVector.Dist(playerCoords, shopDistance)
-            if distance > 150.0 then return end
+            if distance > 1000.0 then return end
         end
     end
     local formattedInventory = {
