@@ -1,10 +1,9 @@
 local zones = {}
 local isPlayerInsideBankZone = false
-local my_webui = nil
+local my_webui = WebUI('qb-banking', 'qb-banking/html/index.html', 0)
 
 -- Functions
 
-my_webui = WebUI('qb-banking', 'qb-banking/html/index.html', 0)
 my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
     my_webui:RegisterEventHandler('closeApp', function()
         my_webui:SetLayer(0)
@@ -70,6 +69,13 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
         end, data)
     end)
 end)
+
+function onShutdown()
+    if my_webui then
+        my_webui:Destroy()
+        my_webui = nil
+    end
+end
 
 local function OpenBank()
     Timer.SetTimeout(function()
