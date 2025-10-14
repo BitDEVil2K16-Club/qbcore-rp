@@ -41,6 +41,8 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
     my_webui:RegisterEventHandler('closeTarget', function()
         disableTarget()
     end)
+
+    my_webui:ExecuteJS(string.format("const OpenKey = '%s'; ", Config.OpenKey))
 end)
 
 function onShutdown()

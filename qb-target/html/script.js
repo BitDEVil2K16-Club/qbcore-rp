@@ -89,6 +89,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function handleKeyUp(event) {
+        if (event.key === OpenKey?.toLowerCase()) {
+            closeTarget();
+            hEvent("closeTarget");
+        }
+    }
+
     function handleMouseOver(event) {
         const element = event.target;
         if (element.id) {
@@ -118,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("mouseover", handleMouseOver);
     window.addEventListener("mouseout", handleMouseOut);
 
