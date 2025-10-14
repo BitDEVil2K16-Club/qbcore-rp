@@ -1,9 +1,15 @@
 local isLoggedIn = false
+local inputTimer = nil
 local my_webui = WebUI('qb-hud', 'qb-hud/html/index.html', 0)
 local player_data = {}
+local playerPawn = nil
 local round = math.floor
 
 function onShutdown()
+    if inputTimer then
+        Timer.ClearInterval(inputTimer)
+        inputTimer = nil
+    end
     if my_webui then
         my_webui:Destroy()
         my_webui = nil
@@ -16,10 +22,12 @@ RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     player_data = exports['qb-core']:GetPlayerData()
     my_webui:SetLayer(2)
+    playerPawn = HPlayer:K2_GetPawn()
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
+    playerPawn = nil
     player_data = {}
 end)
 
@@ -47,11 +55,10 @@ end)
 
 -- HUD Thread
 
-Timer.SetInterval(function()
+inputTimer = Timer.SetInterval(function()
     if not isLoggedIn then return end
-    local ped = HPlayer:K2_GetPawn()
-    if not ped then return end
-    local health     = ped.HealthComponent:GetHealth()
+    if not playerPawn then return end
+    local health     = playerPawn.HealthComponent:GetHealth()
     local armor      = player_data.metadata['armor']
     local hunger     = player_data.metadata['hunger']
     local thirst     = player_data.metadata['thirst']

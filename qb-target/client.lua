@@ -1,6 +1,6 @@
 local player_data = {}
 local isLoggedIn = false
-local player_ped
+local inputTimer = nil
 local target_active, target_entity, raycast_timer = false, nil, nil
 local nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}
 local my_webui = WebUI('Target', 'qb-target/html/index.html', 0)
@@ -15,9 +15,7 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
         if not data then return end
         disableTarget()
         send_data = {}
-        if data.action then
-            data.action(data.entity)
-        elseif data.event then
+        if data.event then
             if data.type == 'client' then
                 TriggerLocalClientEvent(data.event, data)
             elseif data.type == 'server' then
@@ -46,6 +44,10 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
 end)
 
 function onShutdown()
+    if inputTimer then
+        Timer.ClearInterval(inputTimer)
+        inputTimer = nil
+    end
     if my_webui then
         my_webui:Destroy()
         my_webui = nil
@@ -320,8 +322,8 @@ end
 function enableTarget()
     if target_active then return end
     target_active = true
-    my_webui:SetLayer(3)
     my_webui:CallFunction('openTarget')
+    my_webui:SetLayer(3)
     raycast_timer = Timer.SetInterval(function()
         local trace_result = handleRaycast()
         handleEntity(trace_result)
@@ -350,36 +352,29 @@ targetKey.KeyName = Config.OpenKey
 local menuControl = UE.FKey()
 menuControl.KeyName = Config.MenuControlKey
 
-Timer.CreateThread(function()
-    while true do
-        if not HPlayer then return end
-        do
-            if HPlayer:WasInputKeyJustPressed(targetKey) then
-                if HPlayer:GetInputMode() ~= 1 then
-                    enableTarget()
-                end
-            end
-            if HPlayer:WasInputKeyJustReleased(targetKey) then
-                if HPlayer:GetInputMode() ~= 1 then
-                    if target_active then
-                        disableTarget()
-                    end
-                end
-            end
-        end
+inputTimer = Timer.SetInterval(function()
+    if not isLoggedIn then return end
 
-        do
-            if target_active and target_entity and nui_data and nui_data[1] then
-                if HPlayer:WasInputKeyJustPressed(menuControl) then
-                    if HPlayer:GetInputMode() ~= 1 then
-                        my_webui:SetLayer(5)
-                    end
-                end
+    if HPlayer:WasInputKeyJustPressed(targetKey) then
+        if HPlayer:GetInputMode() ~= 1 then
+            enableTarget()
+        end
+    end
+
+    if HPlayer:WasInputKeyJustReleased(targetKey) then
+        if HPlayer:GetInputMode() ~= 1 and target_active then
+            disableTarget()
+        end
+    end
+
+    if target_active and target_entity and nui_data and nui_data[1] then
+        if HPlayer:WasInputKeyJustPressed(menuControl) then
+            if HPlayer:GetInputMode() ~= 1 then
+                my_webui:SetLayer(5)
             end
         end
-        Timer.Wait(1)
     end
-end)
+end, 1)
 
 -- Setup config options
 

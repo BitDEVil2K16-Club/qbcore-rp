@@ -4,11 +4,6 @@ local player_data = {}
 
 -- Event Handlers
 
-Timer.CreateThread(function()
-    player_data = exports['qb-core']:GetPlayerData()
-    setupPeds()
-end)
-
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     player_data = exports['qb-core']:GetPlayerData()
     setupPeds()
