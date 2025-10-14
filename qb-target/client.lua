@@ -43,17 +43,6 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
     my_webui:ExecuteJS(string.format("const OpenKey = '%s'; ", Config.OpenKey))
 end)
 
-function onShutdown()
-    if inputTimer then
-        Timer.ClearInterval(inputTimer)
-        inputTimer = nil
-    end
-    if my_webui then
-        my_webui:Destroy()
-        my_webui = nil
-    end
-end
-
 -- Handlers
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -79,7 +68,14 @@ RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
 end)
 
 function onShutdown()
-    my_webui:Destroy()
+    if inputTimer then
+        Timer.ClearInterval(inputTimer)
+        inputTimer = nil
+    end
+    if my_webui then
+        my_webui:Destroy()
+        my_webui = nil
+    end
 end
 
 -- Functions
