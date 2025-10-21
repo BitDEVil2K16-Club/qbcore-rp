@@ -352,6 +352,7 @@ Input.BindKey(Config.MenuControlKey, function()
     if not isLoggedIn then return end
     if target_active and target_entity and nui_data and nui_data[1] then
         subMenuOpen = true
+        my_webui:BringToFront()
         my_webui:SetInputMode(1)
     end
 end, 'Pressed')
