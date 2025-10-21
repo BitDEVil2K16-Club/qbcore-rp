@@ -18,11 +18,11 @@ RegisterServerEvent('QBCore:ToggleDuty', function(source)
     if not Player then return end
     if Player.PlayerData.job.onduty then
         Player.Functions.SetJobDuty(false)
-        TriggerClientEvent('QBCore:Notify', source, Lang:t('info.off_duty'))
+        TriggerClientEvent(source, 'QBCore:Notify', Lang:t('info.off_duty'))
     else
         Player.Functions.SetJobDuty(true)
-        TriggerClientEvent('QBCore:Notify', source, Lang:t('info.on_duty'))
+        TriggerClientEvent(source, 'QBCore:Notify', Lang:t('info.on_duty'))
     end
-    Events.Call('QBCore:Server:SetDuty', source, Player.PlayerData.job.onduty)
-    TriggerClientEvent('QBCore:Client:SetDuty', source, Player.PlayerData.job.onduty)
+    TriggerLocalServerEvent('QBCore:Server:SetDuty', source, Player.PlayerData.job.onduty)
+    TriggerClientEvent(source, 'QBCore:Client:SetDuty', Player.PlayerData.job.onduty)
 end)

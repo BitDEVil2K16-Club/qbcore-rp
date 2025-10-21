@@ -84,7 +84,7 @@ my_webui.Widget.Browser.OnLoadCompleted:Add(my_webui.Widget, function()
                 elseif insideMeta.apartment.apartmentType ~= nil or insideMeta.apartment.apartmentId ~= nil then
                     local apartmentType = insideMeta.apartment.apartmentType
                     local apartmentId = insideMeta.apartment.apartmentId
-                    TriggerClientEvent('qb-apartments:client:LastLocationHouse', apartmentType, apartmentId)
+                    TriggerLocalClientEvent('qb-apartments:client:LastLocationHouse', apartmentType, apartmentId)
                 end
                 TriggerServerEvent('qb-spawn:server:spawnPlayer')
             end)
