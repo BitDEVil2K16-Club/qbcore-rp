@@ -1,46 +1,43 @@
 local player_data = {}
 local isLoggedIn = false
-local inputTimer = nil
 local target_active, target_entity, raycast_timer = false, nil, nil
 local nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}
-local my_webui = WebUI('Target', 'qb-target/html/index.html', 0)
+local my_webui = WebUI('qb-target', 'qb-target/html/index.html')
+local subMenuOpen = false
 
 -- UI
 
-my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-    my_webui:RegisterEventHandler('selectTarget', function(option)
-        option = tonumber(option) or option
-        if not next(send_data) then return end
-        local data = send_data[option]
-        if not data then return end
-        disableTarget()
-        send_data = {}
-        if data.event then
-            if data.type == 'client' then
-                TriggerLocalClientEvent(data.event, data)
-            elseif data.type == 'server' then
-                if data.canInteract then data.canInteract = nil end
-                if data.action then data.action = nil end
-                local networked_entity = data.entity.bReplicates
-                if not networked_entity then data.entity = nil end
-                TriggerServerEvent(data.event, data)
-            elseif data.type == 'command' then
-                TriggerServerEvent('QBCore:CallCommand', data.event, data)
-            else
-                TriggerLocalClientEvent(data.event, data)
-            end
+my_webui:RegisterEventHandler('selectTarget', function(option)
+    option = tonumber(option) or option
+    subMenuOpen = false
+    if not next(send_data) then return end
+    local data = send_data[option]
+    if not data then return end
+    disableTarget()
+    send_data = {}
+    if data.event then
+        if data.type == 'client' then
+            TriggerLocalClientEvent(data.event, data)
+        elseif data.type == 'server' then
+            if data.canInteract then data.canInteract = nil end
+            if data.action then data.action = nil end
+            local networked_entity = data.entity.bReplicates
+            if not networked_entity then data.entity = nil end
+            TriggerServerEvent(data.event, data)
+        elseif data.type == 'command' then
+            TriggerServerEvent('QBCore:CallCommand', data.event, data)
+        else
+            TriggerLocalClientEvent(data.event, data)
         end
-    end)
+    end
+end)
 
-    my_webui:RegisterEventHandler('leftTarget', function()
-        target_entity = nil
-    end)
+my_webui:RegisterEventHandler('leftTarget', function()
+    target_entity = nil
+end)
 
-    my_webui:RegisterEventHandler('closeTarget', function()
-        disableTarget()
-    end)
-
-    my_webui:ExecuteJS(string.format("const OpenKey = '%s'; ", Config.OpenKey))
+my_webui:RegisterEventHandler('closeTarget', function()
+    disableTarget()
 end)
 
 -- Handlers
@@ -68,10 +65,6 @@ RegisterClientEvent('QBCore:Player:SetPlayerData', function(val)
 end)
 
 function onShutdown()
-    if inputTimer then
-        Timer.ClearInterval(inputTimer)
-        inputTimer = nil
-    end
     if my_webui then
         my_webui:Destroy()
         my_webui = nil
@@ -237,7 +230,7 @@ local function clearTarget()
     target_entity = nil
     nui_data = {}
     if my_webui then
-        my_webui:CallFunction('leftTarget')
+        my_webui:SendEvent('leftTarget')
     end
 end
 
@@ -256,7 +249,7 @@ local function setupOptions(datatable, entity, distance)
             send_data[index].entity = entity
             local target_icon = nui_data[1] and nui_data[1].targeticon or ''
             if my_webui then
-                my_webui:CallFunction('foundTarget', { data = target_icon, options = nui_data })
+                my_webui:SendEvent('foundTarget', { icon = target_icon, options = nui_data })
             end
         end
     end
@@ -318,8 +311,7 @@ end
 function enableTarget()
     if target_active then return end
     target_active = true
-    my_webui:CallFunction('openTarget')
-    my_webui:SetLayer(3)
+    my_webui:SendEvent('openTarget')
     raycast_timer = Timer.SetInterval(function()
         local trace_result = handleRaycast()
         handleEntity(trace_result)
@@ -331,8 +323,8 @@ function disableTarget()
     target_active, target_entity = false, nil
     nui_data, send_data = {}, {}
     if my_webui then
-        my_webui:CallFunction('closeTarget')
-        my_webui:SetLayer(0)
+        my_webui:SendEvent('closeTarget')
+        my_webui:SetInputMode(0)
     end
     if raycast_timer then
         Timer.ClearInterval(raycast_timer)
@@ -342,35 +334,27 @@ end
 
 -- Inputs
 
-local targetKey = UE.FKey()
-targetKey.KeyName = Config.OpenKey
-
-local menuControl = UE.FKey()
-menuControl.KeyName = Config.MenuControlKey
-
-inputTimer = Timer.SetInterval(function()
+Input.BindKey(Config.OpenKey, function()
     if not isLoggedIn then return end
+    if target_active then return end
+    enableTarget()
+end, 'Pressed')
 
-    if HPlayer:WasInputKeyJustPressed(targetKey) then
-        if HPlayer:GetInputMode() ~= 1 then
-            enableTarget()
-        end
+Input.BindKey(Config.OpenKey, function()
+    if not isLoggedIn then return end
+    if target_active and not subMenuOpen then
+        disableTarget()
+        subMenuOpen = false
     end
+end, 'Released')
 
-    if HPlayer:WasInputKeyJustReleased(targetKey) then
-        if HPlayer:GetInputMode() ~= 1 and target_active then
-            disableTarget()
-        end
-    end
-
+Input.BindKey(Config.MenuControlKey, function()
+    if not isLoggedIn then return end
     if target_active and target_entity and nui_data and nui_data[1] then
-        if HPlayer:WasInputKeyJustPressed(menuControl) then
-            if HPlayer:GetInputMode() ~= 1 then
-                my_webui:SetLayer(5)
-            end
-        end
+        subMenuOpen = true
+        my_webui:SetInputMode(1)
     end
-end, 1)
+end, 'Pressed')
 
 -- Setup config options
 
