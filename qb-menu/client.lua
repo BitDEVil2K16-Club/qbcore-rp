@@ -1,40 +1,36 @@
-local headerShown = false
 local sendData = nil
-local my_webui = WebUI('qb-menu', 'qb-menu/html/index.html', 0)
+local my_webui = WebUI('qb-menu', 'qb-menu/html/index.html')
 
-my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
-    my_webui:RegisterEventHandler('clickedButton', function(option)
-        if headerShown then headerShown = false end
-        if sendData then
-            local data = sendData[tonumber(option)]
-            sendData = nil
-            if data.action ~= nil then
-                data.action()
-                return
-            end
-            if data then
-                if data.params.event then
-                    if data.params.isServer then
-                        TriggerServerEvent(data.params.event, data.params.args)
-                    elseif data.params.isCommand then
-                        ExecuteCommand(data.params.event)
-                    elseif data.params.isQBCommand then
-                        TriggerServerEvent('QBCore:CallCommand', data.params.event, data.params.args)
-                    elseif data.params.isAction then
-                        data.params.event(data.params.args)
-                    else
-                        TriggerLocalClientEvent(data.params.event, data.params.args)
-                    end
+my_webui:RegisterEventHandler('clickedButton', function(option)
+    my_webui:SetInputMode(0)
+    if sendData then
+        local data = sendData[tonumber(option)]
+        sendData = nil
+        if data.action ~= nil then
+            data.action()
+            return
+        end
+        if data then
+            if data.params.event then
+                if data.params.isServer then
+                    TriggerServerEvent(data.params.event, data.params.args)
+                elseif data.params.isCommand then
+                    ExecuteCommand(data.params.event)
+                elseif data.params.isQBCommand then
+                    TriggerServerEvent('QBCore:CallCommand', data.params.event, data.params.args)
+                elseif data.params.isAction then
+                    data.params.event(data.params.args)
+                else
+                    TriggerLocalClientEvent(data.params.event, data.params.args)
                 end
             end
         end
-    end)
+    end
+end)
 
-    my_webui:RegisterEventHandler('closeMenu', function()
-        headerShown = false
-        sendData = nil
-        my_webui:SetLayer(0)
-    end)
+my_webui:RegisterEventHandler('closeMenu', function()
+    sendData = nil
+    my_webui:SetInputMode(0)
 end)
 
 function onShutdown()
@@ -59,36 +55,17 @@ local function openMenu(data, sort, skipFirst)
     if not data or not next(data) then return end
     if not my_webui then return end
     if sort then data = sortData(data, skipFirst) end
-    -- for _,v in pairs(data) do
-    -- 	if v["icon"] then
-    -- 		if QBCore.Shared.Items[tostring(v["icon"])] then
-    -- 			if not string.find(QBCore.Shared.Items[tostring(v["icon"])].image, "//") and not string.find(v["icon"], "//") then
-    --                 v["icon"] = "nui://qb-inventory/html/images/"..QBCore.Shared.Items[tostring(v["icon"])].image
-    -- 			end
-    -- 		end
-    -- 	end
-    -- end
-    headerShown = false
     sendData = data
-    my_webui:SetLayer(5)
-    my_webui:CallFunction('openMenu', data)
+    my_webui:BringToFront()
+    my_webui:SetInputMode(1)
+    my_webui:SendEvent('openMenu', data)
 end
 
 local function closeMenu()
     sendData = nil
-    headerShown = false
     if not my_webui then return end
-    my_webui:SetLayer(0)
-    my_webui:CallFunction('closeMenu')
-end
-
-local function showHeader(data)
-    if not data or not next(data) then return end
-    if not my_webui then return end
-    headerShown = true
-    sendData = data
-    my_webui:SetLayer(3)
-    my_webui:CallFunction('openMenu', data)
+    my_webui:SetInputMode(0)
+    my_webui:SendEvent('closeMenu')
 end
 
 -- Events
@@ -105,4 +82,3 @@ end)
 
 exports('qb-menu', 'openMenu', openMenu)
 exports('qb-menu', 'closeMenu', closeMenu)
-exports('qb-menu', 'showHeader', showHeader)
