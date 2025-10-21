@@ -1,22 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
     const config = {
         StandardEyeIcon: "fas fa-eye",
-        StandardColor: "white",
-        SuccessColor: "#DC143C",
+        StandardColor: "var(--md-on-surface, white)",
+        SuccessColor: "var(--md-success, #386a20)",
     };
 
     const targetEye = document.getElementById("target-eye");
     const targetLabel = document.getElementById("target-label");
     const TargetEyeStyleObject = targetEye.style;
 
-    function openTarget() {
+    function OpenTarget() {
         targetLabel.textContent = "";
         targetEye.style.display = "block";
         targetEye.className = config.StandardEyeIcon;
         TargetEyeStyleObject.color = config.StandardColor;
     }
 
-    function closeTarget() {
+    function CloseTarget() {
         targetLabel.textContent = "";
         targetEye.style.display = "none";
     }
@@ -26,11 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
             index = Number(index) + 1;
             const targetOption = document.createElement("div");
             targetOption.id = `target-option-${index}`;
-            targetOption.style.marginBottom = "0.2vh";
-            targetOption.style.borderRadius = "0.15rem";
-            targetOption.style.padding = "0.45rem";
-            targetOption.style.background = "rgba(23, 23, 23, 40%)";
-            targetOption.style.color = config.StandardColor;
             const targetIcon = document.createElement("span");
             targetIcon.id = `target-icon-${index}`;
             const icon = document.createElement("i");
@@ -43,96 +38,65 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function foundTarget(item) {
-        if (item.data) {
-            targetEye.className = item.data;
+    function FoundTarget(data) {
+        if (!data) return;
+        if (data.icon) {
+            targetEye.className = data.icon;
         }
         TargetEyeStyleObject.color = config.SuccessColor;
+        targetEye.classList.add("target-success");
         targetLabel.textContent = "";
-        for (let [index, itemData] of Object.entries(item.options)) {
+        for (let [index, itemData] of data.options.entries()) {
+            console.log("Creating target option:", index, itemData);
             createTargetOption(index, itemData);
         }
     }
 
-    function validTarget(item) {
-        targetLabel.textContent = "";
-        for (let [index, itemData] of Object.entries(item.data)) {
-            createTargetOption(index, itemData);
-        }
-    }
-
-    function leftTarget() {
+    function LeftTarget() {
         targetLabel.textContent = "";
         TargetEyeStyleObject.color = config.StandardColor;
         targetEye.className = config.StandardEyeIcon;
+        targetEye.classList.remove("target-success");
     }
 
     function handleMouseDown(event) {
-        const element = event.target; // use const instead of let
-        if (element.id) {
+        const element = event.target;
+
+        // Left click
+        if (event.button === 0 && element.id) {
             const split = element.id.split("-");
-            if (split[0] === "target" && split[1] !== "eye" && event.button === 0) {
+            if (split[0] === "target" && split[1] !== "eye") {
                 hEvent("selectTarget", split[2]);
                 targetLabel.textContent = "";
             }
         }
+
+        // Right click
         if (event.button === 2) {
-            leftTarget();
-            hEvent("leftTarget");
-        }
-    }
-
-    function handleKeyDown(event) {
-        if (event.key === "Escape" || event.key === "Backspace") {
-            closeTarget();
             hEvent("closeTarget");
         }
     }
 
-    function handleKeyUp(event) {
-        if (event.key === OpenKey?.toLowerCase()) {
-            closeTarget();
-            hEvent("closeTarget");
+    window.addEventListener("message", function (event) {
+        switch (event.data.name) {
+            case "openTarget":
+                OpenTarget();
+                break;
+            case "closeTarget":
+                CloseTarget();
+                break;
+            case "foundTarget":
+                FoundTarget(event.data.args[0]);
+                break;
+            case "leftTarget":
+                LeftTarget();
+                break;
         }
-    }
-
-    function handleMouseOver(event) {
-        const element = event.target;
-        if (element.id) {
-            const split = element.id.split("-");
-            if (split[0] === "target" && split[1] === "option") {
-                element.style.transform = "translateX(10px)";
-                element.style.transition = "transform 0.3s ease";
-            }
-        }
-    }
-
-    function handleMouseOut(event) {
-        const element = event.target;
-        if (element.id) {
-            const split = element.id.split("-");
-            if (split[0] === "target" && split[1] === "option") {
-                element.style.transform = "translateX(0)";
-            }
-        }
-    }
-
-    window.openTarget = openTarget;
-    window.closeTarget = closeTarget;
-    window.foundTarget = foundTarget;
-    window.validTarget = validTarget;
-    window.leftTarget = leftTarget;
+    });
 
     window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("mouseover", handleMouseOver);
-    window.addEventListener("mouseout", handleMouseOut);
 
     window.addEventListener("unload", function () {
         window.removeEventListener("mousedown", handleMouseDown);
-        window.removeEventListener("keydown", handleKeyDown);
-        window.removeEventListener("mouseover", handleMouseOver);
-        window.removeEventListener("mouseout", handleMouseOut);
     });
 });
