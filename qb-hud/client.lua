@@ -22,7 +22,7 @@ local function disableDefaultHUD()
     local actors = UE.TArray(UE.AActor)
     UE.UGameplayStatics.GetAllActorsWithTag(HWorld, 'HWebUI', actors)
     if actors[1] then
-        actors[1]:SetHUDVisibility(false, false, true, true)
+        actors[1]:SetHUDVisibility(false, false, true, true, false)
     end
 end
 

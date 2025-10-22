@@ -157,7 +157,7 @@ end)
 
 -- Callbacks
 
-RegisterServerEvent('qb-multicharacter:server:GetNumberOfCharacters', function(source)
+RegisterCallback('GetNumberOfCharacters', function(source)
     local playerState = source:GetLyraPlayerState()
     local license = playerState:GetHelixUserId()
     local numOfChars = 0
@@ -173,10 +173,10 @@ RegisterServerEvent('qb-multicharacter:server:GetNumberOfCharacters', function(s
     else
         numOfChars = Config.DefaultNumberOfCharacters
     end
-    TriggerClientEvent(source, 'qb-multicharacter:client:ReceiveNumberOfCharacters', numOfChars)
+    return numOfChars
 end)
 
-RegisterServerEvent('qb-multicharacter:server:setupCharacters', function(source)
+RegisterCallback('setupCharacters', function(source)
     local playerState = source:GetLyraPlayerState()
     local license = playerState:GetHelixUserId()
     local plyChars = {}
@@ -195,5 +195,5 @@ RegisterServerEvent('qb-multicharacter:server:setupCharacters', function(source)
             plyChars[#plyChars + 1] = row
         end
     end
-    TriggerClientEvent(source, 'qb-multicharacter:client:ReceiveCharacters', plyChars)
+    return plyChars
 end)

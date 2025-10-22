@@ -1,9 +1,7 @@
 local Lang = require('locales/en')
-local my_webui = WebUI('qb-multicharacter', 'qb-multicharacter/html/index.html', 0)
+local my_webui = WebUI('qb-multicharacter', 'qb-multicharacter/html/index.html')
 
-RegisterClientEvent('PlayerJoined', function()
-    TriggerLocalClientEvent('qb-multicharacter:client:chooseChar')
-end)
+-- UI
 
 my_webui:RegisterEventHandler('selectCharacter', function(data)
     local cData = data.cData
@@ -12,7 +10,9 @@ my_webui:RegisterEventHandler('selectCharacter', function(data)
 end)
 
 my_webui:RegisterEventHandler('setupCharacters', function()
-    TriggerServerEvent('qb-multicharacter:server:setupCharacters')
+    TriggerCallback('setupCharacters', function(characters)
+        my_webui:SendEvent('setupCharacters', characters)
+    end)
 end)
 
 my_webui:RegisterEventHandler('RemoveBlur', function()
@@ -33,14 +33,14 @@ my_webui:RegisterEventHandler('removeCharacter', function(data)
     TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
 end)
 
+-- Functions
+
 function onShutdown()
     if my_webui then
         my_webui:Destroy()
         my_webui = nil
     end
 end
-
--- Functions
 
 local function setupCharMenuUI(numOfChars)
     local translations = {}
@@ -49,35 +49,37 @@ local function setupCharMenuUI(numOfChars)
             translations[k:sub(('ui.'):len() + 1)] = Lang:t(k)
         end
     end
-    my_webui:SetInputMode(1)
-    my_webui:SetStackOrder(1)
-    my_webui:SendEvent('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
+    if my_webui then
+        my_webui:SetInputMode(1)
+        my_webui:SetStackOrder(1)
+        my_webui:SendEvent('openUI', Config.customNationality, true, numOfChars, Config.EnableDeleteButton, translations)
+    end
 end
 
 -- Events
 
-RegisterClientEvent('qb-multicharacter:client:ReceiveNumberOfCharacters', function(numOfChars)
-    setupCharMenuUI(numOfChars)
-end)
-
-RegisterClientEvent('qb-multicharacter:client:ReceiveCharacters', function(characters)
-    my_webui:SendEvent('setupCharacters', characters)
+RegisterClientEvent('PlayerJoined', function()
+    TriggerLocalClientEvent('qb-multicharacter:client:chooseChar')
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
-    my_webui:SetInputMode(0)
-    my_webui:SetStackOrder(0)
+    if my_webui then
+        my_webui:SetInputMode(0)
+        my_webui:SetStackOrder(0)
+    end
 end)
 
 RegisterClientEvent('qb-multicharacter:client:chooseChar', function()
-    Timer.SetTimeout(function()
-        TriggerServerEvent('qb-multicharacter:server:GetNumberOfCharacters')
-    end, 4000)
+    TriggerCallback('GetNumberOfCharacters', function(numOfChars)
+        setupCharMenuUI(numOfChars)
+    end)
 end)
 
 RegisterClientEvent('qb-multicharacter:client:closeNUIdefault', function()
-    my_webui:SetInputMode(0)
-    my_webui:SetStackOrder(0)
+    if my_webui then
+        my_webui:SetInputMode(0)
+        my_webui:SetStackOrder(0)
+    end
     TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
     TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
 end)
