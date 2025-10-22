@@ -5,34 +5,32 @@ RegisterClientEvent('PlayerJoined', function()
     TriggerLocalClientEvent('qb-multicharacter:client:chooseChar')
 end)
 
-my_webui.Widget.Browser.OnLoadCompleted:Add(my_webui.Widget.Browser, function()
-    my_webui:RegisterEventHandler('selectCharacter', function(data)
-        local cData = data.cData
-        TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-        my_webui:SendEvent('openUI', Config.customNationality, false, 0, false, translations)
-    end)
+my_webui:RegisterEventHandler('selectCharacter', function(data)
+    local cData = data.cData
+    TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
+    my_webui:SendEvent('openUI', Config.customNationality, false, 0, false, translations)
+end)
 
-    my_webui:RegisterEventHandler('setupCharacters', function()
-        TriggerServerEvent('qb-multicharacter:server:setupCharacters')
-    end)
+my_webui:RegisterEventHandler('setupCharacters', function()
+    TriggerServerEvent('qb-multicharacter:server:setupCharacters')
+end)
 
-    my_webui:RegisterEventHandler('RemoveBlur', function()
-        SetTimecycleModifier('default')
-    end)
+my_webui:RegisterEventHandler('RemoveBlur', function()
+    SetTimecycleModifier('default')
+end)
 
-    my_webui:RegisterEventHandler('createNewCharacter', function(data)
-        local cData = data
-        if cData.gender == Lang:t('ui.male') then
-            cData.gender = 0
-        elseif cData.gender == Lang:t('ui.female') then
-            cData.gender = 1
-        end
-        TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
-    end)
+my_webui:RegisterEventHandler('createNewCharacter', function(data)
+    local cData = data
+    if cData.gender == Lang:t('ui.male') then
+        cData.gender = 0
+    elseif cData.gender == Lang:t('ui.female') then
+        cData.gender = 1
+    end
+    TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
+end)
 
-    my_webui:RegisterEventHandler('removeCharacter', function(data)
-        TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
-    end)
+my_webui:RegisterEventHandler('removeCharacter', function(data)
+    TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
 end)
 
 function onShutdown()

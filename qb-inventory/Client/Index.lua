@@ -100,127 +100,125 @@ end) ]]
 
 -- NUI Events
 
-my_webui.Widget.Browser.OnLoadCompleted:Add(my_webui.Widget.Browser, function()
-	my_webui:RegisterEventHandler('SetInventoryData', function(data)
-		TriggerServerEvent(
-			'qb-inventory:server:SetInventoryData',
-			data.fromInventory,
-			data.toInventory,
-			data.fromSlot,
-			data.toSlot,
-			data.fromAmount,
-			data.toAmount
-		)
-	end)
+my_webui:RegisterEventHandler('SetInventoryData', function(data)
+	TriggerServerEvent(
+		'qb-inventory:server:SetInventoryData',
+		data.fromInventory,
+		data.toInventory,
+		data.fromSlot,
+		data.toSlot,
+		data.fromAmount,
+		data.toAmount
+	)
+end)
 
-	my_webui:RegisterEventHandler('CloseInventory', function(data)
-		local name = data.name
-		inv_open = false
-		my_webui:SetStackOrder(0)
-		my_webui:SetInputMode(0)
-		if name then
-			TriggerServerEvent('qb-inventory:server:closeInventory', name)
-		elseif CurrentDrop then
-			TriggerServerEvent('qb-inventory:server:closeInventory', CurrentDrop)
-			CurrentDrop = nil
-		else
-			TriggerServerEvent('qb-inventory:server:closeInventory')
+my_webui:RegisterEventHandler('CloseInventory', function(data)
+	local name = data.name
+	inv_open = false
+	my_webui:SetStackOrder(0)
+	my_webui:SetInputMode(0)
+	if name then
+		TriggerServerEvent('qb-inventory:server:closeInventory', name)
+	elseif CurrentDrop then
+		TriggerServerEvent('qb-inventory:server:closeInventory', CurrentDrop)
+		CurrentDrop = nil
+	else
+		TriggerServerEvent('qb-inventory:server:closeInventory')
+	end
+end)
+
+my_webui:RegisterEventHandler('PlayDropFail', function()
+	--PlaySound(-1, 'Place_Prop_Fail', 'DLC_Dmod_Prop_Editor_Sounds', 0, 0, 1)
+end)
+
+my_webui:RegisterEventHandler('Notify', function(data)
+	exports['qb-core']:Notify(data.message, data.type)
+end)
+
+my_webui:RegisterEventHandler('UseItem', function(data)
+	TriggerServerEvent('qb-inventory:server:useItem', data.item)
+end)
+
+my_webui:RegisterEventHandler('DropItem', function(item, cb)
+	local PlayerPed = HPlayer:K2_GetPawn()
+	local PawnPosition = PlayerPed:K2_GetActorLocation()
+	local PawnRotation = PlayerPed:K2_GetActorRotation()
+
+	local ForwardVec = PlayerPed:GetActorForwardVector()
+	local SpawnPosition = PawnPosition + (ForwardVec * 200)
+	PawnRotation.Yaw = PawnRotation.Yaw
+
+	local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
+	local actorId = bag.ActorGuid
+	local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
+	TriggerCallback('server.createDrop', function(success)
+		if success then
+			SetupDropTarget(bag)
+			cb(newDropId)
+			CurrentDropActor = bag
 		end
-	end)
+	end, item, newDropId)
+end)
 
-	my_webui:RegisterEventHandler('PlayDropFail', function()
-		--PlaySound(-1, 'Place_Prop_Fail', 'DLC_Dmod_Prop_Editor_Sounds', 0, 0, 1)
-	end)
+my_webui:RegisterEventHandler('AttemptPurchase', function(data, cb)
+	TriggerCallback('server.attemptPurchase', function(canPurchase)
+		cb(canPurchase)
+	end, data)
+end)
 
-	my_webui:RegisterEventHandler('Notify', function(data)
-		exports['qb-core']:Notify(data.message, data.type)
-	end)
+my_webui:RegisterEventHandler('GiveItem', function(data, cb)
+	local player, distance = exports['qb-core']:GetClosestPlayer()
+	if player and distance < 500 then
+		local playerId = player:GetID()
+		TriggerCallback('server.giveItem', function(success)
+			cb(success)
+		end, playerId, data.item.name, data.amount)
+	else
+		exports['qb-core']:Notify(Lang:t('notify.nonb'), 'error')
+	end
+end)
 
-	my_webui:RegisterEventHandler('UseItem', function(data)
-		TriggerServerEvent('qb-inventory:server:useItem', data.item)
-	end)
+-- qb-weapons
 
-	my_webui:RegisterEventHandler('DropItem', function(item, cb)
-		local PlayerPed = HPlayer:K2_GetPawn()
-		local PawnPosition = PlayerPed:K2_GetActorLocation()
-		local PawnRotation = PlayerPed:K2_GetActorRotation()
+my_webui:RegisterEventHandler('GetWeaponData', function(cData, cb)
+	local data = {
+		WeaponData = QBShared.Items[cData.weapon],
+		AttachmentData = FormatWeaponAttachments(cData.ItemData),
+	}
+	cb(data)
+end)
 
-		local ForwardVec = PlayerPed:GetActorForwardVector()
-		local SpawnPosition = PawnPosition + (ForwardVec * 200)
-		PawnRotation.Yaw = PawnRotation.Yaw
-
-		local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
-		local actorId = bag.ActorGuid
-		local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
-		TriggerCallback('server.createDrop', function(success)
-			if success then
-				SetupDropTarget(bag)
-				cb(newDropId)
-				CurrentDropActor = bag
-			end
-		end, item, newDropId)
-	end)
-
-	my_webui:RegisterEventHandler('AttemptPurchase', function(data, cb)
-		TriggerCallback('server.attemptPurchase', function(canPurchase)
-			cb(canPurchase)
-		end, data)
-	end)
-
-	my_webui:RegisterEventHandler('GiveItem', function(data, cb)
-		local player, distance = exports['qb-core']:GetClosestPlayer()
-		if player and distance < 500 then
-			local playerId = player:GetID()
-			TriggerCallback('server.giveItem', function(success)
-				cb(success)
-			end, playerId, data.item.name, data.amount)
-		else
-			exports['qb-core']:Notify(Lang:t('notify.nonb'), 'error')
-		end
-	end)
-
-	-- qb-weapons
-
-	my_webui:RegisterEventHandler('GetWeaponData', function(cData, cb)
-		local data = {
-			WeaponData = QBShared.Items[cData.weapon],
-			AttachmentData = FormatWeaponAttachments(cData.ItemData),
-		}
-		cb(data)
-	end)
-
-	my_webui:RegisterEventHandler('RemoveAttachment', function(data, cb)
-		local ped = PlayerPedId()
-		local WeaponData = data.WeaponData
-		local allAttachments = getConfigWeaponAttachments()
-		local Attachment = allAttachments[data.AttachmentData.attachment][WeaponData.name]
-		exports['qb-core']:TriggerCallback('weapons:server:RemoveAttachment', function(NewAttachments)
-			if NewAttachments ~= false then
-				local Attachies = {}
-				RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))
-				for _, v in pairs(NewAttachments) do
-					for attachmentType, weapons in pairs(allAttachments) do
-						local componentHash = weapons[WeaponData.name]
-						if componentHash and v.component == componentHash then
-							local label = QBShared.Items[attachmentType] and QBShared.Items[attachmentType].label
-								or 'Unknown'
-							Attachies[#Attachies + 1] = {
-								attachment = attachmentType,
-								label = label,
-							}
-						end
+my_webui:RegisterEventHandler('RemoveAttachment', function(data, cb)
+	local ped = PlayerPedId()
+	local WeaponData = data.WeaponData
+	local allAttachments = getConfigWeaponAttachments()
+	local Attachment = allAttachments[data.AttachmentData.attachment][WeaponData.name]
+	exports['qb-core']:TriggerCallback('weapons:server:RemoveAttachment', function(NewAttachments)
+		if NewAttachments ~= false then
+			local Attachies = {}
+			RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))
+			for _, v in pairs(NewAttachments) do
+				for attachmentType, weapons in pairs(allAttachments) do
+					local componentHash = weapons[WeaponData.name]
+					if componentHash and v.component == componentHash then
+						local label = QBShared.Items[attachmentType] and QBShared.Items[attachmentType].label
+							or 'Unknown'
+						Attachies[#Attachies + 1] = {
+							attachment = attachmentType,
+							label = label,
+						}
 					end
 				end
-				local DJATA = {
-					Attachments = Attachies,
-					WeaponData = WeaponData,
-				}
-				cb(DJATA)
-			else
-				RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))
 			end
-		end, data.AttachmentData, WeaponData)
-	end)
+			local DJATA = {
+				Attachments = Attachies,
+				WeaponData = WeaponData,
+			}
+			cb(DJATA)
+		else
+			RemoveWeaponComponentFromPed(ped, joaat(WeaponData.name), joaat(Attachment))
+		end
+	end, data.AttachmentData, WeaponData)
 end)
 
 RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
