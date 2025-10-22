@@ -945,6 +945,45 @@ const InventoryContainer = Vue.createApp({
             this.showRequiredItem(data);
         }
 
+        window.addEventListener('message', (event) => {
+            if (!event.data || !event.data.name) return;
+            
+            switch(event.data.name) {
+                case 'openInventory':
+                    if (event.data.args && event.data.args[0]) {
+                        if (this.isInventoryOpen) {
+                            this.closeInventory();
+                        } else {
+                            this.openInventory(event.data.args[0]);
+                        }
+                    }
+                    break;
+                case 'closeInventory':
+                    this.closeInventory();
+                    break;
+                case 'updateInventory':
+                    if (event.data.args && event.data.args[0]) {
+                        this.updateInventory(event.data.args[0]);
+                    }
+                    break;
+                case 'toggleHotbar':
+                    if (event.data.args && event.data.args[0]) {
+                        this.toggleHotbar(event.data.args[0]);
+                    }
+                    break;
+                case 'itemBox':
+                    if (event.data.args && event.data.args[0]) {
+                        this.showItemNotification(event.data.args[0]);
+                    }
+                    break;
+                case 'requiredItem':
+                    if (event.data.args && event.data.args[0]) {
+                        this.showRequiredItem(event.data.args[0]);
+                    }
+                    break;
+            }
+        });
+
 /*         function openInventory(data) {
             if (this.isInventoryOpen) {
                 this.closeInventory();

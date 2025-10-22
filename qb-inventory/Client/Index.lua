@@ -69,44 +69,38 @@ RegisterClientEvent('qb-inventory:client:requiredItems', function(items, bool)
 		end
 	end
 	if my_webui == nil then return end
-	my_webui:CallFunction('requiredItem', { items = itemTable, toggle = bool })
+	my_webui:SendEvent('requiredItem', { items = itemTable, toggle = bool })
 end)
 
 RegisterClientEvent('qb-inventory:client:hotbar', function(items)
 	hotbarShown = not hotbarShown
 	if my_webui == nil then return end
-	my_webui:SetLayer(hotbarShown and 3 or 0)
-	my_webui:CallFunction('toggleHotbar', { open = hotbarShown, items = items })
+	my_webui:SendEvent('toggleHotbar', { open = hotbarShown, items = items })
 end)
 
 RegisterClientEvent('qb-inventory:client:closeInv', function()
 	if my_webui == nil then return end
-	my_webui:CallFunction('closeInventory')
+	my_webui:SendEvent('closeInventory')
 end)
 
 RegisterClientEvent('qb-inventory:client:updateInventory', function(items)
 	if my_webui == nil then return end
-	my_webui:CallFunction('updateInventory', { inventory = items })
+	my_webui:SendEvent('updateInventory', { inventory = items })
 end)
 
 RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
 	if my_webui == nil then return end
-	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
-end)
-
-RegisterClientEvent('qb-inventory:client:ItemBox', function(itemData, type, amount)
-	if my_webui == nil then return end
-	my_webui:CallFunction('itemBox', { item = itemData, type = type, amount = amount })
+	my_webui:SendEvent('itemBox', { item = itemData, type = type, amount = amount })
 end)
 
 --[[ RegisterClientEvent('qb-inventory:client:useItem', function(bool, itemData)
 	if my_webui == nil then return end
-	my_webui:CallFunction('UseItemResponse', bool, itemData)
+	my_webui:SendEvent('UseItemResponse', bool, itemData)
 end) ]]
 
 -- NUI Events
 
-my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
+my_webui.Widget.Browser.OnLoadCompleted:Add(my_webui.Widget.Browser, function()
 	my_webui:RegisterEventHandler('SetInventoryData', function(data)
 		TriggerServerEvent(
 			'qb-inventory:server:SetInventoryData',
@@ -122,7 +116,8 @@ my_webui.Browser.OnLoadCompleted:Add(my_webui.Browser, function()
 	my_webui:RegisterEventHandler('CloseInventory', function(data)
 		local name = data.name
 		inv_open = false
-		my_webui:SetLayer(0)
+		my_webui:SetStackOrder(0)
+		my_webui:SetInputMode(0)
 		if name then
 			TriggerServerEvent('qb-inventory:server:closeInventory', name)
 		elseif CurrentDrop then
@@ -230,38 +225,22 @@ end)
 
 RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 	inv_open = true
-	my_webui:SetLayer(5)
-	my_webui:CallFunction('openInventory', { inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other })
+	my_webui:SetStackOrder(1)
+	my_webui:SetInputMode(1)
+	my_webui:SendEvent('openInventory', { inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other })
 end)
 
 -- Open UI
-
-local invKey = UE.FKey()
-invKey.KeyName = Config.Keybinds.Open
-
-local hotbarKey = UE.FKey()
-hotbarKey.KeyName = Config.Keybinds.Hotbar
-
-Timer.CreateThread(function()
-	while true do
-		if not HPlayer then return end
-		if HPlayer:WasInputKeyJustPressed(invKey) then
-			if HPlayer:GetInputMode() ~= 1 then
-				if inv_open then
-					my_webui:CallFunction('closeInventory')
-				else
-					TriggerServerEvent('qb-inventory:server:openInventory')
-				end
-			end
-		end
-
-		if HPlayer:WasInputKeyJustPressed(hotbarKey) then
-			if HPlayer:GetInputMode() ~= 1 then
-				TriggerServerEvent('qb-inventory:server:toggleHotbar')
-			end
-		end
-		Timer.Wait(1)
+Input.BindKey(Config.Keybinds.Open, function()
+	if inv_open then
+		my_webui:CallFunction('closeInventory')
+	else
+		TriggerServerEvent('qb-inventory:server:openInventory')
 	end
+end)
+
+Input.BindKey(Config.Keybinds.Hotbar, function()
+	TriggerServerEvent('qb-inventory:server:toggleHotbar')
 end)
 
 -- Commands
