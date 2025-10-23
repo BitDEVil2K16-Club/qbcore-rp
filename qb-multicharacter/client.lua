@@ -58,10 +58,6 @@ end
 
 -- Events
 
-RegisterClientEvent('PlayerJoined', function()
-    TriggerLocalClientEvent('qb-multicharacter:client:chooseChar')
-end)
-
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
     if my_webui then
         my_webui:SetInputMode(0)
