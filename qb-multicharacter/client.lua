@@ -58,6 +58,10 @@ end
 
 -- Events
 
+RegisterClientEvent('HEvent:PlayerLoaded', function(source)
+    TriggerServerEvent(source, 'qb-multicharacter:server:chooseChar')
+end)
+
 RegisterClientEvent('qb-multicharacter:client:closeNUI', function()
     if my_webui then
         my_webui:SetInputMode(0)

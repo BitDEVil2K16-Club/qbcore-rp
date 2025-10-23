@@ -69,11 +69,19 @@ end)
 
 RegisterClientEvent('HEvent:PlayerLoggedIn', function()
     print('HEvent:PlayerLoggedIn')
+    if not HPlayer then
+        print('HPlayer not available')
+        return
+    end
     print(HPlayer:K2_GetPawn())
 end)
 
 RegisterClientEvent('HEvent:PlayerLoaded', function()
     print('HEvent:PlayerLoaded')
+    if not HPlayer then
+        print('HPlayer not available')
+        return
+    end
     print(HPlayer:K2_GetPawn())
 end)
 

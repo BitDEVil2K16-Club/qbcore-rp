@@ -3,12 +3,8 @@ local hasDonePreloading = {}
 
 -- Handling Player Load
 
-RegisterServerEvent('PlayerJoined', function(source)
-    print('[QBCore] Player Joined:', source)
-    if exports['qb-core']:GetPlayer(source) then
-        print('[QBCore] Player already logged in:', source)
-        return
-    end
+RegisterServerEvent('qb-multicharacter:server:chooseChar', function(source)
+    if exports['qb-core']:GetPlayer(source) then return end
     TriggerClientEvent(source, 'qb-multicharacter:client:chooseChar')
 end)
 
