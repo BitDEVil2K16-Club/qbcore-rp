@@ -67,17 +67,23 @@ end)
 
 -- Game Events
 
--- RegisterClientEvent('HEvent:PlayerLoaded', function()
---     print(HPlayer:K2_GetPawn())
--- end)
+RegisterClientEvent('HEvent:PlayerLoggedIn', function()
+    print('HEvent:PlayerLoggedIn')
+    print(HPlayer:K2_GetPawn())
+end)
 
--- RegisterClientEvent('HEvent:Possessed', function()
---     print(HPlayer:K2_GetPawn())
--- end)
+RegisterClientEvent('HEvent:PlayerLoaded', function()
+    print('HEvent:PlayerLoaded')
+    print(HPlayer:K2_GetPawn())
+end)
 
--- RegisterClientEvent('HEvent:UnPossessed', function()
---     print('Player has been unpossessed')
--- end)
+RegisterClientEvent('HEvent:Possessed', function()
+    playerPawn = HPlayer:K2_GetPawn()
+end)
+
+RegisterClientEvent('HEvent:UnPossessed', function()
+    playerPawn = nil
+end)
 
 RegisterClientEvent('HEvent:HealthChanged', function(oldHealth, newHealth)
     if not my_webui then return end
