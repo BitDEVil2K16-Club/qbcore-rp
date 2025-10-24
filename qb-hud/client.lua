@@ -28,13 +28,15 @@ end
 
 -- Event Handlers
 
-RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function(player)
     isLoggedIn = true
-    player_data = exports['qb-core']:GetPlayerData()
-    playerPawn = HPlayer:K2_GetPawn()
-    healthComp = playerPawn.HealthComponent
-    health = healthComp:GetHealth()
     disableDefaultHUD()
+    player_data = exports['qb-core']:GetPlayerData()
+    if player then
+        playerPawn = player:K2_GetPawn()
+        healthComp = playerPawn.HealthComponent
+        health = healthComp:GetHealth()
+    end
 end)
 
 RegisterClientEvent('QBCore:Client:OnPlayerUnload', function()
@@ -70,7 +72,7 @@ end)
 RegisterClientEvent('HEvent:PlayerLoggedIn', function()
     print('HEvent:PlayerLoggedIn')
     if not HPlayer then
-        print('HPlayer not available')
+        print('HEvent:PlayerLoggedIn - HPlayer not available')
         return
     end
     print(HPlayer:K2_GetPawn())
@@ -79,18 +81,10 @@ end)
 RegisterClientEvent('HEvent:PlayerLoaded', function()
     print('HEvent:PlayerLoaded')
     if not HPlayer then
-        print('HPlayer not available')
+        print('HEvent:PlayerLoaded - HPlayer not available')
         return
     end
     print(HPlayer:K2_GetPawn())
-end)
-
-RegisterClientEvent('HEvent:Possessed', function()
-    playerPawn = HPlayer:K2_GetPawn()
-end)
-
-RegisterClientEvent('HEvent:UnPossessed', function()
-    playerPawn = nil
 end)
 
 RegisterClientEvent('HEvent:HealthChanged', function(oldHealth, newHealth)
@@ -121,6 +115,14 @@ end)
 RegisterClientEvent('HEvent:ExitedVehicle', function(seat)
     if not my_webui then return end
     print('Exited vehicle, seat: ' .. seat)
+end)
+
+RegisterClientEvent('HEvent:PlayerPossessed', function()
+    print('HEvent:PlayerPossessed')
+end)
+
+RegisterClientEvent('HEvent:PlayerUnPossessed', function()
+    print('HEvent:PlayerUnPossessed')
 end)
 
 -- HUD Thread
