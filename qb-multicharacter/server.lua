@@ -58,10 +58,6 @@ end
 
 -- Events
 
---[[ RegisterServerEvent('QBCore:Server:PlayerLoaded', function(Player)
-    hasDonePreloading[Player.PlayerData.source] = true
-end) ]]
-
 exports('qb-multicharacter', 'SetPlayerLoaded', function(Player)
     hasDonePreloading[Player.PlayerData.netId] = true
 end)
