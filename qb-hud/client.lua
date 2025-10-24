@@ -33,17 +33,17 @@ RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     disableDefaultHUD()
     player_data = exports['qb-core']:GetPlayerData()
     if HPlayer then
-        playerPawn = HPlayer:K2_GetPawn()
-        local voiceComp = HPlayer:GetVoipTalker()
-        voiceComp.OnVoipTalkingStateChange:Add(HPlayer, function(_, isTalking)
+        local LocalVoipSubsystem = UE.USubsystemBlueprintLibrary.GetLocalPlayerSubsystem(HPlayer, UE.UClass.Load('/Script/OnsetVoip.OnsetVoipLocalPlayerSubsystem'))
+        print('LocalVoipSubsystem', LocalVoipSubsystem)
+        LocalVoipSubsystem.OnVoipTalkingStateChange:Add(HPlayer, function(_, isTalking)
             if not my_webui then return end
             my_webui:SendEvent('IsTalking', isTalking)
         end)
     elseif not HPlayer then
-        HPlayer = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
-        playerPawn = HPlayer:K2_GetPawn()
-        local voiceComp = HPlayer:GetVoipTalker()
-        voiceComp.OnVoipTalkingStateChange:Add(HPlayer, function(_, isTalking)
+        local PC = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
+        local LocalVoipSubsystem = UE.USubsystemBlueprintLibrary.GetLocalPlayerSubsystem(PC, UE.UClass.Load('/Script/OnsetVoip.OnsetVoipLocalPlayerSubsystem'))
+        print('LocalVoipSubsystem', LocalVoipSubsystem)
+        LocalVoipSubsystem.OnVoipTalkingStateChange:Add(PC, function(_, isTalking)
             if not my_webui then return end
             my_webui:SendEvent('IsTalking', isTalking)
         end)
@@ -121,6 +121,12 @@ end)
 
 RegisterClientEvent('HEvent:PlayerPossessed', function()
     print('HEvent:PlayerPossessed - Controller Possessed Pawn')
+    if HPlayer then
+        playerPawn = HPlayer:K2_GetPawn()
+    elseif not HPlayer then
+        HPlayer = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
+        playerPawn = HPlayer:K2_GetPawn()
+    end
 end)
 
 RegisterClientEvent('HEvent:PlayerUnPossessed', function()

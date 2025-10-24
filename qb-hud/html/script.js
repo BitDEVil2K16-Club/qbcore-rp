@@ -209,10 +209,10 @@ const app = createApp({
             window.ShowWeapon = ShowWeapon;
             window.IsTalking = IsTalking;
             window.UpdateVoiceVolume = UpdateVoiceVolume;
-            window.addEventListener('message', function(event) {
+            window.addEventListener("message", function (event) {
                 if (!event.data || !event.data.name) return;
-                
-                switch(event.data.name) {
+
+                switch (event.data.name) {
                     case "UpdateHUD":
                         updateHudData(...event.data.args);
                         break;
