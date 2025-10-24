@@ -28,12 +28,17 @@ end
 
 -- Event Handlers
 
-RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function(player)
+RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     disableDefaultHUD()
     player_data = exports['qb-core']:GetPlayerData()
-    if player then
-        playerPawn = player:K2_GetPawn()
+    if HPlayer then
+        playerPawn = HPlayer:K2_GetPawn()
+        healthComp = playerPawn.HealthComponent
+        health = healthComp:GetHealth()
+    elseif not HPlayer then
+        HPlayer = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
+        playerPawn = HPlayer:K2_GetPawn()
         healthComp = playerPawn.HealthComponent
         health = healthComp:GetHealth()
     end
@@ -70,21 +75,11 @@ end)
 -- Game Events
 
 RegisterClientEvent('HEvent:PlayerLoggedIn', function()
-    print('HEvent:PlayerLoggedIn')
-    if not HPlayer then
-        print('HEvent:PlayerLoggedIn - HPlayer not available')
-        return
-    end
-    print(HPlayer:K2_GetPawn())
+    print('HEvent:PlayerLoggedIn - K2_PostLogin')
 end)
 
 RegisterClientEvent('HEvent:PlayerLoaded', function()
-    print('HEvent:PlayerLoaded')
-    if not HPlayer then
-        print('HEvent:PlayerLoaded - HPlayer not available')
-        return
-    end
-    print(HPlayer:K2_GetPawn())
+    print('HEvent:PlayerLoaded - Controller Ready')
 end)
 
 RegisterClientEvent('HEvent:HealthChanged', function(oldHealth, newHealth)
@@ -118,11 +113,21 @@ RegisterClientEvent('HEvent:ExitedVehicle', function(seat)
 end)
 
 RegisterClientEvent('HEvent:PlayerPossessed', function()
-    print('HEvent:PlayerPossessed')
+    print('HEvent:PlayerPossessed - Controller Possessed Pawn')
+    if HPlayer then
+        playerPawn = HPlayer:K2_GetPawn()
+        healthComp = playerPawn.HealthComponent
+        health = healthComp:GetHealth()
+    elseif not HPlayer then
+        HPlayer = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
+        playerPawn = HPlayer:K2_GetPawn()
+        healthComp = playerPawn.HealthComponent
+        health = healthComp:GetHealth()
+    end
 end)
 
 RegisterClientEvent('HEvent:PlayerUnPossessed', function()
-    print('HEvent:PlayerUnPossessed')
+    playerPawn = nil
 end)
 
 -- HUD Thread

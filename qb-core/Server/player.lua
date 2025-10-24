@@ -65,7 +65,7 @@ function QBCore.Player.Login(source, citizenid, newData)
     else
         QBCore.Player.CheckPlayerData(source, newData)
     end
-    TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded', source)
+    TriggerClientEvent(source, 'QBCore:Client:OnPlayerLoaded')
     return true
 end
 
