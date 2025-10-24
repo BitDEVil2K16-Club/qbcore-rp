@@ -1,6 +1,6 @@
 local player_data = {}
 local isLoggedIn = false
-local playerPawn = nil
+local playerController = nil
 local target_active, target_entity, raycast_timer = false, nil, nil
 local nui_data, send_data, Entities, Types, Zones = {}, {}, {}, {}, {}
 local my_webui = WebUI('qb-target', 'qb-target/html/index.html')
@@ -47,10 +47,9 @@ RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     player_data = exports['qb-core']:GetPlayerData()
     if HPlayer then
-        playerPawn = HPlayer:K2_GetPawn()
+        playerController = HPlayer
     elseif not HPlayer then
-        local PC = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
-        playerPawn = PC:K2_GetPawn()
+        playerController = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
     end
 end)
 
@@ -287,11 +286,11 @@ end
 
 local function handleRaycast()
     if not target_active then return end
-    if not playerPawn then return end
-    local w, h     = playerPawn:GetViewportSize()
+    if not playerController then return end
+    local w, h     = playerController:GetViewportSize()
     local sp       = UE.FVector2D(w * 0.5, h * 0.5)
     local pos, dir = UE.FVector(), UE.FVector()
-    if not UE.UGameplayStatics.DeprojectScreenToWorld(playerPawn, sp, pos, dir) then return end
+    if not UE.UGameplayStatics.DeprojectScreenToWorld(playerController, sp, pos, dir) then return end
     local start        = pos + dir * 25.0
     local stop         = start + dir * Config.MaxDistance
     local hit          = Trace:LineSingle(start, stop, UE.ETraceTypeQuery.Visibility, UE.EDrawDebugTrace.None)
