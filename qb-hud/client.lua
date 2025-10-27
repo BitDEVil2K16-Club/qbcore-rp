@@ -3,7 +3,7 @@ local inputTimer = nil
 local my_webui = WebUI('qb-hud', 'qb-hud/html/index.html')
 local player_data = {}
 local playerPawn = nil
-local health = 0
+local health = 100
 local playerDead = false
 local round = math.floor
 
@@ -26,29 +26,11 @@ local function disableDefaultHUD()
     end
 end
 
-local function voiceListener()
-    if HPlayer then
-        local LocalVoipSubsystem = UE.USubsystemBlueprintLibrary.GetLocalPlayerSubsystem(HPlayer, UE.UClass.Load('/Script/OnsetVoip.OnsetVoipLocalPlayerSubsystem'))
-        LocalVoipSubsystem.OnVoipTalkingStateChange:Add(HPlayer, function(_, isTalking)
-            if not my_webui then return end
-            my_webui:SendEvent('IsTalking', isTalking)
-        end)
-    elseif not HPlayer then
-        local PC = UE.UGameplayStatics.GetPlayerController(HWorld, 0)
-        local LocalVoipSubsystem = UE.USubsystemBlueprintLibrary.GetLocalPlayerSubsystem(PC, UE.UClass.Load('/Script/OnsetVoip.OnsetVoipLocalPlayerSubsystem'))
-        LocalVoipSubsystem.OnVoipTalkingStateChange:Add(PC, function(_, isTalking)
-            if not my_webui then return end
-            my_webui:SendEvent('IsTalking', isTalking)
-        end)
-    end
-end
-
 -- Event Handlers
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     disableDefaultHUD()
-    voiceListener()
     player_data = exports['qb-core']:GetPlayerData()
 end)
 
@@ -77,7 +59,13 @@ RegisterClientEvent('qb-hud:client:OnMoneyChange', function(type, amount, isMinu
     if not my_webui then return end
     local cashAmount = player_data.money['cash']
     local bankAmount = player_data.money['bank']
-    my_webui:SendEvent('UpdateMoney', round(cashAmount), round(bankAmount), round(amount), isMinus, type)
+    my_webui:SendEvent('UpdateMoney', {
+        cashAmount = round(cashAmount),
+        bankAmount = round(bankAmount),
+        changeAmount = round(amount),
+        isMinus = isMinus,
+        type = type
+    })
 end)
 
 -- Game Events
@@ -97,18 +85,17 @@ RegisterClientEvent('HEvent:HealthChanged', function(_, newHealth)
 end)
 
 RegisterClientEvent('HEvent:Death', function()
-    print('Player has died')
     playerDead = true
 end)
 
 RegisterClientEvent('HEvent:WeaponEquipped', function(displayName, weaponName)
     if not my_webui then return end
-    my_webui:SendEvent('ShowWeapon', true)
+    print('Equipped weapon: ' .. weaponName .. ' (' .. displayName .. ')')
 end)
 
 RegisterClientEvent('HEvent:WeaponUnequipped', function()
     if not my_webui then return end
-    my_webui:SendEvent('ShowWeapon', false)
+    print('Unequipped weapon')
 end)
 
 RegisterClientEvent('HEvent:EnteredVehicle', function(seat)
@@ -122,7 +109,6 @@ RegisterClientEvent('HEvent:ExitedVehicle', function(seat)
 end)
 
 RegisterClientEvent('HEvent:PlayerPossessed', function()
-    print('HEvent:PlayerPossessed - Controller Possessed Pawn')
     if HPlayer then
         playerPawn = HPlayer:K2_GetPawn()
     elseif not HPlayer then
@@ -133,6 +119,11 @@ end)
 
 RegisterClientEvent('HEvent:PlayerUnPossessed', function()
     playerPawn = nil
+end)
+
+RegisterClientEvent('HEvent:VoiceStateChanged', function(isTalking)
+    if not my_webui then return end
+    my_webui:SendEvent('IsTalking', isTalking)
 end)
 
 -- HUD Thread
