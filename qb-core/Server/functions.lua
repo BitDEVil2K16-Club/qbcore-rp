@@ -330,12 +330,18 @@ function QBCore.Functions.GeneratePlate(vehicle)
 	return plate
 end
 
-function QBCore.Functions.CreateWeapon(source, weapon_name, coords, rotation, itemInfo)
+function QBCore.Functions.CreateWeapon(weapon_name, coords, rotation, itemInfo)
 
 end
 
-function QBCore.Functions.CreateVehicle(source, vehicle_name, coords, rotation, plate, fuel)
-
+function QBCore.Functions.CreateVehicle(vehicle_name, coords, rotation, plate, fuel)
+	local vehicleData = QBCore.Shared.Vehicles[vehicle_name]
+	if not vehicleData then return end
+	if not rotation then rotation = Rotator(0, 0, 0) end
+	local vehicle = HVehicle(coords, rotation, vehicleData.asset_name, vehicleData.collision_type, vehicleData.gravity_enabled)
+	if fuel then vehicle:SetFuel(fuel) else vehicle:SetFuel(1.0) end
+	vehicle:SetEngineHealth(1.0)
+	return vehicle
 end
 
 -- Shared Update Functions

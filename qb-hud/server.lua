@@ -1,3 +1,7 @@
+-- Commands
+
+-- Events
+
 RegisterServerEvent('qb-hud:server:GainStress', function(source, amount)
     if Config.DisableStress then return end
     local Player = exports['qb-core']:GetPlayer(source)
