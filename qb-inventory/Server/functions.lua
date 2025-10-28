@@ -508,6 +508,7 @@ function RemoveItem(identifier, item, amount, slot, reason)
         return false
     end
     local inventory
+    local player = exports['qb-core']:GetPlayer(identifier)
 
     if player then
         inventory = player.PlayerData.items
