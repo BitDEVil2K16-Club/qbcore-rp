@@ -24,9 +24,8 @@ local function SetupShopItems(shopItems)
     local items = {}
     local slot = 1
     if shopItems and next(shopItems) then
-        local sharedItems = exports['qb-core']:GetShared('Items')
         for _, item in pairs(shopItems) do
-            local itemInfo = sharedItems[item.name:lower()]
+            local itemInfo = SharedItems[item.name:lower()]
             if itemInfo then
                 items[slot] = {
                     name = itemInfo['name'],
@@ -141,7 +140,7 @@ exports('qb-inventory', 'GetTotalWeight', GetTotalWeight)
 function CanAddItem(source, item, amount)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return false end
-    local itemData = exports['qb-core']:GetShared('Items')[item:lower()]
+    local itemData = SharedItems[item:lower()]
     if not itemData then return false end
     local weight = itemData.weight * amount
     local totalWeight = GetTotalWeight(Player.PlayerData.items) + weight
@@ -401,7 +400,7 @@ end
 exports('qb-inventory', 'OpenInventory', OpenInventory)
 
 function AddItem(identifier, item, amount, slot, info, reason)
-    local itemInfo = exports['qb-core']:GetShared('Items')[item:lower()]
+    local itemInfo = SharedItems[item:lower()]
     if not itemInfo then
         print('AddItem: Invalid item')
         return false
@@ -504,12 +503,11 @@ end
 exports('qb-inventory', 'AddItem', AddItem)
 
 function RemoveItem(identifier, item, amount, slot, reason)
-    if not exports['qb-core']:GetShared('Items')[item:lower()] then
+    if not SharedItems[item:lower()] then
         print('RemoveItem: Invalid item')
         return false
     end
     local inventory
-    local player = exports['qb-core']:GetPlayer(identifier)
 
     if player then
         inventory = player.PlayerData.items

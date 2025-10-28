@@ -4,6 +4,8 @@ RegisteredShops = {}
 require('Shared/locales/en')
 --require('Server/commands')
 
+SharedItems = exports['qb-core']:GetShared('Items')
+
 function BroadcastRemote(eventName, ...)
     local Players = UE.UGameplayStatics.GetAllActorsOfClass(HWorld, UE.UClass.Load('/Script/SandboxGame.HPlayerController'), Players)
     if not Players or type(Players) ~= 'userdata' then return end
@@ -128,7 +130,7 @@ end)
 RegisterServerEvent('qb-inventory:server:useItem', function(source, item)
     local itemData = GetItemBySlot(source, item.slot)
     if not itemData then return end
-    local itemInfo = exports['qb-core']:GetShared('Items')[itemData.name]
+    local itemInfo = SharedItems[itemData.name]
     if itemInfo.type == 'weapon' then
         --Events.Call('qb-weapons:server:equipWeapon', source, itemData)
         TriggerClientEvent(source, 'qb-inventory:client:ItemBox', itemInfo, 'use')
@@ -293,7 +295,7 @@ RegisterCallback('server.giveItem', function(source, target, item, amount)
         return false
     end
 
-    local itemInfo = exports['qb-core']:GetShared('Items')[item:lower()]
+    local itemInfo = SharedItems[item:lower()]
     if not itemInfo then
         return false
     end
