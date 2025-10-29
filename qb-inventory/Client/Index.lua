@@ -140,24 +140,11 @@ my_webui:RegisterEventHandler('UseItem', function(data)
 end)
 
 my_webui:RegisterEventHandler('DropItem', function(item, cb)
-	local PlayerPed = HPlayer:K2_GetPawn()
-	local PawnPosition = PlayerPed:K2_GetActorLocation()
-	local PawnRotation = PlayerPed:K2_GetActorRotation()
-
-	local ForwardVec = PlayerPed:GetActorForwardVector()
-	local SpawnPosition = PawnPosition + (ForwardVec * 200)
-	PawnRotation.Yaw = PawnRotation.Yaw
-
-	local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
-	local actorId = bag.ActorGuid
-	local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
-	TriggerCallback('server.createDrop', function(success)
-		if success then
-			SetupDropTarget(bag)
-			cb(newDropId)
-			CurrentDropActor = bag
+	TriggerCallback('server.createDrop', function(dropId)
+		if dropId then
+			cb(dropId)
 		end
-	end, item, newDropId)
+	end, item)
 end)
 
 my_webui:RegisterEventHandler('AttemptPurchase', function(data, cb)
@@ -223,7 +210,6 @@ end)
 
 RegisterClientEvent('qb-inventory:client:openInventory', function(items, other)
 	inv_open = true
-	my_webui:SetStackOrder(1)
 	my_webui:SetInputMode(1)
 	my_webui:SendEvent('openInventory', { inventory = items, slots = Config.MaxSlots, maxweight = Config.MaxWeight, other = other })
 end)

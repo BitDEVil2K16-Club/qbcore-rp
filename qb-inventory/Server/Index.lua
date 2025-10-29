@@ -121,8 +121,8 @@ RegisterServerEvent('qb-inventory:server:closeInventory', function(source, inven
     end
     if Drops[inventory] then
         if #Drops[inventory].items == 0 then
-            --Drops[inventory].entity:K2_Destroy()
-            TriggerClientEvent(source, 'qb-inventory:client:deleteDropTarget')
+            if Drops[inventory].entity:IsValid() then Drops[inventory].entity:K2_DestroyActor() end
+            if Drops[inventory].interactable:IsValid() then Drops[inventory].interactable:K2_DestroyActor() end
         end
         Drops[inventory].isOpen = false
         return
@@ -174,11 +174,15 @@ RegisterServerEvent('qb-inventory:server:pickUpDrop', function(source, bagObject
     playerPed:PickUp(bagObject)
 end)
 
-RegisterServerEvent('qb-inventory:server:updateDrop', function(source, bagObject, dropId)
-    local playerPed = source:GetControlledCharacter()
-    local playerCoords = playerPed:GetLocation()
-    playerPed:Detach()
-    Drops[dropId].coords = playerCoords
+RegisterServerEvent('qb-inventory:server:updateDrop', function(source, dropId)
+    local playerPed = source:K2_GetPawn()
+    local playerCoords = playerPed:K2_GetActorLocation()
+    local DropData = Drops[dropId]
+    DropData.coords = playerCoords
+    DropData.isHeld = nil
+    if DropData.entity:IsValid() then
+        DropData.entity:K2_DetachFromActor(UE.EDetachmentRule.KeepWorld, UE.EDetachmentRule.KeepWorld, UE.EDetachmentRule.KeepWorld)
+    end
 end)
 
 RegisterServerEvent('qb-inventory:server:snowball', function(source, action)
@@ -195,7 +199,7 @@ RegisterCallback('server.GetCurrentDrops', function(_)
     return Drops
 end)
 
-RegisterCallback('server.createDrop', function(source, item, newDropId)
+RegisterCallback('server.createDrop', function(source, item)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then
         return false
@@ -205,20 +209,53 @@ RegisterCallback('server.createDrop', function(source, item, newDropId)
     if RemoveItem(source, item.name, item.amount, item.fromSlot) then
         --if item.type == 'weapon' then SetCurrentPedWeapon(playerPed, `WEAPON_UNARMED`, true) end
         --TaskPlayAnim(playerPed, 'pickup_object', 'pickup_low', 8.0, -8.0, 2000, 0, 0, false, false, false)
---[[         local control_rotation = playerPed:GetControlRotation()
-        local forward_vector = control_rotation:GetForwardVector()
-        local spawn_location = playerCoords + Vector(0, 0, 40) + forward_vector * Vector(200)
-        local bag = StaticMesh(spawn_location, control_rotation, Config.ItemDropObject,CollisionType.StaticOnly)
-        --local dropId = bag:GetID()
-        local dropId = bag.ActorGuid
-        local newDropId = string.format('drop-%s-%s-%s-%s', dropId.A, dropId.B, dropId.C, dropId.D) ]]
+        local PawnRotation = playerPed:K2_GetActorRotation()
+        local ForwardVec = playerPed:GetActorForwardVector()
+        local SpawnPosition = playerCoords + (ForwardVec * 200)
+        PawnRotation.Yaw = PawnRotation.Yaw
+
+        local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
+        bag:SetActorScale3D(Vector(0.3, 0.3, 0.3))
+        local actorId = bag.ActorGuid
+        local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
+        local bagInteractable = Interactable({
+            {
+                Text = 'Open Drop',
+                Input = '/Game/Helix/Input/Actions/IA_Interact.IA_Interact',
+                Action = function(Drop, Instigator)
+                    local Controller = Instigator and Instigator:GetController()
+                    if Controller then
+                        TriggerClientEvent(Controller, 'qb-inventory:client:openDrop', {dropId = newDropId})
+                    end
+                end,
+            },
+            {
+                Text = 'Pick Up Bag',
+                Input = '/Game/Helix/Input/Actions/IA_Weapon_Reload.IA_Weapon_Reload',
+                Action = function(Drop, Instigator)
+                    local DropData = Drops[newDropId]
+                    if DropData.isOpen then return end
+                    if DropData.isHeld then return end
+                    local mesh = Instigator:GetCharacterBaseMesh()
+                    TriggerClientEvent(source, 'qb-inventory:client:holdDrop', newDropId)
+                    Drop.InteractableProp:SetMobility(UE.EComponentMobility.Movable)
+                    Drop.InteractableProp:K2_AttachToComponent(mesh, 'hand_r', UE.EAttachmentRule.KeepRelative, UE.EAttachmentRule.KeepRelative, UE.EAttachmentRule.KeepRelative, true)
+                    Drop.InteractableProp:K2_SetActorRelativeLocation(Vector(0, 5, 0), false, nil, true)
+                    Drop.InteractableProp:K2_SetActorRelativeRotation(Rotator(0, 0, 0), false, nil, true)
+                    Drop.InteractableProp:SetActorScale3D(Vector(0.3, 0.3, 0.3))
+                    Drop:K2_AttachToActor(Drop.InteractableProp, '', UE.EAttachmentRule.SnapToTarget, UE.EAttachmentRule.SnapToTarget, UE.EAttachmentRule.SnapToTarget, true)
+                    DropData.isHeld = Instigator
+                end
+            }
+        })
+        bagInteractable:SetInteractableProp(bag)
         if not Drops[newDropId] then
             Drops[newDropId] = {
                 name = newDropId,
                 label = 'Drop',
                 items = { item },
-                --entity = bag,
-                --entityId = dropId,
+                entity = bag,
+                interactable = bagInteractable,
                 creator = source,
                 createdTime = os.time(),
                 coords = playerCoords,
@@ -230,7 +267,7 @@ RegisterCallback('server.createDrop', function(source, item, newDropId)
         else
             table.insert(Drops[newDropId].items, item)
         end
-        return true
+        return newDropId
     else
         return false
     end

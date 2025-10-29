@@ -1,13 +1,11 @@
 local Lang = require("Shared/locales/en")
-local holdingDrop = false
-local bagObject = nil
 local heldDrop = nil
 CurrentDropActor = nil
 CurrentDrop = nil
 
 -- Functions
 
-function GetDrops()
+--[[ function GetDrops()
 	exports['qb-core']:TriggerCallback("qb-inventory:server:GetCurrentDrops", function(drops)
 		if drops then
 			for k, v in pairs(drops) do
@@ -29,64 +27,25 @@ function GetDrops()
 			end
 		end
 	end)
-end
-
-function SetupDropTarget(bag)
-	local dropId = bag.ActorGuid
-	local newDropId = string.format('drop-%s-%s-%s-%s', dropId.A, dropId.B, dropId.C, dropId.D)
-	exports['qb-target']:AddTargetEntity(bag.Object, {
-		options = {
-			{
-				icon = "fas fa-backpack",
-				label = Lang:t("menu.o_bag"),
-				type = 'client',
-				event = 'qb-inventory:client:openDrop',
-				dropId = newDropId,
-				dropActor = bag,
-			},
-			{
-				icon = "fas fa-hand-pointer",
-				label = "Pick up bag",
-				action = function()
-					TriggerServerEvent("qb-inventory:server:pickUpDrop", bag)
-					bagObject = bag
-					holdingDrop = true
-					heldDrop = newDropId
-					DrawText("Press [G] to drop the bag", "left")
-				end,
-			},
-		},
-		distance = 1000,
-	})
-end
+end ]]
 
 -- Events
 
-RegisterClientEvent("qb-inventory:client:setupDropTarget", function(bag)
-	SetupDropTarget(bag)
-end)
-
 RegisterClientEvent("qb-inventory:client:openDrop", function(data)
 	CurrentDrop = data.dropId
-	CurrentDropActor = data.dropActor
 	TriggerServerEvent("qb-inventory:server:openDrop", data.dropId)
 end)
 
-RegisterClientEvent("qb-inventory:client:deleteDropTarget", function()
-	if CurrentDropActor then
-		CurrentDropActor:K2_DestroyActor()
-	end
+RegisterClientEvent('qb-inventory:client:holdDrop', function(dropId)
+	exports['qb-core']:DrawText('Press [G] to drop Bag', 'right')
+	heldDrop = dropId
 end)
 
 -- KeyPress
 
---[[ Input.Subscribe("KeyPress", function(key_name)
-	if key_name == "G" and holdingDrop then
-		HideText()
-		TriggerServerEvent("qb-inventory:server:updateDrop", bagObject, heldDrop)
-		holdingDrop = false
-		bagObject = nil
-		heldDrop = nil
-	end
+Input.BindKey('G', function()
+	if not heldDrop then return end
+	exports['qb-core']:HideText()
+	TriggerServerEvent("qb-inventory:server:updateDrop", heldDrop)
+	heldDrop = nil
 end)
- ]]
