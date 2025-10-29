@@ -267,14 +267,17 @@ function QBCore.Functions.GetClosestVehicle(source, coords)
 	local player_ped = source:K2_GetPawn()
 	if not player_ped then return end
 	local player_coords = coords or player_ped:K2_GetActorLocation()
-	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
+	local ObjectTypes = UE.TArray(0)
+	ObjectTypes:Add(UE.ECollisionChannel.ECC_Vehicle)
+
+	local hits = UE.TArray(UE.AActor)
+	UE.UKismetSystemLibrary.SphereOverlapActors(HWorld, player_coords, 1000, ObjectTypes, nil, IgnoreList, hits)
 	local closest_vehicle, closest_distance = nil, -1
 	for k, hit in pairs(hits) do
-		local distance = hit.Distance
+		local distance = UE.FVector.Dist(hit:K2_GetActorLocation(), player_coords)
 		if closest_distance == -1 or distance < closest_distance then
-			local _, _, _, _, _, _, _, _, _, hitActor = UE.UGameplayStatics.BreakHitResult(hit, _, _, _, _, _, _, _, _, _, hitActor, _, _, _, _, _, _, _, _)
-			if hitActor:IsA(UE.AMMVehiclePawn) then
-				closest_vehicle = hitActor
+			if hit:IsA(UE.AMMVehiclePawn) then
+				closest_vehicle = hit
 				closest_distance = distance
 			end
 		end
