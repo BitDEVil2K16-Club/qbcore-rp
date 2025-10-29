@@ -2,41 +2,41 @@ local Lang = require('locales/en')
 local isLoggedIn = false
 local playerPawn = nil
 local InApartment = false
-local ClosestHouse = nil
+local ClosestApartment = nil
 local CurrentApartment = nil
 local IsOwned = false
-local CurrentDoorBell = 0
 local CurrentOffset = 0
-local HouseObj = 0
+local ApartmentObj = 0
 local POIOffsets = nil
-local RangDoorbell = nil
 local InApartmentTargets = {}
 
 -- Functions
 
-local function RegisterApartmentEntranceTarget(apartmentID, apartmentData)
+local function RegisterApartmentEntranceTarget(apartmentName, apartmentData)
 	local coords = Vector(apartmentData.coords[1], apartmentData.coords[2], apartmentData.coords[3])
-	local boxName = 'apartmentEntrance_' .. apartmentID
+	local boxName = 'apartmentEntrance_' .. apartmentName
 	local boxData = apartmentData.polyzoneBoxData
 	if boxData.created then return end
 	local options = {}
 
-	if apartmentID == ClosestHouse and IsOwned then
+	if apartmentName == ClosestApartment and IsOwned then
 		options = {
 			{
-				type = 'client',
-				event = 'qb-apartments:client:EnterApartment',
 				icon = 'fas fa-door-open',
 				label = Lang:t('text.enter'),
+				type = 'server',
+				event = 'qb-apartments:server:EnterApartment',
+				ClosestApartment = ClosestApartment,
 			},
 		}
 	else
 		options = {
 			{
-				type = 'client',
-				event = 'qb-apartments:client:UpdateApartment',
 				icon = 'fas fa-hotel',
 				label = Lang:t('text.move_here'),
+				type = 'server',
+				event = 'qb-apartments:server:UpdateApartment',
+				ClosestApartment = ClosestApartment,
 			},
 		}
 	end
@@ -84,48 +84,49 @@ local function SetApartmentsEntranceTargets()
 	end
 end
 
-local function SetInApartmentTargets()
+local function SetInApartmentTargets(apartmentName)
 	if not POIOffsets then return end
 	local entrancePos = Vector(
-		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.exit.x,
-		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.exit.y,
-		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.exit.z
+		Apartments.Locations[apartmentName].coords[1] - POIOffsets.exit.x,
+		Apartments.Locations[apartmentName].coords[2] - POIOffsets.exit.y,
+		Apartments.Locations[apartmentName].coords[3] + CurrentOffset + POIOffsets.exit.z
 	)
 	local stashPos = Vector(
-		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.stash.x,
-		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.stash.y,
-		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.stash.z
+		Apartments.Locations[apartmentName].coords[1] - POIOffsets.stash.x,
+		Apartments.Locations[apartmentName].coords[2] - POIOffsets.stash.y,
+		Apartments.Locations[apartmentName].coords[3] + CurrentOffset + POIOffsets.stash.z
 	)
 	local outfitsPos = Vector(
-		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.clothes.x,
-		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.clothes.y,
-		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.clothes.z
+		Apartments.Locations[apartmentName].coords[1] - POIOffsets.clothes.x,
+		Apartments.Locations[apartmentName].coords[2] - POIOffsets.clothes.y,
+		Apartments.Locations[apartmentName].coords[3] + CurrentOffset + POIOffsets.clothes.z
 	)
 	local logoutPos = Vector(
-		Apartments.Locations[ClosestHouse].coords[1] - POIOffsets.logout.x,
-		Apartments.Locations[ClosestHouse].coords[2] - POIOffsets.logout.y,
-		Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset + POIOffsets.logout.z
+		Apartments.Locations[apartmentName].coords[1] - POIOffsets.logout.x,
+		Apartments.Locations[apartmentName].coords[2] - POIOffsets.logout.y,
+		Apartments.Locations[apartmentName].coords[3] + CurrentOffset + POIOffsets.logout.z
 	)
 	RegisterInApartmentTarget('entrancePos', entrancePos, 0, {
 		{
-			type = 'client',
-			event = 'qb-apartments:client:OpenDoor',
 			icon = 'fas fa-door-open',
 			label = Lang:t('text.open_door'),
+			event = 'qb-apartments:client:DoorRequestMenu',
+			CurrentApartment = CurrentApartment,
 		},
 		{
-			type = 'client',
-			event = 'qb-apartments:client:LeaveApartment',
 			icon = 'fas fa-door-open',
 			label = Lang:t('text.leave'),
+			type = 'server',
+			event = 'qb-apartments:server:LeaveApartment',
+			CurrentApartment = CurrentApartment,
 		},
 	})
 	RegisterInApartmentTarget('stashPos', stashPos, 0, {
 		{
-			type = 'client',
-			event = 'qb-apartments:client:OpenStash',
 			icon = 'fas fa-box-open',
 			label = Lang:t('text.open_stash'),
+			type = 'server',
+			event = 'qb-apartments:server:OpenStash',
 		},
 	})
 	RegisterInApartmentTarget('outfitsPos', outfitsPos, 0, {
@@ -138,10 +139,11 @@ local function SetInApartmentTargets()
 	})
 	RegisterInApartmentTarget('logoutPos', logoutPos, 0, {
 		{
-			type = 'client',
-			event = 'qb-apartments:client:Logout',
 			icon = 'fas fa-sign-out-alt',
 			label = Lang:t('text.logout'),
+			type = 'server',
+			event = 'qb-apartments:server:LogoutApartment',
+			CurrentApartment = CurrentApartment,
 		},
 	})
 end
@@ -165,74 +167,6 @@ local function DeleteInApartmentTargets()
 	InApartmentTargets = {}
 end
 
-local function EnterApartment(house, apartmentId, new)
-	TriggerCallback('GetApartmentOffset', function(offset)
-		if offset == nil or offset == 0 then
-			TriggerCallback('GetApartmentOffsetNewOffset', function(newoffset)
-				if newoffset > Apartments.MaxOffset then
-					newoffset = Apartments.SpawnOffset
-				end
-				CurrentOffset = newoffset
-				TriggerServerEvent('qb-apartments:server:AddObject', apartmentId, house, CurrentOffset)
-				local coords = Vector(
-					Apartments.Locations[house].coords[1],
-					Apartments.Locations[house].coords[2],
-					Apartments.Locations[house].coords[3] + CurrentOffset
-				)
-				local data = exports['qb-interior']:CreateApartmentFurnished(coords)
-				HouseObj = data[1]
-				POIOffsets = data[2]
-				InApartment = true
-				CurrentApartment = apartmentId
-				ClosestHouse = house
-				RangDoorbell = nil
-				TriggerServerEvent('qb-apartments:server:SetInsideMeta', house, apartmentId, true, false)
-				TriggerServerEvent('qb-apartments:server:setCurrentApartment', CurrentApartment)
-			end, house)
-		else
-			if offset > Apartments.MaxOffset then
-				offset = Apartments.SpawnOffset
-			end
-			CurrentOffset = offset
-			TriggerServerEvent('qb-apartments:server:AddObject', apartmentId, house, CurrentOffset)
-			local coords = Vector(
-				Apartments.Locations[ClosestHouse].coords[1],
-				Apartments.Locations[ClosestHouse].coords[2],
-				Apartments.Locations[ClosestHouse].coords[3] + CurrentOffset
-			)
-			local data = exports['qb-interior']:CreateApartmentFurnished(coords)
-			HouseObj = data[1]
-			POIOffsets = data[2]
-			InApartment = true
-			CurrentApartment = apartmentId
-			TriggerServerEvent('qb-apartments:server:SetInsideMeta', house, apartmentId, true, true)
-			TriggerServerEvent('qb-apartments:server:setCurrentApartment', CurrentApartment)
-		end
-
-		if new then
-			TriggerLocalClientEvent('qb-interior:client:SetNewState', true)
-		else
-			TriggerLocalClientEvent('qb-interior:client:SetNewState', false)
-		end
-	end, apartmentId)
-end
-
-local function LeaveApartment(house)
-	exports['qb-interior']:DespawnInterior(HouseObj)
-	TriggerServerEvent('qb-interior:server:teleportPlayer', Apartments.Locations[house].coords[1], Apartments.Locations[house].coords[2], Apartments.Locations[house].coords[3], 0)
-	TriggerServerEvent('qb-apartments:server:RemoveObject', CurrentApartment, house)
-	TriggerServerEvent('qb-apartments:server:SetInsideMeta', CurrentApartment, false)
-	CurrentApartment = nil
-	InApartment = false
-	CurrentOffset = 0
-	POIOffsets = nil
-	HouseObj = 0
-	ClosestHouse = nil
-	TriggerServerEvent('qb-apartments:server:setCurrentApartment', nil)
-	DeleteInApartmentTargets()
-	DeleteApartmentsEntranceTargets()
-end
-
 local function SetClosestApartment()
 	if not isLoggedIn then return end
 	if not playerPawn then return end
@@ -252,14 +186,23 @@ local function SetClosestApartment()
 			current = id
 		end
 	end
-	if current ~= ClosestHouse and isLoggedIn and not InApartment then
-		ClosestHouse = current
+	if current ~= ClosestApartment and isLoggedIn and not InApartment then
+		ClosestApartment = current
 		TriggerCallback('IsOwner', function(result)
 			IsOwned = result
 			DeleteApartmentsEntranceTargets()
 			DeleteInApartmentTargets()
-		end, ClosestHouse)
+		end, ClosestApartment)
 	end
+end
+
+function onShutdown()
+	if ApartmentObj and ApartmentObj ~= 0 then
+		exports['qb-interior']:DespawnInterior(ApartmentObj)
+		ApartmentObj = 0
+	end
+	DeleteApartmentsEntranceTargets()
+	DeleteInApartmentTargets()
 end
 
 -- Events
@@ -287,52 +230,44 @@ RegisterClientEvent('qb-apartments:client:setupSpawnUI', function(cData)
 	TriggerCallback('GetOwnedApartment', function(result)
 		if result then
 			TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, false, nil)
-			--TriggerLocalClientEvent('apartments:client:SetHomeBlip', result.type)
 		else
 			if Apartments.Starting then
 				TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, true, Apartments.Locations)
 			else
 				TriggerLocalClientEvent('qb-spawn:client:openUI', true, cData, false, nil)
-				--TriggerLocalClientEvent('apartments:client:SetHomeBlip', nil)
 			end
 		end
 	end, cData.citizenid)
 end)
 
-RegisterClientEvent('qb-apartments:client:SpawnInApartment', function(apartmentId, apartment)
-	if RangDoorbell then
-		local ped = HPlayer:K2_GetPawn()
-		if not ped then return end
-		local pos = ped:K2_GetActorLocation()
-		local doorbellPos = Vector(
-			Apartments.Locations[RangDoorbell].coords[1],
-			Apartments.Locations[RangDoorbell].coords[2],
-			Apartments.Locations[RangDoorbell].coords[3]
-		)
-		local doorbelldist = UE.FVector.Dist(pos, doorbellPos)
-		if doorbelldist > 500 then
-			exports['qb-core']:Notify(Lang:t('error.to_far_from_door'))
-			return
-		end
-	end
-	ClosestHouse = apartment
-	EnterApartment(apartment, apartmentId, true)
+RegisterClientEvent('qb-apartments:client:EnterApartment', function(coords, offset, apartmentId, apartmentName)
+	local data = exports['qb-interior']:CreateApartmentFurnished_C(coords)
+	ApartmentObj = data[1]
+	POIOffsets = data[2]
+	InApartment = true
+	CurrentOffset = offset
+	CurrentApartment = apartmentId
+	ClosestApartment = apartmentName
 	IsOwned = true
+	SetInApartmentTargets(apartmentName)
 end)
 
-RegisterClientEvent('qb-apartments:client:LastLocationHouse', function(apartmentType, apartmentId)
-	ClosestHouse = apartmentType
-	EnterApartment(apartmentType, apartmentId, false)
+RegisterClientEvent('qb-apartments:client:LeaveApartment', function()
+	exports['qb-interior']:DespawnInterior(ApartmentObj)
+	CurrentApartment = nil
+	ClosestApartment = nil
+	InApartment = false
+	CurrentOffset = 0
+	POIOffsets = nil
+	ApartmentObj = 0
+	DeleteInApartmentTargets()
+	DeleteApartmentsEntranceTargets()
 end)
 
-RegisterClientEvent('qb-apartments:client:RingMenu', function(data)
-	RangDoorbell = ClosestHouse
-	TriggerServerEvent('qb-apartments:server:RingDoor', data.apartmentId, ClosestHouse)
-end)
-
-RegisterClientEvent('qb-apartments:client:RingDoor', function(player)
-	CurrentDoorBell = player
-	exports['qb-core']:Notify(Lang:t('info.at_the_door'))
+RegisterClientEvent('qb-apartments:client:UpdateApartment', function()
+	IsOwned = true
+	DeleteApartmentsEntranceTargets()
+	DeleteInApartmentTargets()
 end)
 
 RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
@@ -350,12 +285,14 @@ RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
 
 			for k, v in pairs(apartments) do
 				apartmentMenu[#apartmentMenu + 1] = {
-					header = v,
+					header = k,
 					txt = '',
 					params = {
-						event = 'apartments:client:RingMenu',
+						isServer = true,
+						event = 'qb-apartments:server:RingDoor',
 						args = {
-							apartmentId = k
+							apartmentId = k,
+							apartmentName = v
 						}
 					}
 
@@ -372,67 +309,58 @@ RegisterClientEvent('qb-apartments:client:DoorbellMenu', function()
 			}
 			exports['qb-menu']:openMenu(apartmentMenu)
 		end
-	end, ClosestHouse)
+	end, ClosestApartment)
 end)
 
-RegisterClientEvent('qb-apartments:client:EnterApartment', function()
-	TriggerCallback('GetOwnedApartment', function(result)
-		if result ~= nil then
-			EnterApartment(ClosestHouse, result.name)
+RegisterClientEvent('qb-apartments:client:DoorRequestMenu', function(data)
+	TriggerCallback('GetDoorRequests', function(requests)
+		if not requests or next(requests) == nil then
+			exports['qb-core']:Notify(Lang:t('error.nobody_at_door'))
+			exports['qb-menu']:closeMenu()
+			return
 		end
-	end)
-end)
 
-RegisterClientEvent('qb-apartments:client:UpdateApartment', function()
-	local apartmentType = ClosestHouse
-	local apartmentLabel = Apartments.Locations[ClosestHouse].label
-	TriggerCallback('GetOwnedApartment', function(result)
-		if result == nil then
-			TriggerServerEvent('qb-apartments:server:CreateApartment', apartmentType, apartmentLabel, false)
-		else
-			TriggerServerEvent('qb-apartments:server:UpdateApartment', apartmentType, apartmentLabel)
+		local menu = {
+			{
+				header = 'Visitors',
+				isMenuHeader = true
+			}
+		}
+
+		for cid, req in pairs(requests) do
+			local label = (req.name and req.name ~= '') and req.name or cid
+			menu[#menu + 1] = {
+				header = label,
+				txt = '',
+				params = {
+					isServer = true,
+					event = 'qb-apartments:server:OpenDoor',
+					args = {
+						targetCitizenId = cid,
+						apartmentId = data.CurrentApartment
+					}
+				}
+			}
 		end
-	end)
 
-	IsOwned = true
-	DeleteApartmentsEntranceTargets()
-	DeleteInApartmentTargets()
+		menu[#menu + 1] = {
+			header = Lang:t('text.close_menu'),
+			txt = '',
+			params = {
+				event = 'qb-menu:client:closeMenu'
+			}
+		}
+
+		exports['qb-menu']:openMenu(menu)
+	end, data.CurrentApartment)
 end)
 
-RegisterClientEvent('qb-apartments:client:OpenDoor', function()
-	if CurrentDoorBell == 0 then
-		exports['qb-core']:Notify(Lang:t('error.nobody_at_door'), 'error')
-		return
-	end
-	TriggerServerEvent('qb-apartments:server:OpenDoor', CurrentDoorBell, CurrentApartment, ClosestHouse)
-	CurrentDoorBell = 0
-end)
-
-RegisterClientEvent('qb-apartments:client:LeaveApartment', function()
-	LeaveApartment(ClosestHouse)
-end)
-
-RegisterClientEvent('qb-apartments:client:OpenStash', function()
-	if CurrentApartment then
-		Timer.SetTimeout(function()
-			TriggerServerEvent('qb-apartments:server:openStash', CurrentApartment)
-		end, 500)
-	end
+RegisterClientEvent('qb-apartments:client:LastLocationHouse', function(apartmentType, apartmentId)
+	TriggerServerEvent('qb-apartments:server:EnterApartment', { ClosestApartment = apartmentType })
 end)
 
 RegisterClientEvent('qb-apartments:client:ChangeOutfit', function()
-	-- TriggerCallback('GetOutfits', function(outfits)
-	-- 	-- do nothing for now
-	-- end)
-	local characterCreatorComponentClass = UE.UClass.Load('/AdvancedCharacterCreator/Blueprints/BPC_CharacterCreator.BPC_CharacterCreator_C')
-	local pawn = HPlayer:K2_GetPawn()
-	local characterCreatorComponent = pawn:GetComponentByClass(characterCreatorComponentClass)
-	characterCreatorComponent:ShowCharacterCustomizationUI()
-end)
-
-RegisterClientEvent('qb-apartments:client:Logout', function()
-	LeaveApartment(ClosestHouse)
-	TriggerServerEvent('qb-apartments:server:LogoutLocation')
+	HPlayer:ClothingMenu()
 end)
 
 -- Loop
@@ -442,8 +370,6 @@ Timer.SetInterval(function()
 		if not InApartment then
 			SetClosestApartment()
 			SetApartmentsEntranceTargets()
-		elseif InApartment then
-			SetInApartmentTargets()
 		end
 	end
 end, 1000)

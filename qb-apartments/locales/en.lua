@@ -37,7 +37,7 @@ local Translations = {
         open_door = 'Open Door',
         leave = 'Leave Apartment',
         close_menu = '⬅ Close Menu',
-        tennants = 'Tennants',
+        tennants = 'Units',
     },
 }
 
