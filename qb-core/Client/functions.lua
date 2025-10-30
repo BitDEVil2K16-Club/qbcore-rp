@@ -105,6 +105,7 @@ function QBCore.Functions.GetClosestNPC(coords)
 end
 
 function QBCore.Functions.GetClosestVehicle(coords)
+    if not coords.X then return end
     local player_ped = HPlayer:K2_GetPawn()
     if not player_ped then return end
     local player_coords = coords or player_ped:K2_GetActorLocation()
