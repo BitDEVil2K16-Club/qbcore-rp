@@ -6,15 +6,6 @@ require('Shared/locales/en')
 
 SharedItems = exports['qb-core']:GetShared('Items')
 
-function BroadcastRemote(eventName, ...)
-    local Players = UE.UGameplayStatics.GetAllActorsOfClass(HWorld, UE.UClass.Load('/Script/SandboxGame.HPlayerController'), Players)
-    if not Players or type(Players) ~= 'userdata' then return end
-
-    for k, source in pairs(Players) do
-        TriggerClientEvent(source, eventName, ...)
-    end
-end
-
 -- Handlers
 
 RegisterServerEvent('QBCore:Server:PlayerLoaded', function(Player)
