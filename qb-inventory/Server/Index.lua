@@ -55,11 +55,15 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
     local player_ped = source:K2_GetPawn()
     if not player_ped then return end
     local InsideTag = UE.UHelixResourceUtility.RequestGameplayTag('Status.Vehicle.Inside')
-    local IsInVehicle = player_ped:HasMatchingGameplayTag(Inside)
+    local IsInVehicle = player_ped:HasMatchingGameplayTag(InsideTag)
 
     if IsInVehicle then
         local in_vehicle = player_ped.VehicleInteractionComponent:GetCurrentVehicle()
-        local plate = tostring(math.abs(in_vehicle.ActorGuid.A)):sub(1, 7)
+        local plate = in_vehicle.plate
+        if not plate then
+            plate = tostring(math.random(111111, 9999999))
+            rawset(getmetatable(in_vehicle), 'plate', plate)
+        end
         OpenInventory(source, 'glovebox-' .. plate)
         return
     end
@@ -71,7 +75,12 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
             local Trunk = Comps[1]
             -- @TODO Trunk component detection
         else
-            OpenInventory(source, 'trunk-' .. tostring(math.abs(ClosestVehicle.ActorGuid.A)):sub(1, 7))
+            local plate = ClosestVehicle.plate
+            if not plate then
+                plate = tostring(math.random(111111, 9999999))
+                rawset(getmetatable(ClosestVehicle), 'plate', plate)
+            end
+            OpenInventory(source, 'trunk-' .. plate)
             return
         end
     end
