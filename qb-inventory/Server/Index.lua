@@ -224,9 +224,8 @@ RegisterCallback('server.createDrop', function(source, item)
         PawnRotation.Yaw = PawnRotation.Yaw
 
         local bag = StaticMesh(SpawnPosition, PawnRotation, Config.ItemDropObject, CollisionType.StaticOnly)
-        bag:SetActorScale3D(Vector(0.3, 0.3, 0.3))
-        local actorId = bag.ActorGuid
-        local newDropId = string.format('drop-%s-%s-%s-%s', actorId.A, actorId.B, actorId.C, actorId.D)
+        bag:SetActorScale3D(Vector(0.4, 0.4, 0.4))
+        local newDropId = string.format('drop-%d', math.random(111111, 9999999))
         local bagInteractable = Interactable({
             {
                 Text = 'Open Drop',
@@ -258,6 +257,7 @@ RegisterCallback('server.createDrop', function(source, item)
             }
         })
         bagInteractable:SetInteractableProp(bag)
+        bagInteractable.BoxCollision:SetCollisionResponseToChannel(UE.ECollisionChannel.ECC_Pawn, UE.ECollisionResponse.ECR_Overlap)
         if not Drops[newDropId] then
             Drops[newDropId] = {
                 name = newDropId,
