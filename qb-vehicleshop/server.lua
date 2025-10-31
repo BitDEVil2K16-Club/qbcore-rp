@@ -28,8 +28,7 @@ end
 
 -- Spawn Vehicles
 
-for shop, shopData in pairs(Config.Shops) do
-    if not shopVehicles[shop] then shopVehicles[shop] = {} end
+for _, shopData in pairs(Config.Shops) do
     local vehicles = shopData['ShowroomVehicles']
     for i = 1, #vehicles do
         local vehicleData  = vehicles[i]
