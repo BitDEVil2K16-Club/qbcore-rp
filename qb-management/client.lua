@@ -65,10 +65,6 @@ RegisterClientEvent('qb-management:client:openBossMenu', function()
         }
     }
 
-    for _, v in pairs(DynamicMenuItems) do
-        bossMenu[#bossMenu + 1] = v
-    end
-
     bossMenu[#bossMenu + 1] = {
         header = Lang:t('body.exit'),
         icon = 'fa-solid fa-angle-left',
@@ -80,7 +76,7 @@ RegisterClientEvent('qb-management:client:openBossMenu', function()
     exports['qb-menu']:openMenu(bossMenu)
 end)
 
-RegisterClientEvent('qb-management:client:OpenMenu', function()
+RegisterClientEvent('qb-management:client:OpenGangMenu', function()
     if not PlayerGang.name then return end
     local gangMenu = {
         {
@@ -123,10 +119,6 @@ RegisterClientEvent('qb-management:client:OpenMenu', function()
         }
     }
 
-    for _, v in pairs(DynamicMenuItems) do
-        gangMenu[#gangMenu + 1] = v
-    end
-
     gangMenu[#gangMenu + 1] = {
         header = Lang:t('bodygang.exit'),
         icon = 'fa-solid fa-angle-left',
@@ -165,7 +157,7 @@ RegisterClientEvent('qb-management:client:employeelist', function()
             header = Lang:t('body.return'),
             icon = 'fa-solid fa-angle-left',
             params = {
-                event = 'qb-management:client:OpenMenu',
+                event = 'qb-management:client:openBossMenu',
             }
         }
         exports['qb-menu']:openMenu(EmployeesMenu)
@@ -209,7 +201,7 @@ RegisterClientEvent('qb-management:client:ManageEmployee', function(data)
         header = Lang:t('body.return'),
         icon = 'fa-solid fa-angle-left',
         params = {
-            event = 'qb-management:client:OpenMenu',
+            event = 'qb-management:client:openBossMenu',
         }
     }
     exports['qb-menu']:openMenu(EmployeeMenu)
@@ -242,7 +234,7 @@ RegisterClientEvent('qb-management:client:ManageGang', function()
             header = Lang:t('bodygang.return'),
             icon = 'fa-solid fa-angle-left',
             params = {
-                event = 'qb-management:client:OpenMenu',
+                event = 'qb-management:client:OpenGangMenu',
             }
         }
         exports['qb-menu']:openMenu(GangMembersMenu)
@@ -319,7 +311,7 @@ RegisterClientEvent('qb-management:client:HireMenu', function()
             header = Lang:t('body.return'),
             icon = 'fa-solid fa-angle-left',
             params = {
-                event = 'qb-management:client:OpenMenu',
+                event = 'qb-management:client:openBossMenu',
             }
         }
         exports['qb-menu']:openMenu(HireMenu)
@@ -353,7 +345,7 @@ RegisterClientEvent('qb-management:client:HireMembers', function()
             header = Lang:t('bodygang.return'),
             icon = 'fa-solid fa-angle-left',
             params = {
-                event = 'qb-management:client:OpenMenu',
+                event = 'qb-management:client:OpenGangMenu',
             }
         }
         exports['qb-menu']:openMenu(HireMembersMenu)
@@ -376,7 +368,7 @@ Timer.SetTimeout(function()
             }, {
                 {
                     icon = 'fas fa-sign-in-alt',
-                    event = 'qb-management:client:OpenMenu',
+                    event = 'qb-management:client:openBossMenu',
                     label = Lang:t('target.label'),
                 },
             })
@@ -392,7 +384,7 @@ Timer.SetTimeout(function()
             }, {
                 {
                     icon = 'fas fa-sign-in-alt',
-                    event = 'qb-management:client:OpenMenu',
+                    event = 'qb-management:client:OpenGangMenu',
                     label = Lang:t('targetgang.label'),
                 },
             })

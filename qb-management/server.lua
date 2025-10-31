@@ -166,7 +166,7 @@ RegisterServerEvent('qb-management:server:GradeUpdate', function(source, data)
             TriggerClientEvent(source, 'QBCore:Notify', 'Promotion grade does not exist.', 'error')
         end
     end
-    TriggerClientEvent(source, 'qb-management:client:OpenMenu')
+    TriggerClientEvent(source, 'qb-management:client:openBossMenu')
 end)
 
 RegisterServerEvent('qb-management:server:FireEmployee', function(source, target)
@@ -197,7 +197,7 @@ RegisterServerEvent('qb-management:server:FireEmployee', function(source, target
             TriggerClientEvent(source, 'QBCore:Notify', 'Error..', 'error')
         end
     end
-    TriggerClientEvent(source, 'qb-management:client:OpenMenu')
+    TriggerClientEvent(source, 'qb-management:client:openBossMenu')
 end)
 
 RegisterServerEvent('qb-management:server:HireEmployee', function(source, recruit)
@@ -215,7 +215,7 @@ RegisterServerEvent('qb-management:server:HireEmployee', function(source, recrui
         TriggerClientEvent(source, 'QBCore:Notify', 'You hired ' .. (Target.PlayerData.charinfo.firstname .. ' ' .. Target.PlayerData.charinfo.lastname) .. ' come ' .. Player.PlayerData.job.label .. '', 'success')
         TriggerClientEvent(Target.PlayerData.source, 'QBCore:Notify', 'You were hired as ' .. Player.PlayerData.job.label .. '', 'success')
     end
-    TriggerClientEvent(source, 'qb-management:client:OpenMenu')
+    TriggerClientEvent(source, 'qb-management:client:openBossMenu')
 end)
 
 -- Callbacks
