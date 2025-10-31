@@ -147,7 +147,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            TriggerClientEvent('QBCore:Client:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
+            TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnJobUpdate', self.PlayerData.job)
         end
 
         return true
@@ -176,14 +176,14 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            TriggerClientEvent('QBCore:Client:OnGangUpdate', self.PlayerData.source, self.PlayerData.gang)
+            TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnGangUpdate', self.PlayerData.gang)
         end
 
         return true
     end
 
     function self.Functions.Notify(text, type, length, icon)
-        TriggerClientEvent('QBCore:Notify', self.PlayerData.source, text, type, length, icon)
+        TriggerClientEvent(self.PlayerData.source, 'QBCore:Notify', text, type, length, icon)
     end
 
     function self.Functions.HasItem(items, amount)
@@ -192,7 +192,7 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
     function self.Functions.SetJobDuty(onDuty)
         self.PlayerData.job.onduty = not not onDuty
-        TriggerClientEvent('QBCore:Client:OnJobUpdate', self.PlayerData.source, self.PlayerData.job)
+        TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnJobUpdate', self.PlayerData.job)
         self.Functions.UpdatePlayerData()
     end
 
@@ -233,8 +233,8 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, false)
-            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'add', reason)
+            TriggerClientEvent(self.PlayerData.source, 'qb-hud:client:OnMoneyChange', moneytype, amount, false)
+            TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnMoneyChange', moneytype, amount, 'add', reason)
         end
 
         return true
@@ -257,11 +257,11 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, amount, true)
+            TriggerClientEvent(self.PlayerData.source, 'qb-hud:client:OnMoneyChange', moneytype, amount, true)
             if moneytype == 'bank' then
-                TriggerClientEvent('qb-phone:client:RemoveBankMoney', self.PlayerData.source, amount)
+                TriggerClientEvent(self.PlayerData.source, 'qb-phone:client:RemoveBankMoney', amount)
             end
-            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'remove', reason)
+            TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnMoneyChange', moneytype, amount, 'remove', reason)
         end
 
         return true
@@ -278,8 +278,8 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
-            TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, math.abs(difference), difference < 0)
-            TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'set', reason)
+            TriggerClientEvent(self.PlayerData.source, 'qb-hud:client:OnMoneyChange', moneytype, math.abs(difference), difference < 0)
+            TriggerClientEvent(self.PlayerData.source, 'QBCore:Client:OnMoneyChange', moneytype, amount, 'set', reason)
         end
 
         return true
