@@ -1,6 +1,6 @@
 local Lang = require('locales/en')
 local Houses = {}
-local my_webui = WebUI('qb-spawn', 'qb-spawn/html/index.html', 0)
+local my_webui = WebUI('qb-spawn', 'qb-spawn/html/index.html')
 
 -- Functions
 
