@@ -294,18 +294,16 @@ RegisterClientEvent('qb-management:client:HireMenu', function()
     }
     TriggerCallback('GetPlayers', function(players)
         for _, v in pairs(players) do
-            if v and v ~= PlayerId() then
-                HireMenu[#HireMenu + 1] = {
-                    header = v.name,
-                    txt = Lang:t('body.cid') .. v.citizenid .. ' - ID: ' .. v.sourceplayer,
-                    icon = 'fa-solid fa-user-check',
-                    params = {
-                        isServer = true,
-                        event = 'qb-management:server:HireEmployee',
-                        args = v.sourceplayer
-                    }
+            HireMenu[#HireMenu + 1] = {
+                header = v.name,
+                txt = Lang:t('body.cid') .. v.citizenid,
+                icon = 'fa-solid fa-user-check',
+                params = {
+                    isServer = true,
+                    event = 'qb-management:server:HireEmployee',
+                    args = v.citizenid
                 }
-            end
+            }
         end
         HireMenu[#HireMenu + 1] = {
             header = Lang:t('body.return'),
@@ -328,18 +326,16 @@ RegisterClientEvent('qb-management:client:HireMembers', function()
     }
     TriggerCallback('GetPlayers', function(players)
         for _, v in pairs(players) do
-            if v and v ~= PlayerId() then
-                HireMembersMenu[#HireMembersMenu + 1] = {
-                    header = v.name,
-                    txt = Lang:t('bodygang.cid') .. v.citizenid .. ' - ID: ' .. v.sourceplayer,
-                    icon = 'fa-solid fa-user-check',
-                    params = {
-                        isServer = true,
-                        event = 'qb-management:server:HireMember',
-                        args = v.sourceplayer
-                    }
+            HireMembersMenu[#HireMembersMenu + 1] = {
+                header = v.name,
+                txt = Lang:t('bodygang.cid') .. v.citizenid .. ' - ID: ' .. v.sourceplayer,
+                icon = 'fa-solid fa-user-check',
+                params = {
+                    isServer = true,
+                    event = 'qb-management:server:HireMember',
+                    args = v.sourceplayer
                 }
-            end
+            }
         end
         HireMembersMenu[#HireMembersMenu + 1] = {
             header = Lang:t('bodygang.return'),
