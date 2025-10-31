@@ -92,5 +92,5 @@ RegisterClientEvent('qb-vehicleshop:client:vehMenu', function(data)
         }
     end
 
-    exports['qb-menu']:openMenu(vehMenu)
+    exports['qb-menu']:openMenu(vehMenu, Config.SortAlphabetically, true)
 end)
