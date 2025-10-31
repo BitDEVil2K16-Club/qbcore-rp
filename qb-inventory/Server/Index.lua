@@ -60,20 +60,22 @@ RegisterServerEvent('qb-inventory:server:openInventory', function(source)
     end
 
     local ClosestVehicle, ClosestDistance = exports['qb-core']:GetClosestVehicle(source)
-    if ClosestVehicle and ClosestDistance < 350 then
+    if ClosestVehicle and ClosestDistance < 450 then
+        local plate = ClosestVehicle.plate
+        if not plate then
+            plate = tostring(math.random(111111, 9999999))
+            rawset(getmetatable(ClosestVehicle), 'plate', plate)
+        end
+
         local Comps = ClosestVehicle:K2_GetComponentsByClass(UE.UClass.Load('/Game/SimpleVehicle/Blueprints/Components/Attachments/Trunk.Trunk_C'))
         if Comps:ToTable()[1] then
-            local Trunk = Comps[1]
             -- @TODO Trunk component detection
-        else
-            local plate = ClosestVehicle.plate
-            if not plate then
-                plate = tostring(math.random(111111, 9999999))
-                rawset(getmetatable(ClosestVehicle), 'plate', plate)
-            end
-            OpenInventory(source, 'trunk-' .. plate)
-            return
+            local Trunk = Comps[1]
+            Trunk['Animate Trunk'](Trunk, UE.EOpenableState.Open)
         end
+
+        OpenInventory(source, 'trunk-' .. plate)
+        return
     end
 
     OpenInventory(source)
