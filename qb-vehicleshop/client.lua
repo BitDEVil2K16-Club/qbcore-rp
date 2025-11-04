@@ -17,15 +17,23 @@ local function setupTargets()
                     event = 'qb-vehicleshop:server:testDrive',
                     icon = 'fas fa-car',
                     label = Lang:t('menus.test_header'),
-                    vehicle = vehicleData['chosenVehicle'],
-                    coords = shopData['TestDriveSpawn']
+                    shop = shop,
+                    index = i
                 },
                 {
-                    icon = 'fas fa-car',
+                    icon = 'fas fa-shuffle',
                     label = 'Swap Vehicle',
                     event = 'qb-vehicleshop:client:vehMenu',
                     shop = shop,
-                    index = i,
+                    index = i
+                },
+                {
+                    icon = 'fas fa-basket-shopping',
+                    label = 'Purchase Vehicle',
+                    type = 'server',
+                    event = 'qb-vehicleshop:server:purchaseVehicle',
+                    shop = shop,
+                    index = i
                 },
             }
 
@@ -61,10 +69,6 @@ end)
 -- Functions
 
 -- Events
-
-RegisterClientEvent('qb-vehicleshop:client:updateConfig', function(vehicleName, shop, index)
-    Config.Shops[shop]['ShowroomVehicles'][index]['chosenVehicle'] = vehicleName
-end)
 
 RegisterClientEvent('qb-vehicleshop:client:vehMenu', function(data)
     local shop = data.shop

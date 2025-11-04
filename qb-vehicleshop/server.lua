@@ -32,15 +32,19 @@ end
 -- Events
 
 RegisterServerEvent('qb-vehicleshop:server:testDrive', function(_, data)
-    local vehicle = data.vehicle
+    local shop = data.shop
+    local index = data.index
+    local shopData = Config.Shops[shop]
+    local coords = shopData['TestDriveSpawn']
+    local vehicle = shopData['ShowroomVehicles'][index]['chosenVehicle']
     local vehicleInfo = Vehicles[vehicle]
     local vehicleClass = vehicleInfo['asset_name']
-    local location = data.coords.location
-    local rotation = data.coords.rotation
+    local location = coords.location
+    local rotation = coords.rotation
     HVehicle(location, rotation, vehicleClass)
 end)
 
-RegisterServerEvent('qb-vehicleshop:server:swapVehicle', function(source, data)
+RegisterServerEvent('qb-vehicleshop:server:swapVehicle', function(_, data)
     local vehicleName  = data.vehicle
     local shop         = data.shop
     local index        = data.index
@@ -48,14 +52,46 @@ RegisterServerEvent('qb-vehicleshop:server:swapVehicle', function(source, data)
     local vehicleClass = vehicleInfo['asset_name']
     local location     = Config.Shops[shop]['ShowroomVehicles'][index]['coords'].location
     local rotation     = Config.Shops[shop]['ShowroomVehicles'][index]['coords'].rotation
-
     ClearAreaOfVehicles(location)
-
     local vehicle = HVehicle(location, rotation, vehicleClass)
     vehicle:SetSimulationEnabledForHelixEntity(false)
-
     Config.Shops[shop]['ShowroomVehicles'][index]['chosenVehicle'] = vehicleName
-    TriggerClientEvent(source, 'qb-vehicleshop:client:updateConfig', vehicleName, shop, index)
+end)
+
+RegisterServerEvent('qb-vehicleshop:server:purchaseVehicle', function(source, data)
+    local Player = exports['qb-core']:GetPlayer(source)
+    if not Player then return end
+    local cash = Player.PlayerData.money.cash
+    local bank = Player.PlayerData.money.bank
+
+    local shop = data.shop
+    local index = data.index
+    local vehicle = Config.Shops[shop]['ShowroomVehicles'][index]['chosenVehicle']
+    local spawnLocation = Config.Shops[shop]['VehicleSpawn']
+    local vehicleInfo = Vehicles[vehicle]
+    local price = vehicleInfo['price']
+
+    local moneyType
+    if cash >= price then moneyType = 'cash' elseif bank >= price then moneyType = 'bank' else moneyType = nil end
+
+    if not moneyType then
+        TriggerClientEvent(source, 'QBCore:Notify', Lang:t('error.notenoughmoney'), 'error')
+        return
+    end
+
+    local plate = exports['qb-core']:GeneratePlate()
+    exports['qb-core']:Player(source, 'RemoveMoney', moneyType, price, 'vehicle-purchase')
+    exports['qb-core']:Database('Execute', 'INSERT INTO player_vehicles (license, citizenid, vehicle, mods, plate, garage, state) VALUES (?, ?, ?, ?, ?, ?, ?)', {
+        pData.PlayerData.license,
+        cid,
+        vehicle,
+        '{}',
+        plate,
+        'apartment',
+        0
+    })
+    HVehicle(spawnLocation.location, spawnLocation.rotation, vehicleInfo.asset_name)
+    TriggerClientEvent(source, 'QBCore:Notify', Lang:t('success.purchased'), 'success')
 end)
 
 -- Callbacks
