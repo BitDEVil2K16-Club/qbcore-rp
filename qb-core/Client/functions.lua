@@ -3,16 +3,15 @@ local my_webui = WebUI('qb-core', 'qb-core/Client/html/index.html', 0)
 
 -- Getter Functions
 
-function QBCore.Functions.GetPlayerData(cb)
-    if not cb then return QBCore.PlayerData end
-    cb(QBCore.PlayerData)
+function QBCore.Functions.GetPlayerData()
+    return QBCore.PlayerData
 end
 
 -- Functions
 
 function QBCore.Functions.Debug(tbl)
     if not HPlayer then return end
-    print(HELIXTable.Dump(tbl))
+    HELIXTable.Dump(tbl)
 end
 
 -- UI
@@ -61,5 +60,11 @@ function QBCore.Functions.Notify(text, texttype, length, icon)
             caption = '',
             icon = icon or nil
         })
+    end
+end
+
+for functionName, func in pairs(QBCore.Functions) do
+    if type(func) == 'function' then
+        exports('qb-core', functionName, func)
     end
 end

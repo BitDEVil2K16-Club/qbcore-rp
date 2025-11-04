@@ -7,8 +7,9 @@ local sharedGangs = exports['qb-core']:GetShared('Gangs')
 -- Events
 
 RegisterClientEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerJob = exports['qb-core']:GetPlayerData().job
-    PlayerGang = exports['qb-core']:GetPlayerData().gang
+    local player_data = exports['qb-core']:GetPlayerData()
+    PlayerJob = player_data.job
+    PlayerGang = player_data.gang
 end)
 
 RegisterClientEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
