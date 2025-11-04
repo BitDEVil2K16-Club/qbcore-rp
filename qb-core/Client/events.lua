@@ -27,18 +27,3 @@ end)
 RegisterClientEvent('qb-core:client:KeyPressed', function()
     QBCore.Functions.KeyPressed()
 end)
-
--- Commands
-
-RegisterClientEvent('QBCore:Console:RegisterCommand', function(name, help)
-    RegisterConsoleCommand(name, function(...)
-        local args = { ... }
-        local argsString = ''
-        if #args > 0 then
-            for _, argument in pairs(args) do
-                argsString = argsString == '' and argument or argsString .. ' ' .. argument
-            end
-        end
-        TriggerServerEvent('QBCore:Console:CallCommand', name, argsString)
-    end, help)
-end)

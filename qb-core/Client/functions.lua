@@ -11,6 +11,7 @@ end
 -- Functions
 
 function QBCore.Functions.Debug(tbl)
+    if not HPlayer then return end
     print(HELIXTable.Dump(tbl))
 end
 
@@ -41,6 +42,7 @@ function QBCore.Functions.KeyPressed()
 end
 
 function QBCore.Functions.Notify(text, texttype, length, icon)
+    if not HPlayer then return end
     if not my_webui then return end
     local noti_type = texttype or 'primary'
     if type(text) == 'table' then
@@ -59,57 +61,5 @@ function QBCore.Functions.Notify(text, texttype, length, icon)
             caption = '',
             icon = icon or nil
         })
-    end
-end
-
--- World Getters
-
-function QBCore.Functions.GetClosestPlayer(coords)
-    local player_ped = GetPlayerPawn()
-    if not player_ped then return end
-    local player_coords = coords or GetEntityCoords(player_ped)
-    local hits = Trace:SphereMulti(player_coords, player_coords, 1000) -- Add my pawn to ignore list?
-    local closest_player, closest_distance = nil, -1
-    for k, v in pairs(hits) do
-        local distance = hit.Distance
-        if closest_distance == -1 or distance < closest_distance then
-            local _, _, _, _, _, _, _, _, _, hitActor = UE.UGameplayStatics.BreakHitResult(hit, _, _, _, _, _, _, _, _, _, hitActor, _, _, _, _, _, _, _, _)
-            if hitActor:IsA(UE.AHCharacter) then
-                if hitActor:IsPlayerControlled() then
-                    closest_player = hitActor:GetController() -- On client?
-                    closest_distance = distance
-                end
-            end
-        end
-    end
-    return closest_player, closest_distance
-end
-
-function QBCore.Functions.GetClosestVehicle(coords)
-    if not coords.X then return end
-    local player_ped = GetPlayerPawn()
-    if not player_ped then return end
-    local player_coords = coords or GetEntityCoords(player_ped)
-    local ObjectTypes = UE.TArray(0)
-    ObjectTypes:Add(UE.ECollisionChannel.ECC_Vehicle)
-
-    local hits = UE.TArray(UE.AActor)
-    UE.UKismetSystemLibrary.SphereOverlapActors(HWorld, player_coords, 1000, ObjectTypes, nil, IgnoreList, hits)
-    local closest_vehicle, closest_distance = nil, -1
-    for k, hit in pairs(hits) do
-        local distance = GetDistanceBetweenCoords(GetEntityCoords(hit), player_coords)
-        if closest_distance == -1 or distance < closest_distance then
-            if hit:IsA(UE.AMMVehiclePawn) then
-                closest_vehicle = hit
-                closest_distance = distance
-            end
-        end
-    end
-    return closest_vehicle, closest_distance
-end
-
-for functionName, func in pairs(QBCore.Functions) do
-    if type(func) == 'function' then
-        exports('qb-core', functionName, func)
     end
 end

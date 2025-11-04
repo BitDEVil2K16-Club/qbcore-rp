@@ -19,63 +19,6 @@ function QBCore.Functions.GetSource(identifier)
 	return 0
 end
 
-function QBCore.Functions.AddPermission(source, permission)
-	local PlayerState = source:GetLyraPlayerState()
-	local accountId = PlayerState:GetPlayerId()
-	local allPermissions = QBCore.Config.Server.Permissions
-	local level_check = allPermissions[permission]
-	if not level_check then return end
-	if not QBCore.Functions.HasPermission(source, permission) then
-		allPermissions[permission][accountId] = true
-		QBCore.Commands.Refresh(source)
-	end
-end
-
-function QBCore.Functions.RemovePermission(source, permission)
-	local PlayerState = source:GetLyraPlayerState()
-	local accountId = PlayerState:GetPlayerId()
-	local allPermissions = QBCore.Config.Server.Permissions
-	local level_check = allPermissions[permission]
-	if not level_check then return end
-	if permission then
-		if QBCore.Functions.HasPermission(source, permission) then
-			allPermissions[permission][accountId] = nil
-			QBCore.Commands.Refresh(source)
-		end
-	else
-		for _, accounts in pairs(allPermissions) do
-			if accounts[accountId] then
-				accounts[accountId] = nil
-				QBCore.Commands.Refresh(source)
-			end
-		end
-	end
-end
-
-function QBCore.Functions.HasPermission(source, permissionLevel)
-	local PlayerState = source:GetLyraPlayerState()
-	local accountId = PlayerState:GetPlayerId()
-	local allPermissions = QBCore.Config.Server.Permissions
-	if permissionLevel == 'user' then
-		return true
-	end
-	if not allPermissions[permissionLevel] then
-		return false
-	end
-
-	if allPermissions['god'][accountId] then
-		return true
-	elseif permissionLevel ~= 'god' and allPermissions['admin'][accountId] then
-		return true
-	elseif permissionLevel == 'mod' or permissionLevel == 'user' then
-		if allPermissions['mod'][accountId] then
-			return true
-		end
-	end
-
-	return allPermissions[permissionLevel][accountId] or false
-end
-
 function QBCore.Functions.GetPlayer(source)
 	if not source then return end
 	return QBCore.Players[source]
@@ -178,116 +121,67 @@ function QBCore.Functions.CanUseItem(item)
 end
 
 function QBCore.Functions.Debug(tbl)
+	if HPlayer then return end
 	print(HELIXTable.Dump(tbl))
 end
 
 function QBCore.Functions.Notify(source, message, type, length, icon)
+	if HPlayer then return end
 	TriggerClientEvent('QBCore:Notify', source, message, type, length, icon)
 end
 
 function QBCore.Functions.CreateCitizenId()
-	return tostring(QBCore.Shared.RandomStr(3) .. QBCore.Shared.RandomInt(5)):upper()
+	return GenerateId(3, 'string') .. GenerateId(5, 'number')
 end
 
 function QBCore.Functions.CreateAccountNumber()
-	return 'US0'
-		.. math.random(1, 9)
-		.. 'QBCore'
-		.. math.random(1111, 9999)
-		.. math.random(1111, 9999)
-		.. math.random(11, 99)
-end
-
-function QBCore.Functions.CreatePhoneNumber()
-	return math.random(100, 999) .. math.random(1000000, 9999999)
-end
-
-function QBCore.Functions.CreateFingerId()
-	return tostring(
-		QBCore.Shared.RandomStr(2)
-		.. QBCore.Shared.RandomInt(3)
-		.. QBCore.Shared.RandomStr(1)
-		.. QBCore.Shared.RandomInt(2)
-		.. QBCore.Shared.RandomStr(3)
-		.. QBCore.Shared.RandomInt(4)
-	)
+	return GenerateId(10, 'number')
 end
 
 function QBCore.Functions.CreateWalletId()
-	return 'QB-' .. math.random(11111111, 99999999)
+	return 'WLT-' .. GenerateId(12, 'mixed')
+end
+
+function QBCore.Functions.CreatePhoneNumber()
+	local areaCode = GenerateId(3, 'number')
+	local prefix = GenerateId(3, 'number')
+	local lineNumber = GenerateId(4, 'number')
+	return areaCode .. prefix .. lineNumber
+end
+
+function QBCore.Functions.CreateFingerId()
+	return string.format('FP-%s-%s-%s',
+		GenerateId(3, 'mixed'),
+		GenerateId(4, 'mixed'),
+		GenerateId(4, 'mixed')
+	)
 end
 
 function QBCore.Functions.CreateSerialNumber()
-	return math.random(11111111, 99999999)
+	return string.format('SN-%s-%s-%s',
+		os.date('%Y'),
+		GenerateId(4, 'string'):upper(),
+		GenerateId(4, 'number')
+	)
 end
 
--- World Getters
-
-function QBCore.Functions.GetClosestPlayer(source, coords)
-	local player_ped = GetPlayerPawn(source)
-	if not player_ped then return end
-	local player_coords = coords or GetEntityCoords(player_ped)
-	local hits = Trace:SphereMulti(player_coords, player_coords, 1000)
-	local closest_player, closest_distance = nil, -1
-	for k, hit in pairs(hits) do
-		local distance = hit.Distance
-		if closest_distance == -1 or distance < closest_distance then
-			local _, _, _, _, _, _, _, _, _, hitActor = UE.UGameplayStatics.BreakHitResult(hit, _, _, _, _, _, _, _, _, _, hitActor, _, _, _, _, _, _, _, _)
-			if hitActor:IsA(UE.AHCharacter) then
-				if hitActor:IsPlayerControlled() then
-					closest_player = hitActor:GetController() -- On client?
-					closest_distance = distance
-				end
-			end
-		end
-	end
-	return closest_player, closest_distance
+function QBCore.Functions.CreateApartmentId()
+	return string.format('%s-%s%s',
+		GenerateId(4, 'number'),
+		GenerateId(3, 'number'),
+		GenerateId(1, 'string')
+	)
 end
 
-function QBCore.Functions.GetClosestVehicle(source, coords)
-	local player_ped = GetPlayerPawn(source)
-	if not player_ped then return end
-	local player_coords = coords or GetEntityCoords(player_ped)
-	local ObjectTypes = UE.TArray(0)
-	ObjectTypes:Add(UE.ECollisionChannel.ECC_Vehicle)
-
-	local hits = UE.TArray(UE.AActor)
-	UE.UKismetSystemLibrary.SphereOverlapActors(HWorld, player_coords, 1000, ObjectTypes, nil, IgnoreList, hits)
-	local closest_vehicle, closest_distance = nil, -1
-	for k, hit in pairs(hits) do
-		local distance = GetDistanceBetweenCoords(GetEntityCoords(hit), player_coords)
-		if closest_distance == -1 or distance < closest_distance then
-			if hit:IsA(UE.AMMVehiclePawn) then
-				closest_vehicle = hit
-				closest_distance = distance
-			end
-		end
-	end
-	return closest_vehicle, closest_distance
+function QBCore.Functions.GeneratePlate()
+	return string.format('%s%s%s',
+		GenerateId(1, 'number'),
+		GenerateId(3, 'string'),
+		GenerateId(3, 'number')
+	)
 end
 
 -- Spawn Vehicle
-
-function QBCore.Functions.GeneratePlate(vehicle)
-	if not vehicle then
-		return
-	end
-	local letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-	local numbers = '0123456789'
-	local plate = ''
-
-	for i = 1, 3 do
-		local randIndex = math.random(1, #letters)
-		plate = plate .. letters:sub(randIndex, randIndex)
-	end
-
-	for i = 1, 5 do
-		local randIndex = math.random(1, #numbers)
-		plate = plate .. numbers:sub(randIndex, randIndex)
-	end
-
-	return plate
-end
 
 function QBCore.Functions.CreateWeapon(weapon_name, coords, rotation, itemInfo)
 
@@ -310,7 +204,7 @@ function QBCore.Functions.SetMethod(methodName, handler)
 		return false, 'invalid_method_name'
 	end
 	QBCore.Functions[methodName] = handler
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -319,7 +213,7 @@ function QBCore.Functions.SetField(fieldName, data)
 		return false, 'invalid_field_name'
 	end
 	QBCore[fieldName] = data
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -332,7 +226,7 @@ function QBCore.Functions.AddJob(jobName, job)
 	end
 	QBCore.Shared.Jobs[jobName] = job
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, job)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -359,7 +253,7 @@ function QBCore.Functions.AddJobs(jobs)
 		return false, message, errorItem
 	end
 	TriggerClientEvent('QBCore:Client:OnSharedUpdateMultiple', -1, 'Jobs', jobs)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
@@ -372,7 +266,7 @@ function QBCore.Functions.RemoveJob(jobName)
 	end
 	QBCore.Shared.Jobs[jobName] = nil
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, nil)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -385,7 +279,7 @@ function QBCore.Functions.UpdateJob(jobName, job)
 	end
 	QBCore.Shared.Jobs[jobName] = job
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Jobs', jobName, job)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -398,7 +292,7 @@ function QBCore.Functions.AddItem(itemName, item)
 	end
 	QBCore.Shared.Items[itemName] = item
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, item)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -411,7 +305,7 @@ function QBCore.Functions.UpdateItem(itemName, item)
 	end
 	QBCore.Shared.Items[itemName] = item
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, item)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -438,7 +332,7 @@ function QBCore.Functions.AddItems(items)
 		return false, message, errorItem
 	end
 	TriggerClientEvent('QBCore:Client:OnSharedUpdateMultiple', -1, 'Items', items)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
@@ -451,7 +345,7 @@ function QBCore.Functions.RemoveItem(itemName)
 	end
 	QBCore.Shared.Items[itemName] = nil
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Items', itemName, nil)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -464,7 +358,7 @@ function QBCore.Functions.AddGang(gangName, gang)
 	end
 	QBCore.Shared.Gangs[gangName] = gang
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, gang)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -491,7 +385,7 @@ function QBCore.Functions.AddGangs(gangs)
 		return false, message, errorItem
 	end
 	TriggerClientEvent('QBCore:Client:OnSharedUpdateMultiple', -1, 'Gangs', gangs)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, message, nil
 end
 
@@ -504,7 +398,7 @@ function QBCore.Functions.RemoveGang(gangName)
 	end
 	QBCore.Shared.Gangs[gangName] = nil
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, nil)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 
@@ -517,7 +411,7 @@ function QBCore.Functions.UpdateGang(gangName, gang)
 	end
 	QBCore.Shared.Gangs[gangName] = gang
 	TriggerClientEvent('QBCore:Client:OnSharedUpdate', -1, 'Gangs', gangName, gang)
-	Events.Call('QBCore:Server:UpdateObject')
+	TriggerLocalServerEvent('QBCore:Server:UpdateObject')
 	return true, 'success'
 end
 

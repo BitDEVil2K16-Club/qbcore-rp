@@ -1,7 +1,7 @@
 QBCore.Config.Language = 'en'
 
 --QBCore.Config.MaxPlayers = GetConvarInt('sv_maxclients', 48) -- Gets max players from config file, default 48
-QBCore.Config.DefaultSpawn = Vector(-33480.2, -11164.2, 239.6)
+QBCore.Config.DefaultSpawn = Vector(-5041.637236, 3194.286463, -315.849986)
 QBCore.Config.UpdateInterval = 5    -- how often to update player data in minutes
 QBCore.Config.StatusInterval = 5000 -- how often to check if hunger/thirst is empty in milliseconds
 
@@ -16,6 +16,12 @@ QBCore.Config.Player.HungerRate = 4.2 -- Rate at which hunger goes down.
 QBCore.Config.Player.ThirstRate = 3.8 -- Rate at which thirst goes down.
 QBCore.Config.Player.Bloodtypes = { 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-' }
 
+QBCore.Config.StarterItems = {
+	phone = 1,
+	id_card = 1,
+	driver_license = 1,
+}
+
 QBCore.Config.Server = {}                           -- General server config
 QBCore.Config.Server.Closed = false                 -- Set server closed (no one can join except people with ace permission 'qbadmin.join')
 QBCore.Config.Server.ClosedReason = 'Server Closed' -- Reason message to display when people can't join the server
@@ -25,36 +31,9 @@ QBCore.Config.Server.WhitelistPermission = 'admin'  -- Permission that's able to
 QBCore.Config.Server.Discord = ''                   -- Discord invite link
 QBCore.Config.Server.CheckDuplicateLicense = true   -- Check for duplicate account id on join
 QBCore.Config.Server.Permissions = {                -- string for player account id found using GetAccountID()
-	god = {
-		['11ec67d4-bd1f-4f64-98a3-68e0ffd885d0'] = true,
-		['a64b3c45-c026-4a58-b532-f08efb515647'] = true, -- HELIX
-		['e53c7eac-2c50-4fcf-95c4-cd3315a60c67'] = true, -- QA Generic Production
-		['dc19be29-9981-4a83-af57-4030aa815a3e'] = true, -- QA Production Jen
-		['c9525e76-b49d-4987-b547-de41bc37dd1e'] = true, -- QA Staging Jen
-		['d35e4f3c-4bf2-41b8-8467-2c1d7248e7d4'] = true, -- QA Production Francisco
-		['63128f5b-c760-4865-9675-9c43faa469fa'] = true,
-		['b97768de-2848-4495-a52a-99eb1a98c3fe'] = true, -- QA Staging Francisco
-		['729bf24b-481d-4894-a954-80c30729936b'] = true,
-		['d95e4660-8cc6-4610-bf6d-ac679f9a088d'] = true, -- QA Generic Staging
-		['eec65f3f-e5b0-4fb8-922d-75e1ea1575d2'] = true, -- Kakarot
-		['d4997d1b-b3ca-499d-9f0b-ffb361a51c4f'] = true,
-		['ebc0e470-7c49-477a-85cb-7684f3a40ed4'] = true, -- Maggie
-		['b04771ab-3d22-4364-beaa-e0b48e70911c'] = true, -- Kravs
-		['65687081-32ee-40e0-9391-4874c194bf5c'] = true, -- Joel
-		['e4f9ce8c-c7e4-4b27-b80c-38c9846ca468'] = true -- HELIXStaging
+	admin = {
+		['c5da8bec-bc1e-4783-9ec6-52e7d7a571cb'] = true, -- example account identifier
 	},
-	admin = {},
-	mod = {},
-}
-
-QBCore.Config.Chat = {
-	screen_location = Vector2D(-25, 0),
-	size = Vector2D(600, 250),
-	anchors_min = Vector2D(1, 0.5),
-	anchors_max = Vector2D(1, 0.5),
-	alignment = Vector2D(1, 0.5),
-	justify = true,
-	show_scrollbar = false,
 }
 
 -- Configurable player data

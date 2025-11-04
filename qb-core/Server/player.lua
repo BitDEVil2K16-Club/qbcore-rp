@@ -338,6 +338,10 @@ function QBCore.Player.CreatePlayer(PlayerData, Offline)
         self[fieldName] = data
     end
 
+    if QBCore.Config.Server.Permissions[license] then
+        AddPermission(self.PlayerData.source)
+    end
+
     if self.Offline then
         return self
     else
@@ -351,12 +355,11 @@ end
 function QBCore.Player.Save(source)
     local pcoords = QBCore.Config.DefaultSpawn
     local ped = GetPlayerPawn(source)
-    if ped then 
-        pcoords = GetEntityCoords(ped) 
+    if ped then
+        pcoords = GetEntityCoords(ped)
     else
         pcoords = PositionCache[source] or pcoords
     end
-    local PlayerState = source:GetLyraPlayerState()
     local PlayerData = QBCore.Players[source].PlayerData
     if not PlayerData then
         print('ERROR QBCORE.PLAYER.SAVE - PLAYERDATA IS EMPTY!')
