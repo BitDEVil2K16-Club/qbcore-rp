@@ -13,22 +13,22 @@ end)
 local function GiveStarterItems(source)
     local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
-    for _, v in pairs(exports['qb-core']:GetShared('StarterItems')) do
+    for item, amount in pairs(exports['qb-core']:GetConfig().StarterItems) do
         local info = {}
-        if v.item == 'id_card' then
+        if item == 'id_card' then
             info.citizenid = Player.PlayerData.citizenid
             info.firstname = Player.PlayerData.charinfo.firstname
             info.lastname = Player.PlayerData.charinfo.lastname
             info.birthdate = Player.PlayerData.charinfo.birthdate
             info.gender = Player.PlayerData.charinfo.gender
             info.nationality = Player.PlayerData.charinfo.nationality
-        elseif v.item == 'driver_license' then
+        elseif item == 'driver_license' then
             info.firstname = Player.PlayerData.charinfo.firstname
             info.lastname = Player.PlayerData.charinfo.lastname
             info.birthdate = Player.PlayerData.charinfo.birthdate
             info.type = 'Class C Driver License'
         end
-        exports['qb-inventory']:AddItem(source, v.item, v.amount, false, info)
+        exports['qb-inventory']:AddItem(source, item, amount, false, info)
     end
 end
 
