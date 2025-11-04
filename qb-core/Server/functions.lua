@@ -122,7 +122,7 @@ end
 
 function QBCore.Functions.Debug(tbl)
 	if HPlayer then return end
-	print(HELIXTable.Dump(tbl))
+	HELIXTable.Dump(tbl)
 end
 
 function QBCore.Functions.Notify(source, message, type, length, icon)
