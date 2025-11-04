@@ -19,7 +19,7 @@ RegisterCommand('dm', 'DM Player', function(source, args)
     local message = table.concat(args, ' ', 2)
     local target = QBCore.Functions.GetPlayer(targetId)
     if not target then
-        TriggerClientEvent('QBCore:Notify', source, Lang:t('error.not_online'), 'error')
+        TriggerClientEvent(source, 'QBCore:Notify', Lang:t('error.not_online'), 'error')
         return
     end
     local sourcePlayer = QBCore.Functions.GetPlayer(source)
@@ -31,10 +31,10 @@ RegisterCommand('dm', 'DM Player', function(source, args)
     Chat.SendMessage(targetPlayer, '(' .. source:GetID() .. ') ' .. prefix .. ': ' .. message)
 end)
 
-RegisterCommand('id', 'Check ID', {}, function(source)
+RegisterCommand('id', 'Check ID', function(source)
     local PlayerState = source:GetLyraPlayerState()
     local player_id = PlayerState:GetPlayerId()
-    TriggerClientEvent('QBCore:Notify', source, 'Your ID is: ' .. player_id)
+    TriggerClientEvent(source, 'QBCore:Notify', 'Your ID is: ' .. player_id)
 end)
 
 -- Permissions
@@ -124,9 +124,7 @@ end, true)
 
 RegisterCommand('job', Lang:t('command.job.help'), function(source)
     local Player = QBCore.Functions.GetPlayer(source)
-    if not Player then
-        return
-    end
+    if not Player then return end
     local PlayerJob = Player.PlayerData.job
     TriggerClientEvent(
         source,
