@@ -14,8 +14,8 @@ Config.Garages = {
         takeVehicle = Vector(300, -300, 90),
         spawnPoint = {
             {
-                coords = 265.96, -332.3, 92.51,
-                heading = 250.68,
+                coords = Vector(981.37, 248.67, 2.0),
+                heading = 90.68,
             }
         },
         showBlip = true, -- Unused
