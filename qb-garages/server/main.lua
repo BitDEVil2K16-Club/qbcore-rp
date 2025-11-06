@@ -168,15 +168,15 @@ end) ]]
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     MySQL.update('UPDATE player_vehicles SET fuel = ?, engine = ?, body = ? WHERE plate = ? AND citizenid = ?', { fuel, engine, body, plate, Player.PlayerData.citizenid })
-end)
+end)]]
 
-RegisterNetEvent('qb-garages:server:updateVehicleState', function(state, plate)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+RegisterServerEvent('qb-garages:server:updateVehicleState', function(source, state, plate)
+    local Player = exports['qb-core']:GetPlayer(source)
     if not Player then return end
-    MySQL.update('UPDATE player_vehicles SET state = ?, depotprice = ? WHERE plate = ? AND citizenid = ?', { state, 0, plate, Player.PlayerData.citizenid })
+    updateVehicleState(state, plate, Player.PlayerData.citizenid)
 end)
 
+--[[
 RegisterNetEvent('qb-garages:server:UpdateOutsideVehicle', function(plate, vehicleNetID)
     OutsideVehicles[plate] = {
         netID = vehicleNetID,
