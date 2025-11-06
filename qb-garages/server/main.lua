@@ -118,29 +118,56 @@ local function GetVehicleTypeByModel(model)
     local vehicleType = vehicleTypes[category]
     return vehicleType or 'automobile'
 end
--- Backwards Compat
 
--- Spawns a vehicle and returns its network ID and properties.
---[[ RegisterCallback('qb-garages:server:spawnvehicle', function(source, cb, plate, vehicle, coords)
-    local vehType = QBCore.Shared.Vehicles[vehicle] and QBCore.Shared.Vehicles[vehicle].type or GetVehicleTypeByModel(vehicle)
-    local veh = CreateVehicleServerSetter(GetHashKey(vehicle), vehType, coords.x, coords.y, coords.z, coords.w)
-    local netId = NetworkGetNetworkIdFromEntity(veh)
-    SetVehicleNumberPlateText(veh, plate)
-    local vehProps = {}
-    local result = MySQL.rawExecute.await('SELECT mods FROM player_vehicles WHERE plate = ?', { plate })
-    if result and result[1] then vehProps = json.decode(result[1].mods) end
-    OutsideVehicles[plate] = { netID = netId, entity = veh }
-    cb(netId, vehProps, plate)
-end) ]]
-
--- Checks if a vehicle can be spawned based on its type and location.
---[[ RegisterCallback('qb-garages:server:IsSpawnOk', function(_, cb, plate, type)
-    if OutsideVehicles[plate] and DoesEntityExist(OutsideVehicles[plate].entity) then
-        cb(false)
-        return
+-- Spawns a vehicle at the relevant garage, if a spot is free
+RegisterServerEvent('qb-garages:server:SpawnVehicle', function(source, plate, index, vehicleName, fuel)
+    if OutsideVehicles[plate] and OutsideVehicles[plate].entity:IsValid() then
+        exports['qb-core']:Notify(source, Lang:t('error.not_depot'), 'error', 5000)
+        return false
     end
-    cb(true)
-end) ]]
+
+    local SpawnPoint = GetSpawnPoint(index)
+    if not SpawnPoint then
+        exports['qb-core']:Notify(source, Lang:t('error.no_spawn'), 'error')
+        return false
+    end
+
+    -- @TODO Amend to support vehicle mods
+    local Player = exports['qb-core']:GetPlayer(source)
+    local results = exports['qb-core']:DatabaseAction('Select', 
+        'SELECT citizenid FROM player_vehicles WHERE plate = ? and citizenid = ? LIMIT 1', 
+        { plate,  Player.PlayerData.citizenid}
+    )
+    if not results or #results <= 0 then return end
+
+    -- @TODO Set Vehicle Mods, Plate
+    local vehicle = exports['qb-core']:CreateVehicle(vehicleName, SpawnPoint.coords, Rotator(0, SpawnPoint.heading, 0), plate, tonumber(fuel) or 1.0)
+    updateVehicleState(0, plate, Player.PlayerData.citizenid)
+    OutsideVehicles[plate] = { entity = vehicle }
+
+    if Config.Warp then
+        -- @TODO Vehicle Warping
+--[[         local Pawn = GetPlayerPawn(source)
+        if Pawn then
+            local AS = Pawn:GetLyraAbilitySystemComponent()
+
+            local EventData = UE.FGameplayEventData()
+            EventData.EventMagnitude = 0
+            EventData.Instigator = Pawn
+            EventData.Target = vehicle
+
+            local Ability = UE.UClass.Load('/Game/SimpleVehicle/Blueprints/Abilities/GA_Vehicle_Enter.GA_Vehicle_Enter_C')
+            local Spec = AS:K2_GiveAbility(Ability, nil, nil)
+            AS:ServerTryActivateAbilityWithEventData(Spec, false, UE.FPredictionKey(), EventData)
+        end ]]
+    end
+
+    if Config.VisuallyDamageCars then
+        -- @TODO Visual Vehicle Damage
+    end
+    
+    return true
+end)
 
 --[[ RegisterCallback('qb-garages:server:canDeposit', function(source, cb, plate, type, garage, state)
     local Player = QBCore.Functions.GetPlayer(source)

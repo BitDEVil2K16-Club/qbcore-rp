@@ -22,7 +22,6 @@ local function CheckPlayers(vehicle)
 end
 
 local function OpenGarageMenu()
-    print('Opening Garage Menu', zone.indexgarage)
     TriggerCallback('server.GetGarageVehicles', function(result)
         if result == nil then return exports['qb-core']:Notify(Lang:t('error.no_vehicles'), 'error', 5000) end
         local formattedVehicles = {}
@@ -225,40 +224,6 @@ end)
     end
 end ]]
 
-function GetSpawnPoint(garage)
-    local location = nil
-    if #garage.spawnPoint > 1 then
-        local maxTries = #garage.spawnPoint
-        for _ = 1, maxTries do
-            local randomIndex = math.random(1, #garage.spawnPoint)
-            local chosenSpawnPoint = garage.spawnPoint[randomIndex]
-            local isOccupied = IsPositionOccupied(
-                chosenSpawnPoint.x,
-                chosenSpawnPoint.y,
-                chosenSpawnPoint.z,
-                5.0,   -- range
-                false,
-                true,  -- checkVehicles
-                false, -- checkPeds
-                false,
-                false,
-                0,
-                false
-            )
-            if not isOccupied then
-                location = chosenSpawnPoint
-                break
-            end
-        end
-    elseif #garage.spawnPoint == 1 then
-        location = garage.spawnPoint[1]
-    end
-    if not location then
-        QBCore.Functions.Notify(Lang:t('error.vehicle_occupied'), 'error')
-    end
-    return location
-end
-
 -- NUI Callbacks
 
 my_webui:RegisterEventHandler('closeGarage', function(_, cb)
@@ -267,7 +232,7 @@ my_webui:RegisterEventHandler('closeGarage', function(_, cb)
 end)
 
 my_webui:RegisterEventHandler('takeOutVehicle', function(data, cb)
-    TriggerLocalClientEvent('qb-garages:client:takeOutGarage', data)
+    TriggerServerEvent('qb-garages:server:SpawnVehicle', data.plate, data.index, data.vehicle, data.stats.fuel)
     cb('ok')
 end)
 --[[ 
@@ -307,30 +272,7 @@ local function CheckPlate(vehicle, plateToSet)
     end)
     return vehiclePlate
 end
---[[ 
-RegisterClientEvent('qb-garages:client:takeOutGarage', function(data)
-    QBCore.Functions.TriggerCallback('qb-garages:server:IsSpawnOk', function(spawn)
-        if spawn then
-            local location = GetSpawnPoint(data.garage)
-            if not location then return end
-            QBCore.Functions.TriggerCallback('qb-garages:server:spawnvehicle', function(netId, properties, vehPlate)
-                while not NetworkDoesNetworkIdExist(netId) do Wait(10) end
-                local veh = NetworkGetEntityFromNetworkId(netId)
-                Citizen.Await(CheckPlate(veh, vehPlate))
-                QBCore.Functions.SetVehicleProperties(veh, properties)
-                exports[Config.FuelResource]:SetFuel(veh, data.stats.fuel)
-                TriggerServerEvent('qb-garages:server:updateVehicleState', 0, vehPlate)
-                TriggerEvent('vehiclekeys:client:SetOwner', vehPlate)
-                if Config.Warp then TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1) end
-                if Config.VisuallyDamageCars then doCarDamage(veh, data.stats, properties) end
-                SetVehicleEngineOn(veh, true, true, false)
-            end, data.plate, data.vehicle, location, true)
-        else
-            QBCore.Functions.Notify(Lang:t('error.not_depot'), 'error', 5000)
-        end
-    end, data.plate, data.type)
-end)
- ]]
+
 -- Housing calls
 
 --[[ local houseGarageZones = {}
