@@ -154,32 +154,6 @@ local function CreateBlipsZones()
             garageZones[#garageZones + 1] = zone
         end
     end
-
-    --local comboZone = ComboZone:Create(garageZones, { name = 'garageCombo', debugPoly = false })
-
---[[     comboZone:onPlayerInOut(function(isPointInside, _, currentZone)
-        if isPointInside then
-            inZone = true
-            zone = currentZone
-
-            local displayText = Lang:t('info.car_e')
-            if zone.data.vehicle == 'sea' then
-                displayText = Lang:t('info.sea_e')
-            elseif zone.data.vehicle == 'air' then
-                displayText = Lang:t('info.air_e')
-            elseif zone.data.vehicle == 'rig' then
-                displayText = Lang:t('info.rig_e')
-            elseif zone.data.type == 'depot' then
-                displayText = Lang:t('info.depot_e')
-            end
-            exports['qb-core']:DrawText(displayText, 'left')
-        else
-            inZone = false
-            zone = {}
-            listenForKey = false
-            exports['qb-core']:HideText()
-        end
-    end) ]]
 end
 
 Input.BindKey('E', function()
