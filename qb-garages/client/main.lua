@@ -142,12 +142,12 @@ end)
 
 my_webui:RegisterEventHandler('closeGarage', function(_, cb)
     my_webui:SetInputMode(0)
-    cb('ok')
+    cb(true)
 end)
 
 my_webui:RegisterEventHandler('takeOutVehicle', function(data, cb)
     TriggerServerEvent('qb-garages:server:SpawnVehicle', data.plate, data.index, data.vehicle, data.stats.fuel)
-    cb('ok')
+    cb(true)
 end)
 --[[ 
 RegisterNUICallback('trackVehicle', function(plate, cb)
