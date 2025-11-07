@@ -100,7 +100,7 @@ local function CreateBlipsZones()
 
     for index, garage in pairs(Config.Garages) do
         local zone
---[[         if garage.showBlip then
+        --[[         if garage.showBlip then
             CreateBlips(garage)
         end ]]
         if garage.type == 'job' and (PlayerJob.name == garage.job or PlayerJob.type == garage.jobType) then
@@ -124,7 +124,7 @@ Input.BindKey('E', function()
     if HPlayer:GetInputMode() == 1 then return end
     if not next(zone) then return end
 
-    local Vehicle = GetVehiclePedIsIn(HPlayer:K2_GetPawn())
+    local Vehicle = GetVehiclePedIsIn(GetPlayerPawn())
     if Vehicle then
         if zone.type == 'depot' then return end
         if not IsVehicleAllowed(zone.category, Vehicle) then
@@ -149,7 +149,7 @@ my_webui:RegisterEventHandler('takeOutVehicle', function(data, cb)
     TriggerServerEvent('qb-garages:server:SpawnVehicle', data.plate, data.index, data.vehicle, data.stats.fuel)
     cb(true)
 end)
---[[ 
+--[[
 RegisterNUICallback('trackVehicle', function(plate, cb)
     TriggerServerEvent('qb-garages:server:trackVehicle', plate)
     cb('ok')
