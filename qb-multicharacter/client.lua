@@ -58,7 +58,7 @@ end
 
 -- Events
 
-RegisterClientEvent('HEvent:PlayerPossessed', function()
+RegisterClientEvent('HEvent:PlayerReady', function()
     TriggerServerEvent('qb-multicharacter:server:chooseChar')
 end)
 
