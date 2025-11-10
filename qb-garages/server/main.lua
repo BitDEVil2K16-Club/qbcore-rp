@@ -6,9 +6,9 @@ local OutsideVehicles = {}
 Timer.CreateThread(function()
     Wait(100)
     if Config['AutoRespawn'] then
-        exports['qb-core']:Database('Execute', 'UPDATE player_vehicles SET state = 1 WHERE state = 0', {})
+        exports['qb-core']:DatabaseAction('Execute', 'UPDATE player_vehicles SET state = 1 WHERE state = 0', {})
     else
-        exports['qb-core']:Database('Execute', 'UPDATE player_vehicles SET depotprice = 500 WHERE state = 0', {})
+        exports['qb-core']:DatabaseAction('Execute', 'UPDATE player_vehicles SET depotprice = 500 WHERE state = 0', {})
     end
 end)
 
