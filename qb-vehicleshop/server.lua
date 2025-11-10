@@ -87,7 +87,7 @@ RegisterServerEvent('qb-vehicleshop:server:purchaseVehicle', function(source, da
         vehicle,
         '{}',
         plate,
-        'apartment',
+        'apartments',
         0
     })
     local pVehicle = HVehicle(spawnLocation.location, spawnLocation.rotation, vehicleInfo.asset_name)
