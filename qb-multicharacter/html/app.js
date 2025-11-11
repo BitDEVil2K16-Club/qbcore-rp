@@ -155,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         this.customNationality = args.customNationality;
                         translationManager.setTranslations(args.translations);
                         this.translations = args.translations;
-                        console.log(args);
                         this.nationalities = args.countries;
                         this.characterAmount = Number(args.nChar);
                         this.selectedCharacter = -1;
